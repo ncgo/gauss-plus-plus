@@ -1,0 +1,42 @@
+Gauss examen
+organizacion = "OMMCH"
+etapa = "Examen Estatal"
+categorias = ["Nivel A", "Nivel B", "Nivel C", Nivel D"]
+
+problema problema1(area = "Teoría de Números") {
+    categoria = categoria[0]
+    >> "Considera cinco números de menor a mayor" 
+    >> $expr("a<b<c<d<e") 
+    >> ". Después de que se calculan las 10 sumas de cada pareja de números se sabe que las tres sumas más pequeñas son 32, 36 y 37, mientras que las sumas más grandes son 48 y 51. ¿Cuánto vale e?"
+    opciones = [16, 17, 18, 19, "No se puede saber"]
+    respuesta = 19
+}
+
+problema problema2(area = "Combinatoria") {
+    >> 	"Ricardo cuenta los números del 1 al 100 y se come un chocolate si el número es múltiplo de 3 o termina en 3. ¿Cuántos chocolates comerá Ricardo en total?"
+    opciones = [39, 40, 43, 44]
+    respuesta = 39
+}
+
+problema problema3(area = "Geometria") {
+    >> "En un cuadrilátero ABCD, con ángulos interiores menores a 180°, los lados AB,BC y CD son iguales. También sabemos que AD=AC=BD."
+    >> "Encuentra la medida del ángulo ABC."
+    >> $import("/imagenProb3.png")
+    respuesta = "60 grados"
+}
+
+listaProblemas = [problema1, problema2, problema3]
+
+genera(orientacion, categoria, problemas, nombreDeArchivo) {
+    header(organizacion, fecha = "22 de sept 22", etapa)
+    titulo("Examen Estatal")
+    instrucciones("Contesta los siguientes problemas y entrega tu respuesta en una hoja separada. Tienes 50 minutos")
+    problemas(problemas, random = False)
+    footer(categoria)
+}
+
+main() {
+    for categoria in categorias {
+        genera(landscape, categoria, listaProblemas, "examenEstatal")
+    }
+}

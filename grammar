@@ -1,0 +1,41 @@
+%import common.WS
+%import common.ESCAPED_STRING   -> STRING
+%ignore WS
+
+ID: /[a-zA-Z0-9_]+/
+CTEINT: /[0-9]+/
+CTEFLOAT: /[0-9]+[\.][0-9]+/
+
+// TOKENS
+PROGRAM: "Gauss"
+ORGANIZACION: "organizacion"
+ETAPA: "etapa"
+CATEGORIAS: "categorias"
+PROBLEMA: "problema"
+AREA: "area"
+CATEGORIA: "categoria"
+EXPR: "expr"
+IMPORT: "import"
+OPCIONES: "opciones"
+RESPUESTA: "respuesta"
+VAR: "var"
+INT: "int"
+FLOAT: "float"
+IF: "if"
+ELSE: "else"
+PRINT: />>/
+PUNTOYCOMA: /;/
+DOSPUNTOS: /:/
+LCURLY: /{/
+RCURLY: /\}/
+IGUAL: /=/
+MENORQUE: /</
+MAYORQUE: />/
+DIFERENTE: /<>/
+MAS: /\+/
+MENOS: /-/
+MULT: /\*/
+DIV: /\//
+LPAR: /\(/
+RPAR: /\)/
+COMA: /,/
