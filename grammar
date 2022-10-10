@@ -33,6 +33,17 @@ FALSE: "false"
 MAIN: "main"
 RETURN: "return"
 WHILE: "while"
+NOMBREARCHIVO: "nombreArchivo"
+GENERA: "genera"
+FECHA: "fecha"
+ORIENTACION: "orientacion"
+PROBLEMAS: "problemas"
+HEADER: "header"
+TITULO: "titulo"
+INSTRUCCIONES: "instrucciones"
+PROBLEMASINCLUIDOS: "problemasIncluidos"
+RANDOM: "random"
+FOOTER: "footer"
 PRINT: />>/
 PUNTOYCOMA: /;/
 DOSPUNTOS: /:/
@@ -79,7 +90,13 @@ respuesta: RESPUESTA IGUAL varcte
 listas: lista | 
 lista: ID IGUAL arr listas
 
-genera: 
+genera: GENERA LPAR ORIENTACION COMA CATEGORIAS COMA PROBLEMAS COMA NOMBREARCHIVO RPAR LCURLY header titulo instrucciones problemasincluidos footer RCURLY
+header: HEADER LPAR ORGANIZACION COMA FECHA head1 COMA ETAPA RPAR
+head1: IGUAL STRING | 
+titulo: TITULO LPAR CTESTRING RPAR
+instrucciones: INSTRUCCIONES LPAR CTESTRING RPAR
+problemasincluidos: PROBLEMASINCLUIDOS LPAR PROBLEMAS COMA RANDOM IGUAL ctebool RPAR
+footer: FOOTER LPAR CATEGORIA RPAR 
 
 main: MAIN LPAR RPAR bloque
 

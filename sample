@@ -1,7 +1,7 @@
 Gauss examen
 organizacion = "OMMCH"
 etapa = "Examen Estatal"
-categorias = ["Nivel A", "Nivel B", "Nivel C", Nivel D"]
+categorias = ["Nivel A", "Nivel B", "Nivel C", "Nivel D"]
 
 problema problema1(area = "Teoría de Números") {
     categoria = categoria[0]

@@ -1,0 +1,18 @@
+Gauss examen
+organizacion = "OMMCH"
+etapa = "Examen Estatal"
+categorias = ["Nivel A", "Nivel B", "Nivel C", "Nivel D"]
+
+problema problema1(area = "Teoría de Números") {
+    categoria = categoria[0]
+    >> "Considera cinco números de menor a mayor" 
+    >> $expr("a<b<c<d<e") 
+    >> ". Después de que se calculan las 10 sumas de cada pareja de números se sabe que las tres sumas más pequeñas son 32, 36 y 37, mientras que las sumas más grandes son 48 y 51. ¿Cuánto vale e?"
+    opciones = [16, 17, 18, 19, "No se puede saber"]
+    respuesta = 19
+}
+
+listaProblemas = [problema1, problema2, problema3]
+
+main() {
+}
