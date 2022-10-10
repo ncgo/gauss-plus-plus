@@ -67,7 +67,7 @@ DOLLAR: /\$/
 
 // GRAMATICA
 start: program 
-program: PROGRAM ID info vars modulos problemas listas genera main
+program: PROGRAM ID info vars modulos problemas listas genera main end
 
 info: ORGANIZACION IGUAL CTESTRING ETAPA IGUAL CTESTRING CATEGORIAS IGUAL arr
 
@@ -146,3 +146,5 @@ llamadafunc: ID LPAR varcte llam1 RPAR
 llam1: COMA varcte llam1 | 
 
 bloque: LCURLY estatutos RCURLY
+
+end: 

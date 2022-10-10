@@ -12,10 +12,15 @@ class DirProcedimientos():
     # Agrega un procedimiento al Directorio de Procedimientos
     # revisando que no exista previamente 
     def addProc(self, proc):
-        if proc in self.dirProcedimientos:
+        if proc in self.dirProcedimientos.items():
             return errores.errorDuplicado("procedimiento", proc)
         else:
-            self.dirProcedimientos.push(proc)
+            self.dirProcedimientos[proc.nombre] = proc
+
+    def printDir(self):
+        print(self.dirProcedimientos)
+       #for proc in self.dirProcedimientos:
+        #proc[1].printProcedimiento()
 
 # TABLA DE VARIABLES
 # Apoyo para la semántica básica de variables
@@ -35,11 +40,13 @@ class TablaVariables():
 # Clase auxiliar que contiene los datos relevantes de un procedimiento
 # a ser insertado en el Directorio de Procedimientos
 class Procedimiento():
-    def __init__(self):
-        self.nombre = ""
-        self.tipo = ""
-        self.tablaVariables = {}
+    def __init__(self, nombre, tipo):
+        self.nombre = nombre
+        self.tipo = tipo
+        self.tablaVariables = TablaVariables()
 
+    def printProcedimiento(self):
+        print("{Nombre:", self.nombre, ", Tipo:", self.tipo, "Tabla de Variables: ")
 # VARIABLE
 # Clase auxiliar que contiene los datos relevantes de una variable
 # a ser insertada en la Tabla de Variables
