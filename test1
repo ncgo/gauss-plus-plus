@@ -14,5 +14,13 @@ problema problema1(area = "Teoría de Números") {
 
 listaProblemas = [problema1, problema2, problema3]
 
+genera(orientacion, categoria, problemas, nombreArchivo) {
+    header(organizacion, fecha = "22 de sept 22", etapa)
+    titulo("Examen Estatal")
+    instrucciones("Contesta los siguientes problemas y entrega tu respuesta en una hoja separada. Tienes 50 minutos")
+    problemasIncluidos(problemas, random = False)
+    footer(categoria)
+} 
+
 main() {
 }

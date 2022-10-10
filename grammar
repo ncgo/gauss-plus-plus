@@ -28,8 +28,8 @@ BOOL: "bool"
 VOID: "void"
 IF: "if"
 ELSE: "else"
-TRUE: "true"
-FALSE: "false"
+TRUE: "True"
+FALSE: "False"
 MAIN: "main"
 RETURN: "return"
 WHILE: "while"
@@ -67,7 +67,7 @@ DOLLAR: /\$/
 
 // GRAMATICA
 start: program 
-program: PROGRAM ID info vars modulos problemas listas main
+program: PROGRAM ID info vars modulos problemas listas genera main
 
 info: ORGANIZACION IGUAL CTESTRING ETAPA IGUAL CTESTRING CATEGORIAS IGUAL arr
 
@@ -90,9 +90,9 @@ respuesta: RESPUESTA IGUAL varcte
 listas: lista | 
 lista: ID IGUAL arr listas
 
-genera: GENERA LPAR ORIENTACION COMA CATEGORIAS COMA PROBLEMAS COMA NOMBREARCHIVO RPAR LCURLY header titulo instrucciones problemasincluidos footer RCURLY
+genera: GENERA LPAR ORIENTACION COMA CATEGORIA COMA PROBLEMAS COMA NOMBREARCHIVO RPAR LCURLY header titulo instrucciones problemasincluidos footer RCURLY
 header: HEADER LPAR ORGANIZACION COMA FECHA head1 COMA ETAPA RPAR
-head1: IGUAL STRING | 
+head1: IGUAL CTESTRING | 
 titulo: TITULO LPAR CTESTRING RPAR
 instrucciones: INSTRUCCIONES LPAR CTESTRING RPAR
 problemasincluidos: PROBLEMASINCLUIDOS LPAR PROBLEMAS COMA RANDOM IGUAL ctebool RPAR
