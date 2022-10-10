@@ -5,6 +5,7 @@
 ID: /[a-zA-Z0-9_]+/
 CTEINT: /[0-9]+/
 CTEFLOAT: /[0-9]+[\.][0-9]+/
+PATH: /[^\\s]+(.*?)\\.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/
 
 
 // TOKENS
@@ -50,10 +51,12 @@ RPAR: /\)/
 LCOR: /\[/
 RCOR: /\]/
 COMA: /,/
+PRINTP: />>/
+DOLLAR: /\$/
 
 // GRAMATICA
 start: program 
-program: PROGRAM ID info vars modulos problemas listas genera main
+program: PROGRAM ID info vars modulos problemas listas main
 
 info: ORGANIZACION IGUAL CTESTRING ETAPA IGUAL CTESTRING CATEGORIAS IGUAL arr
 
@@ -65,7 +68,13 @@ modulos: modulo |
 modulo: tipomod ID LPAR modids RPAR LCURLY vars estatutos return RCURLY modulos
 
 problemas: problema | 
-problema: 
+problema: PROBLEMA ID LPAR AREA IGUAL CTESTRING prob1 RPAR LCURLY categoria printprob opciones respuesta RCURLY
+prob1: COMA ID prob1 | 
+categoria: CATEGORIA IGUAL arracc | 
+printprob: PRINTP printprob1 printprob | 
+printprob1: CTESTRING | DOLLAR EXPR LPAR CTESTRING RPAR | DOLLAR IMPORT LPAR PATH RPAR
+opciones: OPCIONES IGUAL arr | 
+respuesta: RESPUESTA IGUAL varcte 
 
 listas: lista | 
 lista: ID IGUAL arr listas
