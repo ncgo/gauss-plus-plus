@@ -18,9 +18,8 @@ class DirProcedimientos():
             self.dirProcedimientos[proc.nombre] = proc
 
     def printDir(self):
-        print(self.dirProcedimientos)
-       #for proc in self.dirProcedimientos:
-        #proc[1].printProcedimiento()
+        for proc in self.dirProcedimientos:
+            self.dirProcedimientos[proc].printProcedimiento()
 
 # TABLA DE VARIABLES
 # Apoyo para la semántica básica de variables
@@ -34,7 +33,7 @@ class TablaVariables():
         if var in self.tablaVariables:
             return errores.errorDuplicado("variable", var)
         else:
-            self.tablaVariables.push(var)
+            self.tablaVariables[var.nombre] = var
 
 # PROCEDIMIENTO
 # Clase auxiliar que contiene los datos relevantes de un procedimiento
@@ -46,7 +45,7 @@ class Procedimiento():
         self.tablaVariables = TablaVariables()
 
     def printProcedimiento(self):
-        print("{Nombre:", self.nombre, ", Tipo:", self.tipo, "Tabla de Variables: ")
+        print(self.nombre, self.tipo, self.tablaVariables)
 # VARIABLE
 # Clase auxiliar que contiene los datos relevantes de una variable
 # a ser insertada en la Tabla de Variables
@@ -55,5 +54,8 @@ class Variable():
         self.nombre = nombre
         self.tipo = tipo
         self.valor = valor
+
+    def printVar(self):
+        print("{nombre:", self.nombre, "tipo:", self.tipo, "valor:", self.valor)
 
 

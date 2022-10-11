@@ -3,6 +3,8 @@ organizacion = "OMMCH"
 etapa = "Examen Estatal"
 categorias = ["Nivel A", "Nivel B", "Nivel C", "Nivel D"]
 
+var int puntaje
+var float pesos = 50.0
 int hello() {
 
 }
