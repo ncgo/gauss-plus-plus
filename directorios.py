@@ -12,15 +12,21 @@ class DirProcedimientos():
     # Agrega un procedimiento al Directorio de Procedimientos
     # revisando que no exista previamente 
     def addProc(self, proc):
-        if proc in self.dirProcedimientos.items():
-            return errores.errorDuplicado("procedimiento", proc)
+        if proc.nombre in self.dirProcedimientos.keys():
+            return errores.errorDuplicado("procedimiento", proc.nombre)
         else:
             self.dirProcedimientos[proc.nombre] = proc
 
-    def printDir(self):
-        for proc in self.dirProcedimientos:
-            self.dirProcedimientos[proc].printProcedimiento()
+    def searchProc(self, proc):
+        if proc in self.dirProcedimientos.keys():
+            return self.dirProcedimientos[proc]
+        else:
+            return errores.errorNoExiste("procedimiento", proc)
 
+    def printDir(self):
+        for key, value in self.dirProcedimientos.items() :
+            print (key, value)
+            self.dirProcedimientos[key].printProcedimiento()
 # TABLA DE VARIABLES
 # Apoyo para la semántica básica de variables
 # Guardará las variables 
@@ -30,10 +36,15 @@ class TablaVariables():
 
     # ADD VAR
     def addVar(self, var):
-        if var in self.tablaVariables:
+        if var.nombre in self.tablaVariables.keys():
             return errores.errorDuplicado("variable", var)
         else:
             self.tablaVariables[var.nombre] = var
+
+    def printTablaVariables(self):
+        for key, value in self.tablaVariables.items() :
+            print (key, value)
+            self.tablaVariables[key].printVar()
 
 # PROCEDIMIENTO
 # Clase auxiliar que contiene los datos relevantes de un procedimiento
@@ -45,12 +56,12 @@ class Procedimiento():
         self.tablaVariables = TablaVariables()
 
     def printProcedimiento(self):
-        print(self.nombre, self.tipo, self.tablaVariables)
+        print(self.nombre, self.tipo, self.tablaVariables.printTablaVariables())
 # VARIABLE
 # Clase auxiliar que contiene los datos relevantes de una variable
 # a ser insertada en la Tabla de Variables
 class Variable():
-    def __init__(self, nombre, tipo, valor):
+    def __init__(self, nombre, tipo, valor = None):
         self.nombre = nombre
         self.tipo = tipo
         self.valor = valor

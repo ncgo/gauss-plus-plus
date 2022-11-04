@@ -71,9 +71,11 @@ program: PROGRAM ID info vars modulos problemas listas genera main end
 
 info: ORGANIZACION IGUAL CTESTRING ETAPA IGUAL CTESTRING CATEGORIAS IGUAL arr
 
-vars: VAR tipo ID vars1 vars | 
+vars: VAR np_vars | 
 vars1: vars2 | IGUAL expresion vars2 | IGUAL varcte vars2
-vars2: COMA ID vars1 | 
+vars2: COMA ID vars1 | np_fin_vars
+np_vars: tipo ID vars1 vars
+np_fin_vars:
 
 modulos: modulo | 
 modulo: tipomod ID LPAR modids RPAR LCURLY vars estatutos return RCURLY modulos

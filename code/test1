@@ -3,10 +3,14 @@ organizacion = "OMMCH"
 etapa = "Examen Estatal"
 categorias = ["Nivel A", "Nivel B", "Nivel C", "Nivel D"]
 
-var int puntaje
+var int puntaje, year
 var float pesos = 50.0
 int hello() {
 
+}
+
+int hello() {
+    
 }
 
 problema problema1(area = "Teoría de Números") {
