@@ -6,11 +6,9 @@ categorias = ["Nivel A", "Nivel B", "Nivel C", "Nivel D"]
 var int puntaje, year
 var float pesos = 50.0
 int hello() {
-
-}
-
-int hello() {
-    
+    var int provisional
+    provisional = 5 * 6
+    year = 2020 + 2
 }
 
 problema problema1(area = "Teoría de Números") {

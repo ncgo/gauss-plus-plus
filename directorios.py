@@ -27,6 +27,7 @@ class DirProcedimientos():
         for key, value in self.dirProcedimientos.items() :
             print (key, value)
             self.dirProcedimientos[key].printProcedimiento()
+
 # TABLA DE VARIABLES
 # Apoyo para la semántica básica de variables
 # Guardará las variables 
@@ -40,6 +41,12 @@ class TablaVariables():
             return errores.errorDuplicado("variable", var)
         else:
             self.tablaVariables[var.nombre] = var
+
+    def searchVar(self, varNombre):
+        if varNombre in self.tablaVariables.keys():
+            return self.tablaVariables[varNombre]
+        else:
+            return errores.errorNoExiste("variable", varNombre)
 
     def printTablaVariables(self):
         for key, value in self.tablaVariables.items() :
@@ -57,6 +64,7 @@ class Procedimiento():
 
     def printProcedimiento(self):
         print(self.nombre, self.tipo, self.tablaVariables.printTablaVariables())
+
 # VARIABLE
 # Clase auxiliar que contiene los datos relevantes de una variable
 # a ser insertada en la Tabla de Variables
@@ -70,3 +78,13 @@ class Variable():
         print("{nombre:", self.nombre, "tipo:", self.tipo, "valor:", self.valor)
 
 
+class Cuadruplo():
+    def __init__(self, numero, operator, left_operand, right_operand, result):
+        self.numero = numero
+        self.operator = operator
+        self.left_operand = left_operand
+        self.right_operand = right_operand
+        self.result = result
+    
+    def printCuadruplo(self):
+        print(str(self.numero) + '. ' + self.operator + ', ' + self.left_operand + ', ' + self.right_operand + ', ' + self.result)

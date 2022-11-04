@@ -2,7 +2,7 @@
 %import common.ESCAPED_STRING   -> CTESTRING
 %ignore WS
 
-ID: /[a-zA-Z0-9_]+/
+ID: /[_]?[a-z]+[a-zA-Z0-9_]*/
 CTEINT: /[0-9]+/
 CTEFLOAT: /[0-9]+[\.][0-9]+/
 PATH: /[^\\s]+(.*?)\\.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/
@@ -67,7 +67,7 @@ DOLLAR: /\$/
 
 // GRAMATICA
 start: program 
-program: PROGRAM ID info vars modulos problemas listas genera main end
+program: PROGRAM ID info vars modulos problemas listas genera main np_end
 
 info: ORGANIZACION IGUAL CTESTRING ETAPA IGUAL CTESTRING CATEGORIAS IGUAL arr
 
@@ -78,10 +78,10 @@ np_vars: tipo ID vars1 vars
 np_fin_vars:
 
 modulos: modulo | 
-modulo: tipomod ID LPAR modids RPAR LCURLY vars estatutos return RCURLY modulos
+modulo: tipomod ID LPAR modids RPAR LCURLY vars estatutos return RCURLY modulos np_endfunc
 
 problemas: problema | 
-problema: PROBLEMA ID LPAR AREA IGUAL CTESTRING prob1 RPAR LCURLY categoria printprob opciones respuesta RCURLY
+problema: PROBLEMA ID LPAR AREA IGUAL CTESTRING prob1 RPAR LCURLY categoria printprob opciones respuesta RCURLY np_endfunc
 prob1: COMA ID prob1 | 
 categoria: CATEGORIA IGUAL arracc | 
 printprob: PRINTP printprob1 printprob | 
@@ -92,7 +92,7 @@ respuesta: RESPUESTA IGUAL varcte
 listas: lista | 
 lista: ID IGUAL arr listas
 
-genera: GENERA LPAR ORIENTACION COMA CATEGORIA COMA PROBLEMAS COMA NOMBREARCHIVO RPAR LCURLY header titulo instrucciones problemasincluidos footer RCURLY
+genera: GENERA LPAR ORIENTACION COMA CATEGORIA COMA PROBLEMAS COMA NOMBREARCHIVO RPAR LCURLY header titulo instrucciones problemasincluidos footer RCURLY np_endfunc
 header: HEADER LPAR ORGANIZACION COMA FECHA head1 COMA ETAPA RPAR
 head1: IGUAL CTESTRING | 
 titulo: TITULO LPAR CTESTRING RPAR
@@ -100,7 +100,7 @@ instrucciones: INSTRUCCIONES LPAR CTESTRING RPAR
 problemasincluidos: PROBLEMASINCLUIDOS LPAR PROBLEMAS COMA RANDOM IGUAL ctebool RPAR
 footer: FOOTER LPAR CATEGORIA RPAR 
 
-main: MAIN LPAR RPAR bloque
+main: MAIN LPAR RPAR bloque np_endfunc
 
 estatutos: estatuto estatutos |
 estatuto: asignacion | condicion | ciclo | escritura | llamadafunc
@@ -119,13 +119,17 @@ arracc: ID LCOR CTEINT RCOR
 expresion: exp expresion1 exp | exp
 expresion1: MENORQUE | MAYORQUE | DIFERENTE
 
-exp: termino exp1 
-exp1: MAS exp | MENOS exp | 
+exp: termino np_exp exp1 | termino np_exp
+exp1: MAS exp | MENOS exp
+np_exp:
 
-termino: factor ter1
-ter1: MULT termino | DIV termino | 
+termino: factor np_termino ter1 | factor np_termino 
+ter1: MULT termino | DIV termino 
+np_termino:
 
-factor: LPAR expresion RPAR | MAS varcte | MENOS varcte
+factor: LPAR expresion RPAR | fact1 | fact2
+fact1: varcte
+fact2: ID
 
 tipo: INT | FLOAT | STRING | BOOL
 
@@ -149,4 +153,8 @@ llam1: COMA varcte llam1 |
 
 bloque: LCURLY estatutos RCURLY
 
-end: 
+np_end: 
+np_endfunc:
+
+mult: MULT
+div: DIV
