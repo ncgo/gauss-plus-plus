@@ -5,7 +5,7 @@ categorias = ["Nivel A", "Nivel B", "Nivel C", "Nivel D"]
 
 var int puntaje, year
 var float pesos = 50.0
-int hello() {
+int hello(int g) {
     var int provisional
     provisional = 5 * 6
     year = 2020 + 2

@@ -72,13 +72,14 @@ program: PROGRAM ID info vars modulos problemas listas genera main np_end
 info: ORGANIZACION IGUAL CTESTRING ETAPA IGUAL CTESTRING CATEGORIAS IGUAL arr
 
 vars: VAR np_vars | 
-vars1: vars2 | IGUAL expresion vars2 | IGUAL varcte vars2
+vars1: vars2 | IGUAL expresion vars2
 vars2: COMA ID vars1 | np_fin_vars
 np_vars: tipo ID vars1 vars
 np_fin_vars:
 
 modulos: modulo | 
-modulo: tipomod ID LPAR modids RPAR LCURLY vars estatutos return RCURLY modulos np_endfunc
+modulo: tipomod ID LPAR modids RPAR LCURLY vars np_vars_mod estatutos return RCURLY modulos np_endfunc
+np_vars_mod: 
 
 problemas: problema | 
 problema: PROBLEMA ID LPAR AREA IGUAL CTESTRING prob1 RPAR LCURLY categoria printprob opciones respuesta RCURLY np_endfunc
@@ -108,7 +109,7 @@ estatuto: asignacion | condicion | ciclo | escritura | llamadafunc
 return: RETURN varcte | 
 tipomod: INT | FLOAT | STRING | BOOL | VOID
 modids: modids1 | 
-modids1: ID modids2 
+modids1: tipo ID modids2 
 modids2: COMA modids1 | 
 
 arr: LCOR varcte arr1 RCOR

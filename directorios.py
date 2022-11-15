@@ -1,3 +1,4 @@
+
 # DIR
 import errores as errores
 
@@ -34,6 +35,7 @@ class DirProcedimientos():
 class TablaVariables():
     def __init__(self):
         self.tablaVariables = {}
+        self.sizeTabla = 0
 
     # ADD VAR
     def addVar(self, var):
@@ -41,6 +43,7 @@ class TablaVariables():
             return errores.errorDuplicado("variable", var)
         else:
             self.tablaVariables[var.nombre] = var
+            self.sizeTabla += 1
 
     def searchVar(self, varNombre):
         if varNombre in self.tablaVariables.keys():
@@ -61,9 +64,21 @@ class Procedimiento():
         self.nombre = nombre
         self.tipo = tipo
         self.tablaVariables = TablaVariables()
+        self.parameterTable = []
+        self.numParams = 0
+        self.numVars = 0
+        self.quadruple = 0
 
     def printProcedimiento(self):
         print(self.nombre, self.tipo, self.tablaVariables.printTablaVariables())
+
+    def addParam(self, type):
+        self.parameterTable.append(type)
+        self.numParams += 1
+    
+    def np_mod(self, num):
+        self.numVars = self.tablaVariables.sizeTabla
+        self.quadruple = num
 
 # VARIABLE
 # Clase auxiliar que contiene los datos relevantes de una variable
