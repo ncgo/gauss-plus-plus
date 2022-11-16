@@ -158,7 +158,9 @@ np_cond:
 cond1:
 np_else:
 
-ciclo: WHILE LPAR expresion RPAR bloque
+ciclo: WHILE LPAR expresion np_ciclo RPAR bloque np_ciclo_end
+np_ciclo:
+np_ciclo_end:
 
 escritura: PRINT LPAR expresion escr1 RPAR 
 escr1: COMA escr2 expresion escr1 | 

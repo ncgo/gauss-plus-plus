@@ -14,11 +14,15 @@ int hello(int g) {
     } else {
         print(False, "hello")
         print(5 + 4 / 5)
-        print("Hello")
+        print("Else")
     }
 
     if(True){
-        print("True")
+        print("If simple")
+    }
+
+    while(5>9) {
+        year = 5 + 9
     }
     print("hi")
 }

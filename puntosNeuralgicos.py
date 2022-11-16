@@ -515,6 +515,37 @@ class PuntosNeuralgicos(Visitor):
         self.pilaSaltos.append(self.quadCounter)
         self.fillQuad(false, self.quadCounter + 1)
 
+    # CICLO
+    # Punto neuralgico que agrega la condicion a la pila de saltos para regresar en el estatuto while
+    def ciclo(self, tree):
+        self.pilaSaltos.append(self.quadCounter + 1)
+
+    # NP CICLO
+    # Punto neuralgico que revisa la condicion y genera el cuadruplo GOTOF
+    def np_ciclo(self, tree):
+        exp = self.pilaO.pop()
+        exp_type = self.pilaTipos.pop()
+        # Se revisa que la condicion sea de tipo booleano
+        if (exp_type != "bool" and exp_type != "CTEBOOL"):
+            # Error de mismatch de tipos
+            errores.errorCondTypeMismatch(exp_type)
+        else:
+            # Se crea el cuadruplo GOTOF y se agrega el numero de cuadruplo a la pila de saltos para ser llenado posteriormente
+            quad = directorios.Cuadruplo(self.newQuad(), "GOTOF", exp, "", "FILL")
+            self.cuadruplos.append(quad)
+            self.pilaSaltos.append(self.quadCounter)
+
+    # NP CICLO END
+    # Punto neuralgico que genera el cuadruplo para regresar a la condicion
+    def np_ciclo_end(self, tree):
+        end = self.pilaSaltos.pop()
+        returnQuad = self.pilaSaltos.pop()
+        # Genera cuadruplo para dar instruccion de regresar y volver a revisar la condicion
+        quad = directorios.Cuadruplo(self.newQuad(), "GOTO","", "", returnQuad)
+        self.cuadruplos.append(quad)
+        # Se llena el GOTOF
+        self.fillQuad(end, self.quadCounter + 1)
+
     # NP END
     # Punto neuralgico que marca el fin del programa
     def np_end(self, tree):
