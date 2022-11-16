@@ -16,19 +16,25 @@ class PuntosNeuralgicos(Visitor):
         self.cuadruplos = []
         self.quadCounter = 0
 
+    # Avail Next
     # Regresa el siguiente temporal 
     def availNext(self):
         self.temp += 1
         return 't' + str(self.temp)
 
+    # New Quad
     # Regresa el número del siguiente cuádruplo
     def newQuad(self):
         self.quadCounter += 1
         return self.quadCounter
 
+    # Curr Proc
+    # Regresa el proceso actual para manejo de contextos
     def currProc(self):
         return self.directorioProcedimientos.searchProc(self.pilaProcedimientos[-1])
 
+    # Search Var
+    # Busca la variable en el contextoa actual y en el contexto global
     def searchVar(self, id):
         if (self.currProc().tablaVariables.searchVar(id) != 0):
             return self.currProc().tablaVariables.searchVar(id)
@@ -254,17 +260,17 @@ class PuntosNeuralgicos(Visitor):
             self.pilaO.append(tree.children[0].children[0].value)
             self.pilaTipos.append(tree.children[0].children[0].type)
 
-        #print(self.pilaO)
-        #print(self.pilaTipos)
-
+    # NP TER1
     # Agrega * o / a la pila de Operadores
     def ter1(self, tree):
         self.pOper.append(tree.children[0].value)
     
+    # NP EXP1
     # Agrega + o - a la pila de Operadores
     def exp1(self, tree):
         self.pOper.append(tree.children[0].value)
 
+    # NP EXP
     # Punto neuralgico que crea los cuadruplos de suma y resta 
     def np_exp(self, tree):
         if(self.pOper):
@@ -285,6 +291,7 @@ class PuntosNeuralgicos(Visitor):
                 else:
                     errores.errorTypeMismatch(left_operand_type, right_operand_type, operator)
 
+    # NP TERMINO
     # Punto neuralgico que crea los cuadruplos de multiplicaicon y divison
     def np_termino(self, tree):
         if(self.pOper):
@@ -305,15 +312,21 @@ class PuntosNeuralgicos(Visitor):
                 else:
                     errores.errorTypeMismatch(left_operand_type, right_operand_type, operator)
     
+    # NP ASIGNACION
+    # Agrega la variable a ser asignada a la Pila de operandos y su tipo a la fila de tipos
     def asignacion(self, tree):
         id = tree.children[0].value
         var = self.searchVar(id)
         self.pilaO.append(id)
         self.pilaTipos.append(var.tipo)
 
+    # NP ASIG2
+    # Agrega el operador a la pila de operadores
     def asig2(self, tree):
         self.pOper.append("=")
 
+    # NP ASIG
+    # Genera el cuadruplo de asignacion
     def np_asig(self, tree):
         if(self.pOper[-1] == '='):
             resultado = self.pilaO.pop()
@@ -329,6 +342,41 @@ class PuntosNeuralgicos(Visitor):
             else:
                 errores.errorTypeMismatch(resultado, id, operator)
 
+    # NP PRINT PROB
+    # Punto neuralgico que agrega el simbolo de impresion de problema a la pila de operadores
+    def printprob(self, tree):
+        try:
+            tree.children[0]
+        except: 
+            next
+        else:
+            self.pOper.append(tree.children[0].value)
+
+    # NP PRINT PORB 1
+    # Punto neuralgico que genera el cuadruplo de impresion de problema
+    def printprob1(self, tree):
+        try:
+            tree.children[0].type
+        except:
+            print(tree.children[0])
+        else:
+            self.pilaO.append(tree.children[0].value)
+            self.pilaTipos.append("string")
+            if(self.pOper[-1] == '>>'):
+                printp = self.pilaO.pop()
+                printp_type = self.pilaTipos.pop()
+                operator = self.pOper.pop()
+                # ⭐️  Revisa cubo semantico
+                result_type = 1
+                if (result_type != 0):
+                    quad = directorios.Cuadruplo(self.newQuad(), "PRINTP", "", "", printp)
+                    self.cuadruplos.append(quad)
+                else:
+                    errores.errorTypeMismatch(printp, "", operator)
+
+
+
+    # NP END
     # Punto neuralgico que marca el fin del programa
     def np_end(self, tree):
         # self.directorioProcedimientos.printDir()
