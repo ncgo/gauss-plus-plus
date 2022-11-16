@@ -72,17 +72,20 @@ program: PROGRAM ID info vars modulos problemas listas genera main np_end
 info: ORGANIZACION IGUAL CTESTRING ETAPA IGUAL CTESTRING CATEGORIAS IGUAL arr
 
 vars: VAR np_vars | 
-vars1: vars2 | IGUAL expresion vars2
+vars1: vars2 | IGUAL expresion np_asig_vars vars2
 vars2: COMA ID vars1 | np_fin_vars
 np_vars: tipo ID vars1 vars
 np_fin_vars:
+np_asig_vars:
 
 modulos: modulo | 
-modulo: tipomod ID LPAR modids RPAR LCURLY vars np_vars_mod estatutos return RCURLY modulos np_endfunc
+modulo: tipomod ID LPAR modids RPAR LCURLY np_mod vars np_vars_mod estatutos return RCURLY modulos np_endfunc
 np_vars_mod: 
+np_mod:
 
 problemas: problema | 
-problema: PROBLEMA ID LPAR AREA IGUAL CTESTRING prob1 RPAR LCURLY categoria printprob opciones respuesta RCURLY np_endfunc
+problema: PROBLEMA ID LPAR np_param_prob prob1 RPAR LCURLY categoria printprob opciones respuesta RCURLY np_endfunc
+np_param_prob: AREA IGUAL CTESTRING
 prob1: COMA ID prob1 | 
 categoria: CATEGORIA IGUAL arracc | 
 printprob: PRINTP printprob1 printprob | 
@@ -93,7 +96,8 @@ respuesta: RESPUESTA IGUAL varcte
 listas: lista | 
 lista: ID IGUAL arr listas
 
-genera: GENERA LPAR ORIENTACION COMA CATEGORIA COMA PROBLEMAS COMA NOMBREARCHIVO RPAR LCURLY header titulo instrucciones problemasincluidos footer RCURLY np_endfunc
+genera: GENERA LPAR np_param_genera RPAR LCURLY header titulo instrucciones problemasincluidos footer RCURLY np_endfunc
+np_param_genera: ORIENTACION COMA CATEGORIA COMA PROBLEMAS COMA NOMBREARCHIVO
 header: HEADER LPAR ORGANIZACION COMA FECHA head1 COMA ETAPA RPAR
 head1: IGUAL CTESTRING | 
 titulo: TITULO LPAR CTESTRING RPAR
@@ -128,15 +132,15 @@ termino: factor np_termino ter1 | factor np_termino
 ter1: MULT termino | DIV termino 
 np_termino:
 
-factor: LPAR expresion RPAR | fact1 | fact2
+factor: LPAR expresion RPAR | fact1 
 fact1: varcte
-fact2: ID
 
 tipo: INT | FLOAT | STRING | BOOL
 
-asignacion: ID asig1 IGUAL asig2
+asignacion: ID asig1 IGUAL asig2 np_asig
 asig1: LCOR CTEINT RCOR | 
 asig2: expresion | llamadafunc | arracc
+np_asig:
 
 condicion: IF LPAR expresion RPAR bloque cond1
 cond1: ELSE bloque | 

@@ -49,7 +49,8 @@ class TablaVariables():
         if varNombre in self.tablaVariables.keys():
             return self.tablaVariables[varNombre]
         else:
-            return errores.errorNoExiste("variable", varNombre)
+            # return errores.errorNoExiste("variable", varNombre)
+            return 0
 
     def printTablaVariables(self):
         for key, value in self.tablaVariables.items() :
@@ -67,6 +68,7 @@ class Procedimiento():
         self.parameterTable = []
         self.numParams = 0
         self.numVars = 0
+        self.numTemps = 0
         self.quadruple = 0
 
     def printProcedimiento(self):
@@ -76,10 +78,15 @@ class Procedimiento():
         self.parameterTable.append(type)
         self.numParams += 1
     
-    def np_mod(self, num):
-        self.numVars = self.tablaVariables.sizeTabla
+    def addStartQuadruple(self, num):
         self.quadruple = num
 
+    def addNumVars(self):
+        self.numVars = self.tablaVariables.sizeTabla
+
+    def addTemps(self, numTemps):
+        self.numTemps = numTemps
+        
 # VARIABLE
 # Clase auxiliar que contiene los datos relevantes de una variable
 # a ser insertada en la Tabla de Variables
