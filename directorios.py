@@ -109,7 +109,7 @@ class Cuadruplo():
         self.result = result
     
     def printCuadruplo(self):
-        print(str(self.numero) + '. ' + str(self.operator) + ', ' + str(self.left_operand) + ', ' + str(self.right_operand) + ', ' + str(self.result))
+        return(str(self.operator) + ', ' + str(self.left_operand) + ', ' + str(self.right_operand) + ', ' + str(self.result))
 
     def fillCuadruplo(self, fill):
         self.result = fill

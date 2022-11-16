@@ -16,6 +16,12 @@ class PuntosNeuralgicos(Visitor):
         self.cuadruplos = []
         self.quadCounter = 0
 
+    def createObjFile(self):
+        f = open("obj", "w")
+        for x in self.cuadruplos:
+            f.write(x.printCuadruplo() + '\n')
+        f.close()
+
     # Avail Next
     # Regresa el siguiente temporal 
     def availNext(self):
@@ -419,7 +425,7 @@ class PuntosNeuralgicos(Visitor):
                 errores.errorTypeMismatch(imp, "", operator)
 
     # NP OPCIONES
-    # Punto neurlgico que registra las opciones de un problema
+    # Punto neuralgico que registra las opciones de un problema
     def opciones(self, tree):
         try:
             tree.children
@@ -432,6 +438,15 @@ class PuntosNeuralgicos(Visitor):
             self.pilaO.append(opciones)
             self.pilaTipos.append("opciones")
             self.pOper.append(tree.children[1])
+
+    def respuesta(self, tree):
+        respuesta = tree.children[0].value
+        operator = tree.children[1].value
+        valor  = tree.children[2].children[0]
+        var = directorios.Variable(respuesta, "respuesta", valor)
+        self.currProc().tablaVariables.addVar(var)
+        quad = directorios.Cuadruplo(self.newQuad(), operator, valor, "", respuesta)
+        self.cuadruplos.append(quad)
 
     # NP ESCRITURA
     # Punto neuralgico que agrega el operador d eprint a la pila de operadores
@@ -551,8 +566,5 @@ class PuntosNeuralgicos(Visitor):
     def np_end(self, tree):
         # self.directorioProcedimientos.printDir()
         del self.directorioProcedimientos
-        # print(self.pilaProcedimientos)
-        # print(self.cuadruplos)
-        for x in self.cuadruplos:
-            x.printCuadruplo()
+        self.createObjFile()
         print("fin")
