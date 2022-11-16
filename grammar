@@ -2,11 +2,15 @@
 %import common.ESCAPED_STRING   -> CTESTRING
 %ignore WS
 
+COMMENT: "//" /(.)+/ NEWLINE
+%ignore COMMENT 
+
 ID: /[_]?[a-z]+[a-zA-Z0-9_]*/
 CTEINT: /[0-9]+/
 CTEFLOAT: /[0-9]+[\.][0-9]+/
+CTEBOOL: "True" | "False"
 PATH: /[^\\s]+(.*?)\\.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/
-
+NEWLINE: /\n/
 
 // TOKENS
 PROGRAM: "Gauss"
@@ -44,7 +48,7 @@ INSTRUCCIONES: "instrucciones"
 PROBLEMASINCLUIDOS: "problemasIncluidos"
 RANDOM: "random"
 FOOTER: "footer"
-PRINT: />>/
+PRINT: "print"
 PUNTOYCOMA: /;/
 DOSPUNTOS: /:/
 LCURLY: /{/
@@ -64,6 +68,7 @@ RCOR: /\]/
 COMA: /,/
 PRINTP: />>/
 DOLLAR: /\$/
+
 
 // GRAMATICA
 start: program 
@@ -149,10 +154,10 @@ cond1: ELSE bloque |
 
 ciclo: WHILE LPAR expresion RPAR bloque
 
-escritura: PRINT LPAR varcte escr1 RPAR 
-escr1: COMA varcte escr1 | 
+escritura: PRINT LPAR expresion escr1 RPAR 
+escr1: COMA expresion escr1 | 
 
-varcte: ID | CTEINT | CTEFLOAT | CTESTRING | ctebool
+varcte: ID | CTEINT | CTEFLOAT | CTESTRING | CTEBOOL
 ctebool: TRUE | FALSE
 
 llamadafunc: ID LPAR varcte llam1 RPAR

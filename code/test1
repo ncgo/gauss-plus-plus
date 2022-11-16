@@ -9,6 +9,12 @@ int hello(int g) {
     var int provisional
     provisional = 5 * 6
     year = 2020 + 2 + provisional
+    if (5>4) {
+        print(True)
+    } else {
+        print(False)
+        // print(provisional)
+    }
 }
 
 problema problema1(area = "Teoría de Números") {

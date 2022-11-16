@@ -410,6 +410,38 @@ class PuntosNeuralgicos(Visitor):
             else:
                 errores.errorTypeMismatch(imp, "", operator)
 
+    # NP OPCIONES
+    # Punto neurlgico que registra las opciones de un problema
+    def opciones(self, tree):
+        try:
+            tree.children
+        except:
+            next
+        else:
+            opciones = tree.children[0].value
+            var = directorios.Variable(opciones, "opciones")
+            self.currProc().tablaVariables.addVar(var)
+            self.pilaO.append(opciones)
+            self.pilaTipos.append("opciones")
+            self.pOper.append(tree.children[1])
+
+    def escritura(self, tree):
+        operador = tree.children[0].value
+        self.pOper.append(operador)
+
+    def escr1(self, tree):
+        if(self.pOper[-1] == 'print'):
+            expr = self.pilaO.pop()
+            expr_type = self.pilaTipos.pop()
+            operator = self.pOper.pop()
+            # ⭐️  Revisa cubo semantico
+            result_type = 1
+            if (result_type != 0):
+                quad = directorios.Cuadruplo(self.newQuad(), "PRINT", "", "", expr)
+                self.cuadruplos.append(quad)
+            else:
+                errores.errorTypeMismatch(expr, "", operator)
+
     # NP END
     # Punto neuralgico que marca el fin del programa
     def np_end(self, tree):
