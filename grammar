@@ -89,9 +89,9 @@ np_param_prob: AREA IGUAL CTESTRING
 prob1: COMA ID prob1 | 
 categoria: CATEGORIA IGUAL arracc | 
 printprob: PRINTP printprob1 printprob | 
-printprob1: CTESTRING | printexpr | import
+printprob1: CTESTRING | printexpr | printimport
 printexpr: DOLLAR EXPR LPAR CTESTRING RPAR
-import: DOLLAR IMPORT LPAR PATH RPAR
+printimport: DOLLAR IMPORT LPAR PATH RPAR
 opciones: OPCIONES IGUAL arr | 
 respuesta: RESPUESTA IGUAL varcte 
 

@@ -358,7 +358,7 @@ class PuntosNeuralgicos(Visitor):
         try:
             tree.children[0].type
         except:
-            print(tree.children[0])
+            next
         else:
             self.pilaO.append(tree.children[0].value)
             self.pilaTipos.append("string")
@@ -374,7 +374,41 @@ class PuntosNeuralgicos(Visitor):
                 else:
                     errores.errorTypeMismatch(printp, "", operator)
 
+    # NP PRINT EXPR
+    # Punto neuralgico que genera el cuadruplo de expresion
+    def printexpr(self, tree):
+        self.pOper.append(tree.children[0].value)
+        self.pilaO.append(tree.children[3].value)
+        self.pilaTipos.append("string")
+        if(self.pOper[-1] == '$'):
+            expr = self.pilaO.pop()
+            expr_type = self.pilaTipos.pop()
+            operator = self.pOper.pop()
+            # ⭐️  Revisa cubo semantico
+            result_type = 1
+            if (result_type != 0):
+                quad = directorios.Cuadruplo(self.newQuad(), "EXPR", "", "", expr)
+                self.cuadruplos.append(quad)
+            else:
+                errores.errorTypeMismatch(expr, "", operator)
 
+    # NP PRINT IMPORT 
+    # Punto neuralgico que genera el cuadruplo de importar
+    def printimport(self, tree):
+        self.pOper.append(tree.children[0].value)
+        self.pilaO.append(tree.children[3].value)
+        self.pilaTipos.append("string")
+        if(self.pOper[-1] == '$'):
+            imp = self.pilaO.pop()
+            imp_type = self.pilaTipos.pop()
+            operator = self.pOper.pop()
+            # ⭐️  Revisa cubo semantico
+            result_type = 1
+            if (result_type != 0):
+                quad = directorios.Cuadruplo(self.newQuad(), "IMPORT", "", "", imp)
+                self.cuadruplos.append(quad)
+            else:
+                errores.errorTypeMismatch(imp, "", operator)
 
     # NP END
     # Punto neuralgico que marca el fin del programa

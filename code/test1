@@ -11,8 +11,6 @@ int hello(int g) {
     year = 2020 + 2 + provisional
 }
 
-
-
 problema problema1(area = "Teoría de Números") {
     categoria = categoria[0]
     >> "Considera cinco números de menor a mayor" 
