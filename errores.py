@@ -11,3 +11,7 @@ def errorNoExiste(elemento, nombre):
 def errorTypeMismatch(tipo1, tipo2, operator):
     message = "🚨ERROR\n🚨Type mismatch. Los tipos " + tipo1 + " y " + tipo2 + "no son compatibles para la operacion " + operator
     sys.exit(message)
+
+def errorCondTypeMismatch(tipo1):
+    message = "🚨ERROR\n🚨Type mismatch. Se esperaba un valor booleano y se recibió un valor de tipo " + tipo1
+    sys.exit(message)

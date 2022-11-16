@@ -56,6 +56,8 @@ RCURLY: /\}/
 IGUAL: /=/
 MENORQUE: /</
 MAYORQUE: />/
+MENORIGUALQUE: /<=/
+MAYORIGUALQUE: />=/
 DIFERENTE: /<>/
 MAS: /\+/
 MENOS: /-/
@@ -128,8 +130,9 @@ arr1: COMA varcte arr1 |
 
 arracc: ID LCOR CTEINT RCOR
 
-expresion: exp expresion1 exp | exp
-expresion1: MENORQUE | MAYORQUE | DIFERENTE
+expresion: exp expresion1 exp np_expresion | exp
+expresion1: MENORQUE | MAYORQUE | MENORIGUALQUE | MAYORIGUALQUE | DIFERENTE
+np_expresion:
 
 exp: termino np_exp exp1 | termino np_exp
 exp1: MAS exp | MENOS exp
@@ -149,13 +152,17 @@ asig1: LCOR CTEINT RCOR |
 asig2: expresion | llamadafunc | arracc
 np_asig:
 
-condicion: IF LPAR expresion RPAR bloque cond1
-cond1: ELSE bloque | 
+condicion: IF LPAR expresion RPAR np_cond bloque else cond1
+else: np_else ELSE bloque | 
+np_cond: 
+cond1:
+np_else:
 
 ciclo: WHILE LPAR expresion RPAR bloque
 
 escritura: PRINT LPAR expresion escr1 RPAR 
-escr1: COMA expresion escr1 | 
+escr1: COMA escr2 expresion escr1 | 
+escr2:
 
 varcte: ID | CTEINT | CTEFLOAT | CTESTRING | CTEBOOL
 ctebool: TRUE | FALSE

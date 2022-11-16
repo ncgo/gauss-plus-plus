@@ -3,5 +3,3 @@ import puntosNeuralgicos
 parser = Lark(open("grammar", 'r').read())
 tree = parser.parse(open("code/test1",'r').read())
 puntosNeuralgicos.PuntosNeuralgicos().visit_topdown(tree)
-
-

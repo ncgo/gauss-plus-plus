@@ -44,6 +44,9 @@ class PuntosNeuralgicos(Visitor):
             else:
                 return errores.errorNoExiste("variable", id)
 
+    def fillQuad(self, quadToFill, filler):
+        self.cuadruplos[quadToFill-1].fillCuadruplo(filler)
+
     # NP PROGRAM
     # Punto neuralgico de registro de proceso programa en Directorio de Procedimientos
     def program(self, tree):
@@ -57,7 +60,7 @@ class PuntosNeuralgicos(Visitor):
         self.pilaProcedimientos.append(nombre)
         self.procActual = startProc
         # Se crea el cuádruplo de goto main a ser llenado posteriormente
-        quad = directorios.Cuadruplo(self.newQuad(), "goto", "", "", "")
+        quad = directorios.Cuadruplo(self.newQuad(), "GOTO", "", "", "")
         self.cuadruplos.append(quad)
         # Se agrega el número de cuádruplo para llenar posteriormente
         self.pilaSaltos.append(self.quadCounter)
@@ -105,7 +108,7 @@ class PuntosNeuralgicos(Visitor):
         # Se cambia el contexto actual
         self.procActual = self.pilaProcedimientos[-1]
         # Se genera el cuadruplo para finalizar la funcion
-        quad = directorios.Cuadruplo(self.newQuad(), 'endfunc', '', '', '')
+        quad = directorios.Cuadruplo(self.newQuad(), 'ENDFUNC', '', '', '')
         self.cuadruplos.append(quad)
         # Se inserta al Directorio de Procedimientos el numero de variables temporales utilizadas
         proc.addTemps(self.temp)
@@ -170,6 +173,9 @@ class PuntosNeuralgicos(Visitor):
         # Se agrega el procedimiento main a la Pila de Procedimientos
         self.pilaProcedimientos.append(tree.children[0].value)
         self.procActual = mainProc
+        # Se rellena el cuadruplo inicial para indicar que aqui inicia la ejecucion del programa
+        main = self.pilaSaltos.pop()
+        self.fillQuad(main, self.quadCounter + 1)
         
     # NP INFO    
     # Registro de variables generales del programa
@@ -253,12 +259,14 @@ class PuntosNeuralgicos(Visitor):
     def fact1(self, tree):
         if(tree.children[0].children[0].type == "ID"):
             id = tree.children[0].children[0].value
-            var = self.currProc().tablaVariables.searchVar(id)
+            var = self.searchVar(id)
             self.pilaO.append(id)
             self.pilaTipos.append(var.tipo)
         else:
             self.pilaO.append(tree.children[0].children[0].value)
             self.pilaTipos.append(tree.children[0].children[0].type)
+        
+
 
     # NP TER1
     # Agrega * o / a la pila de Operadores
@@ -332,7 +340,7 @@ class PuntosNeuralgicos(Visitor):
             resultado = self.pilaO.pop()
             resultado_type = self.pilaTipos.pop()
             id = self.pilaO.pop()
-            id_operand_type = self.pilaTipos[-1]
+            id_operand_type = self.pilaTipos.pop()
             operator = self.pOper.pop()
             # ⭐️  Revisa cubo semantico
             result_type = 1
@@ -425,10 +433,14 @@ class PuntosNeuralgicos(Visitor):
             self.pilaTipos.append("opciones")
             self.pOper.append(tree.children[1])
 
+    # NP ESCRITURA
+    # Punto neuralgico que agrega el operador d eprint a la pila de operadores
     def escritura(self, tree):
         operador = tree.children[0].value
         self.pOper.append(operador)
 
+    # NP ESCR1
+    # Punto neuralgico que genera el cuadruplo de impresion
     def escr1(self, tree):
         if(self.pOper[-1] == 'print'):
             expr = self.pilaO.pop()
@@ -441,6 +453,67 @@ class PuntosNeuralgicos(Visitor):
                 self.cuadruplos.append(quad)
             else:
                 errores.errorTypeMismatch(expr, "", operator)
+    
+    # NP ESCR2
+    # Punto neuralgico que vuelve a agregar el operador print a la pila de operadores cuando hay varios argumentos para la funcion
+    def escr2(self, tree):
+        self.pOper.append("print")
+
+    # NP COND
+    # Punto neuralgico que revisa la condicion y genera el cuadruplo GOTOF
+    def np_cond(self, tree):
+        result = self.pilaO.pop()
+        result_type = self.pilaTipos.pop()
+        # Se revisa que la condicion sea de tipo booleano
+        if (result_type != "bool" and result_type != "CTEBOOL"):
+            # Error de mismatch de tipos
+            errores.errorCondTypeMismatch(result_type)
+        else:
+            # Se crea el cuadruplo GOTOF y se agrega el numero de cuadruplo a la pila de saltos para ser llenado posteriormente
+            quad = directorios.Cuadruplo(self.newQuad(), "GOTOF", result, "", "FILL")
+            self.cuadruplos.append(quad)
+            self.pilaSaltos.append(self.quadCounter)
+
+    # NP EXPRESION1
+    # Punto neuralgico que agrega los simbolos de comparacion a la pila de operadores
+    def expresion1(self, tree):
+        self.pOper.append(tree.children[0].value)
+
+    # NP EXPRESION
+    # Punto neuralgico que genera los cuadruplos de comparacion logica
+    def np_expresion(self, tree):
+        if ((self.pOper[-1] == '<' or self.pOper[-1] == '>' or self.pOper[-1] == '<=' or self.pOper[-1] == '>=' or self.pOper[-1] == '<>')):
+            right_operand = self.pilaO.pop()
+            right_operand_type = self.pilaTipos.pop()
+            left_operand = self.pilaO.pop()
+            left_operand_type = self.pilaTipos.pop()
+            operator = self.pOper.pop()
+            # ⭐️ Revisa cubo semantico
+            result_type = 1
+            if (result_type != 0):
+                result = self.availNext()
+                quad = directorios.Cuadruplo(self.newQuad(), operator, left_operand, right_operand, result)
+                self.cuadruplos.append(quad)
+                self.pilaO.append(result)
+                self.pilaTipos.append("bool")
+            else:
+                errores.errorTypeMismatch(left_operand_type, right_operand_type, operator)
+
+    # NP COND1
+    # Punto neuralgico que rellena el cuadruplo de GOTO para expresiones con else 
+    # y GOTOF para condiciones sin
+    def cond1(self, tree):
+        end = self.pilaSaltos.pop()
+        self.fillQuad(end, self.quadCounter + 1)
+
+    # NP ELSE
+    # Punto neuralgico que genera el cuadruplo GOTO y rellena el GOTOF
+    def np_else(self, tree):
+        quad = directorios.Cuadruplo(self.newQuad(), "GOTO", "", "", "FILL")
+        self.cuadruplos.append(quad)
+        false = self.pilaSaltos.pop()
+        self.pilaSaltos.append(self.quadCounter)
+        self.fillQuad(false, self.quadCounter + 1)
 
     # NP END
     # Punto neuralgico que marca el fin del programa
