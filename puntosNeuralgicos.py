@@ -15,7 +15,10 @@ class PuntosNeuralgicos(Visitor):
         self.procActual = None
         self.cuadruplos = []
         self.quadCounter = 0
+        self.k = 0
 
+    # Create Obj File
+    # Funcion auxiliar que genera el archivo de codigo objeto con lso cuadruplso generados por el programa a ser ejecutado por la maquina virtual
     def createObjFile(self):
         f = open("obj", "w")
         for x in self.cuadruplos:
@@ -23,24 +26,24 @@ class PuntosNeuralgicos(Visitor):
         f.close()
 
     # Avail Next
-    # Regresa el siguiente temporal 
+    # Funcion auxiliar que regresa el siguiente temporal 
     def availNext(self):
         self.temp += 1
         return 't' + str(self.temp)
 
     # New Quad
-    # Regresa el número del siguiente cuádruplo
+    # Funcion auxiliar que regresa el número del siguiente cuádruplo
     def newQuad(self):
         self.quadCounter += 1
         return self.quadCounter
 
     # Curr Proc
-    # Regresa el proceso actual para manejo de contextos
+    # Funcion auxiliar que regresa el proceso actual para manejo de contextos
     def currProc(self):
         return self.directorioProcedimientos.searchProc(self.pilaProcedimientos[-1])
 
     # Search Var
-    # Busca la variable en el contextoa actual y en el contexto global
+    # Funcion auxiliar que busca la variable en el contextoa actual y en el contexto global
     def searchVar(self, id):
         if (self.currProc().tablaVariables.searchVar(id) != 0):
             return self.currProc().tablaVariables.searchVar(id)
@@ -49,11 +52,27 @@ class PuntosNeuralgicos(Visitor):
                 return self.directorioProcedimientos.searchProc(self.pilaProcedimientos[0]).tablaVariables.searchVar(id)
             else:
                 return errores.errorNoExiste("variable", id)
-
+    
+    # Fill Quad
+    # Funcion auziliar para rellenar los cuadruplos pertinentes
     def fillQuad(self, quadToFill, filler):
         self.cuadruplos[quadToFill-1].fillCuadruplo(filler)
 
-    # NP PROGRAM
+    # Normalize Type
+    # Funcion auziliar que regresa el tipo correcto para constantes
+    def normalizeType(self, type):
+        if type == "CTEINT":
+            return "int"
+        elif type == "CTEFLOAT":
+            return "float"
+        elif type == "CTEBOOL":
+            return "bool"
+        elif type == "CTESTRING":
+            return "string"
+        else:
+            return "string"
+
+    # PROGRAM
     # Punto neuralgico de registro de proceso programa en Directorio de Procedimientos
     def program(self, tree):
         # Se crea el directorio de Procedimientos
@@ -64,14 +83,13 @@ class PuntosNeuralgicos(Visitor):
         self.directorioProcedimientos.addProc(startProc)
         # Se agrega el procedimiento a la Pila de Procedimientos para mantener el contexto
         self.pilaProcedimientos.append(nombre)
-        self.procActual = startProc
         # Se crea el cuádruplo de goto main a ser llenado posteriormente
         quad = directorios.Cuadruplo(self.newQuad(), "GOTO", "", "", "")
         self.cuadruplos.append(quad)
         # Se agrega el número de cuádruplo para llenar posteriormente
         self.pilaSaltos.append(self.quadCounter)
 
-    # NP MODULO
+    # MODULO
     # Punto neuralgico de registro de proceso modulo en Directorio de Procedimientos
     def modulo(self, tree):
         tipoMod = tree.children[0].children[0].value
@@ -81,9 +99,8 @@ class PuntosNeuralgicos(Visitor):
         self.directorioProcedimientos.addProc(modProc)
         # Se agrega el modulo a la Pila de Procedimientos para mantener el contexto
         self.pilaProcedimientos.append(nombreMod)
-        self.procActual = modProc
 
-    # NP MODIDS1
+    # MODIDS1
     # Punto neuralgico que procesa los parametros
     def modids1(self, tree):
         tipo = tree.children[0].children[0].value
@@ -98,7 +115,7 @@ class PuntosNeuralgicos(Visitor):
     # NP MOD
     # Punto neuralgico que agrega al Procedimiento el cuadruplo donde inicia el modulo
     def np_mod(self, tree):
-        self.currProc().addStartQuadruple(self.quadCounter)
+        self.currProc().addStartQuadruple(self.quadCounter + 1)
 
     # NP VARS MOD
     # Punto neuralgico que agrega el numero de variables locales en la Tabla de Variables al procedimiento 
@@ -121,7 +138,7 @@ class PuntosNeuralgicos(Visitor):
         # Se reinicia el contador de temporales
         self.temp = 0
 
-    # NP PROBLEMA
+    # PROBLEMA
     # Registro de proceso problema en Directorio de Procedimientos
     def problema(self, tree):
         tipoProb = tree.children[0].value
@@ -131,7 +148,6 @@ class PuntosNeuralgicos(Visitor):
         self.directorioProcedimientos.addProc(problemaProc)
         # Se agrega el problema a la Pila de Procedimientos
         self.pilaProcedimientos.append(nombreProb)
-        self.procActual = problemaProc
 
     # NP PARAM PROB
     # Punto neuralgico que procesa el parametro de un problema
@@ -143,10 +159,10 @@ class PuntosNeuralgicos(Visitor):
         # Se agrega el parametro como variable local a la Tabla de Variables
         self.currProc().tablaVariables.addVar(var)
         # Se genera el cuadruplo de asignacion del parametro
-        quad = directorios.Cuadruplo(self.newQuad(), op, res, "", id)
+        quad = directorios.Cuadruplo(self.newQuad(), "AREA", res, "", id)
         self.cuadruplos.append(quad)
 
-    # NP GENERA
+    # GENERA
     # Registro de proceso genera en Directorio de Procedimientos
     def genera(self, tree):
         genera = tree.children[0].value
@@ -155,7 +171,6 @@ class PuntosNeuralgicos(Visitor):
         self.directorioProcedimientos.addProc(generaProc)
         # Se agrega el procedimiento genera a la Pila de Procedimientos para mantener el contexto
         self.pilaProcedimientos.append(tree.children[0].value)
-        self.procActual = generaProc
 
     # NP PARAM GENERA
     # Registra los parametros de la funcion genera
@@ -170,7 +185,7 @@ class PuntosNeuralgicos(Visitor):
         self.currProc().tablaVariables.addVar(varProblemas)
         self.currProc().tablaVariables.addVar(varNombreArchivo)
 
-    # NP MAIN
+    # MAIN
     # Registro de proceso main en Directorio de Procedimientos
     def main(self, tree):
         mainProc = directorios.Procedimiento(tree.children[0].value, tree.children[0].value)
@@ -178,27 +193,26 @@ class PuntosNeuralgicos(Visitor):
         self.directorioProcedimientos.addProc(mainProc)
         # Se agrega el procedimiento main a la Pila de Procedimientos
         self.pilaProcedimientos.append(tree.children[0].value)
-        self.procActual = mainProc
         # Se rellena el cuadruplo inicial para indicar que aqui inicia la ejecucion del programa
         main = self.pilaSaltos.pop()
         self.fillQuad(main, self.quadCounter + 1)
         
-    # NP INFO    
+    # INFO    
     # Registro de variables generales del programa
     def info(self, tree):
         # Registro de variable organizacion
         organizacion = directorios.Variable(tree.children[0].value, "string", tree.children[2].value)
         self.currProc().tablaVariables.addVar(organizacion)
-        quadOrg = directorios.Cuadruplo(self.newQuad(), "=", tree.children[2].value, '', tree.children[0].value)
+        quadOrg = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[2].value, '', tree.children[0].value)
         
         # Registro de variable etapa
         etapa = directorios.Variable(tree.children[3].value, "string", tree.children[5].value)
         self.currProc().tablaVariables.addVar(etapa)
-        quadEtapa = directorios.Cuadruplo(self.newQuad(), "=", tree.children[5].value, '', tree.children[3].value)
+        quadEtapa = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[5].value, '', tree.children[3].value)
         
         # Registro de variable categorias
         categorias = directorios.Variable(tree.children[6].value, "arr", tree.children[6].value)
-        quadCategorias = directorios.Cuadruplo(self.newQuad(), "=", tree.children[6].value, '', tree.children[6].value)
+        quadCategorias = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[6].value, '', tree.children[6].value)
         self.currProc().tablaVariables.addVar(categorias)
 
         # Se agregan los cuadruplos a la lista de cuadruplos
@@ -217,7 +231,7 @@ class PuntosNeuralgicos(Visitor):
         self.currProc().tablaVariables.addVar(var)
         self.pilaO.append(nombreVar)
 
-    # NP VARS 1
+    # VARS 1
     # Punto neuralgico que prepara la asignacion de valores a una variable
     def vars1(self, tree):
         if (tree.children[0] == '='):
@@ -227,7 +241,7 @@ class PuntosNeuralgicos(Visitor):
             if (self.pilaO):
                 self.pilaO.pop()
 
-    # NP VARS 2
+    # VARS 2
     # Punto neuralgico que registra las demas variables declaradas en la misma linea
     def vars2(self, tree): 
         if(tree.children[0] == ','):
@@ -260,7 +274,7 @@ class PuntosNeuralgicos(Visitor):
             else:
                 errores.errorTypeMismatch(resultado, id, operator)
 
-    # NP FACT1
+    # FACT1
     # Punto neuralgico que agrega a la pila de operandos un factor
     def fact1(self, tree):
         if(tree.children[0].children[0].type == "ID"):
@@ -270,16 +284,14 @@ class PuntosNeuralgicos(Visitor):
             self.pilaTipos.append(var.tipo)
         else:
             self.pilaO.append(tree.children[0].children[0].value)
-            self.pilaTipos.append(tree.children[0].children[0].type)
-        
+            self.pilaTipos.append(self.normalizeType(tree.children[0].children[0].type))
 
-
-    # NP TER1
+    # TER1
     # Agrega * o / a la pila de Operadores
     def ter1(self, tree):
         self.pOper.append(tree.children[0].value)
     
-    # NP EXP1
+    # EXP1
     # Agrega + o - a la pila de Operadores
     def exp1(self, tree):
         self.pOper.append(tree.children[0].value)
@@ -326,20 +338,21 @@ class PuntosNeuralgicos(Visitor):
                 else:
                     errores.errorTypeMismatch(left_operand_type, right_operand_type, operator)
     
-    # NP ASIGNACION
+    # ASIGNACION
     # Agrega la variable a ser asignada a la Pila de operandos y su tipo a la fila de tipos
     def asignacion(self, tree):
         id = tree.children[0].value
+        # Verifica que la variable ya haya sido declarada
         var = self.searchVar(id)
         self.pilaO.append(id)
         self.pilaTipos.append(var.tipo)
 
-    # NP ASIG2
+    # ASIG2
     # Agrega el operador a la pila de operadores
     def asig2(self, tree):
         self.pOper.append("=")
 
-    # NP ASIG
+    # ASIG
     # Genera el cuadruplo de asignacion
     def np_asig(self, tree):
         if(self.pOper[-1] == '='):
@@ -356,7 +369,7 @@ class PuntosNeuralgicos(Visitor):
             else:
                 errores.errorTypeMismatch(resultado, id, operator)
 
-    # NP PRINT PROB
+    # PRINT PROB
     # Punto neuralgico que agrega el simbolo de impresion de problema a la pila de operadores
     def printprob(self, tree):
         try:
@@ -366,7 +379,7 @@ class PuntosNeuralgicos(Visitor):
         else:
             self.pOper.append(tree.children[0].value)
 
-    # NP PRINT PORB 1
+    # PRINT PROB 1
     # Punto neuralgico que genera el cuadruplo de impresion de problema
     def printprob1(self, tree):
         try:
@@ -388,7 +401,7 @@ class PuntosNeuralgicos(Visitor):
                 else:
                     errores.errorTypeMismatch(printp, "", operator)
 
-    # NP PRINT EXPR
+    # PRINT EXPR
     # Punto neuralgico que genera el cuadruplo de expresion
     def printexpr(self, tree):
         self.pOper.append(tree.children[0].value)
@@ -406,7 +419,7 @@ class PuntosNeuralgicos(Visitor):
             else:
                 errores.errorTypeMismatch(expr, "", operator)
 
-    # NP PRINT IMPORT 
+    # PRINT IMPORT 
     # Punto neuralgico que genera el cuadruplo de importar
     def printimport(self, tree):
         self.pOper.append(tree.children[0].value)
@@ -424,7 +437,7 @@ class PuntosNeuralgicos(Visitor):
             else:
                 errores.errorTypeMismatch(imp, "", operator)
 
-    # NP OPCIONES
+    # OPCIONES
     # Punto neuralgico que registra las opciones de un problema
     def opciones(self, tree):
         try:
@@ -439,22 +452,24 @@ class PuntosNeuralgicos(Visitor):
             self.pilaTipos.append("opciones")
             self.pOper.append(tree.children[1])
 
+    # RESPUESTA
+    # Punto neuralgico que registra la respuesta de un problema
     def respuesta(self, tree):
         respuesta = tree.children[0].value
         operator = tree.children[1].value
         valor  = tree.children[2].children[0]
         var = directorios.Variable(respuesta, "respuesta", valor)
         self.currProc().tablaVariables.addVar(var)
-        quad = directorios.Cuadruplo(self.newQuad(), operator, valor, "", respuesta)
+        quad = directorios.Cuadruplo(self.newQuad(), "RESPUESTA", valor, "", respuesta)
         self.cuadruplos.append(quad)
 
-    # NP ESCRITURA
+    # ESCRITURA
     # Punto neuralgico que agrega el operador d eprint a la pila de operadores
     def escritura(self, tree):
         operador = tree.children[0].value
         self.pOper.append(operador)
 
-    # NP ESCR1
+    # ESCR1
     # Punto neuralgico que genera el cuadruplo de impresion
     def escr1(self, tree):
         if(self.pOper[-1] == 'print'):
@@ -469,7 +484,7 @@ class PuntosNeuralgicos(Visitor):
             else:
                 errores.errorTypeMismatch(expr, "", operator)
     
-    # NP ESCR2
+    # ESCR2
     # Punto neuralgico que vuelve a agregar el operador print a la pila de operadores cuando hay varios argumentos para la funcion
     def escr2(self, tree):
         self.pOper.append("print")
@@ -489,7 +504,7 @@ class PuntosNeuralgicos(Visitor):
             self.cuadruplos.append(quad)
             self.pilaSaltos.append(self.quadCounter)
 
-    # NP EXPRESION1
+    # EXPRESION1
     # Punto neuralgico que agrega los simbolos de comparacion a la pila de operadores
     def expresion1(self, tree):
         self.pOper.append(tree.children[0].value)
@@ -514,7 +529,7 @@ class PuntosNeuralgicos(Visitor):
             else:
                 errores.errorTypeMismatch(left_operand_type, right_operand_type, operator)
 
-    # NP COND1
+    # COND1
     # Punto neuralgico que rellena el cuadruplo de GOTO para expresiones con else 
     # y GOTOF para condiciones sin
     def cond1(self, tree):
@@ -561,10 +576,49 @@ class PuntosNeuralgicos(Visitor):
         # Se llena el GOTOF
         self.fillQuad(end, self.quadCounter + 1)
 
+    # LLAMADA FUNC
+    # Punto neuralgico que genera el cuadruplo de ERA para la llamada de una funcion
+    def llamadafunc(self, tree):
+        id = tree.children[0].value
+        # Se verifica la existencia del procedimiento en el Directorio de Procedimientos
+        proc = self.directorioProcedimientos.searchProc(id)
+        # Se establece el proceso actual para auxiliar en la llamada
+        self.procActual = proc
+        # Se genera el cuadruplo ERA con los numeros correspondientes al numero de parametros, numero de variables, y numero de temporales
+        quad = directorios.Cuadruplo(self.newQuad(), "ERA", proc.numParams, proc.numVars, proc.numTemps)
+        self.cuadruplos.append(quad)
+        # Se reestablece el numero k para la verificacion de parametros
+        self.k = 0
+
+    def np_llam(self, tree):
+        try:
+            self.procActual.parameterTable[self.k]
+        except:
+            if len(self.procActual.parameterTable) > 0:
+                errores.errorNumParams(self.k + 1, len(self.procActual.parameterTable), self.procActual.nombre)
+        else:
+            argumento = self.pilaO.pop()
+            argumento_type = self.pilaTipos.pop()
+            parametro_type = self.procActual.parameterTable[self.k]
+            if(argumento_type == parametro_type):
+                quad = directorios.Cuadruplo(self.newQuad(), "PARAMETER", argumento, "", "param" + str(self.k + 1))
+                self.cuadruplos.append(quad)
+            else:
+                errores.errorParamTypeMismatch(argumento_type, parametro_type, self.procActual.nombre )
+        self.k += 1
+
+    def np_llamsub(self, tree):
+        if self.k == len(self.procActual.parameterTable):
+            quad = directorios.Cuadruplo(self.newQuad(), "GOSUB", self.procActual.nombre, "" , self.procActual.quadruple)
+            self.cuadruplos.append(quad)
+        else:
+            errores.errorNumParams(self.k, len(self.procActual.parameterTable), self.procActual.nombre)
+        self.k = 0
+        self.procActual = None
+
     # NP END
     # Punto neuralgico que marca el fin del programa
     def np_end(self, tree):
         # self.directorioProcedimientos.printDir()
         del self.directorioProcedimientos
         self.createObjFile()
-        print("fin")

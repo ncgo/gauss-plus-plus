@@ -25,6 +25,7 @@ int hello(int g) {
         year = 5 + 9
     }
     print("hi")
+    return 4
 }
 
 problema problema1(area = "Teoría de Números") {
@@ -47,4 +48,6 @@ genera(orientacion, categoria, problemas, nombreArchivo) {
 } 
 
 main() {
+    hello(2, 8)
+    genera(7)
 }
