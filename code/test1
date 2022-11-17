@@ -25,7 +25,7 @@ int hello(int g) {
         year = 5 + 9
     }
     print("hi")
-    return 4 * 7 - 1000
+    return 4 * 7 + "hello"
 }
 
 void pelos() {

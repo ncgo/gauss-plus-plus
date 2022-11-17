@@ -5,11 +5,11 @@ def errorDuplicado(elemento, nombre):
     sys.exit(message)
 
 def errorNoExiste(elemento, nombre):
-    message = "🚨ERROR\n🚨El elemento" + " " + elemento + " " + nombre + " " + "no existe."
+    message = "🚨ERROR\n🚨El elemento" + " " + elemento + " " + nombre + " no existe."
     sys.exit(message)
 
 def errorTypeMismatch(tipo1, tipo2, operator):
-    message = "🚨ERROR\n🚨Type mismatch. Los tipos " + tipo1 + " y " + tipo2 + "no son compatibles para la operacion " + operator
+    message = "🚨ERROR\n🚨Type mismatch. Los tipos " + tipo1 + " y " + tipo2 + " no son compatibles para la operacion " + operator
     sys.exit(message)
 
 def errorCondTypeMismatch(tipo1):
@@ -29,5 +29,5 @@ def errorReturnVoid(funcion):
     sys.exit(message)
 
 def errorTypeMismatchReturn(tipoDado, tipoEsperado, funcion):
-    message = "🚨ERROR\n🚨Type mismatch. Se esperaba un valor " + tipoEsperado + " y se recibió un valor de tipo " + tipoDado + " para la funcion " + funcion
+    message = "🚨ERROR\n🚨Type mismatch. Se esperaba regresar un valor " + tipoEsperado + " y se ha regresado un valor de tipo " + tipoDado + " para la funcion " + funcion
     sys.exit(message)
