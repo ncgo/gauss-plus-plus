@@ -122,6 +122,25 @@ class PuntosNeuralgicos(Visitor):
     def np_vars_mod(self, tree):
         self.currProc().addNumVars()
 
+    def np_return(self, tree):
+        # Revisa si no es void y si aplica el return
+        if (self.currProc().tipo != "void"):
+            self.pOper.append("return")
+        else:
+            errores.errorReturnVoid(self.currProc().nombre)
+
+    def np_return1(self, tree):
+        if(self.pOper[-1] == 'return'):
+            retorno = self.pilaO.pop()
+            retorno_type = self.pilaTipos.pop()
+            operator = self.pOper.pop()
+            funcion_type = self.currProc().tipo
+            if (retorno_type == funcion_type):
+                quad = directorios.Cuadruplo(self.newQuad(), operator, "", "", retorno)
+                self.cuadruplos.append(quad)
+            else:
+                errores.errorTypeMismatchReturn(retorno_type, funcion_type, self.currProc().nombre)
+
     # NP END FUNC
     # Punto neuralgico que se encarga de terminar el procedimiento
     def np_endfunc(self, tree):

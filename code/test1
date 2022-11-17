@@ -25,7 +25,10 @@ int hello(int g) {
         year = 5 + 9
     }
     print("hi")
-    return 4
+    return 4 * 7 - 1000
+}
+
+void pelos() {
 }
 
 problema problema1(area = "Teoría de Números") {

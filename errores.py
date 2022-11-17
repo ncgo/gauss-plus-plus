@@ -23,3 +23,11 @@ def errorParamTypeMismatch(tipoDado, tipoEsperado, funcion):
 def errorNumParams(numDado, numEsperado, funcion): 
     message = "🚨ERROR\n🚨Type mismatch. Se han dado " + str(numDado) + " parametros cuando se esperaban " + str(numEsperado) + " parametros en la función " + funcion + "."
     sys.exit(message)
+
+def errorReturnVoid(funcion):
+    message = "🚨ERROR\n🚨 La funcion " + funcion + " es de tipo void. No puede tener un valor de retorno."
+    sys.exit(message)
+
+def errorTypeMismatchReturn(tipoDado, tipoEsperado, funcion):
+    message = "🚨ERROR\n🚨Type mismatch. Se esperaba un valor " + tipoEsperado + " y se recibió un valor de tipo " + tipoDado + " para la funcion " + funcion
+    sys.exit(message)

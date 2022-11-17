@@ -119,11 +119,13 @@ main: MAIN LPAR RPAR bloque np_endfunc
 estatutos: estatuto estatutos |
 estatuto: asignacion | condicion | ciclo | escritura | llamadafunc
 
-return: RETURN varcte | 
+return: np_return RETURN expresion np_return1 | 
 tipomod: INT | FLOAT | STRING | BOOL | VOID
 modids: modids1 | 
 modids1: tipo ID modids2 
 modids2: COMA modids1 | 
+np_return:
+np_return1:
 
 arr: LCOR varcte arr1 RCOR
 arr1: COMA varcte arr1 | 
