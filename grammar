@@ -145,13 +145,15 @@ ter1: MULT termino | DIV termino
 np_termino:
 
 factor: LPAR expresion RPAR | fact1 
-fact1: varcte | llamadafunc
+fact1: varcte | np_llamfunc1
+np_llamfunc1: llamadafunc np_llamfunc2
+np_llamfunc2:
 
 tipo: INT | FLOAT | STRING | BOOL
 
 asignacion: ID asig1 IGUAL asig2 np_asig
 asig1: LCOR CTEINT RCOR | 
-asig2: expresion | llamadafunc | arracc
+asig2: expresion | np_llamfunc1 llamadafunc np_llamfunc2 | arracc
 np_asig:
 
 condicion: IF LPAR expresion RPAR np_cond bloque else cond1

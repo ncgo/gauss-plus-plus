@@ -25,10 +25,14 @@ int hello(int g) {
         year = 5 + 9
     }
     print("hi")
-    return 4 * 7 + "hello"
+    return 4 * 7 
 }
 
 void pelos() {
+}
+
+int genial() {
+    return hello(4)
 }
 
 problema problema1(area = "Teoría de Números") {

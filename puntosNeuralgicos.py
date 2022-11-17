@@ -296,14 +296,15 @@ class PuntosNeuralgicos(Visitor):
     # FACT1
     # Punto neuralgico que agrega a la pila de operandos un factor
     def fact1(self, tree):
-        if(tree.children[0].children[0].type == "ID"):
-            id = tree.children[0].children[0].value
-            var = self.searchVar(id)
-            self.pilaO.append(id)
-            self.pilaTipos.append(var.tipo)
-        else:
-            self.pilaO.append(tree.children[0].children[0].value)
-            self.pilaTipos.append(self.normalizeType(tree.children[0].children[0].type))
+        if (tree.children[0].data == "varcte"):
+            if(tree.children[0].children[0].type == "ID"):
+                id = tree.children[0].children[0].value
+                var = self.searchVar(id)
+                self.pilaO.append(id)
+                self.pilaTipos.append(var.tipo)
+            else:
+                self.pilaO.append(tree.children[0].children[0].value)
+                self.pilaTipos.append(self.normalizeType(tree.children[0].children[0].type))
 
     # TER1
     # Agrega * o / a la pila de Operadores
@@ -633,10 +634,24 @@ class PuntosNeuralgicos(Visitor):
         else:
             # Si no coincide hay error
             errores.errorNumParams(self.k, len(self.procActual.parameterTable), self.procActual.nombre)
-        # if(self.procActual.tipo != "void" ):
         # Se reestablece los valores de k y el procedimiento actual para una siguiente llamada de funcion
         self.k = 0
         self.procActual = None
+
+    def np_llamfunc2(self, tree):
+        if(self.pilaTipos[-1] != "void" ):
+            func = self.pilaO.pop()
+            tipo = self.pilaTipos.pop()
+            temp = self.availNext()
+            quad = directorios.Cuadruplo(self.newQuad(), "=", func, "", temp)
+            self.cuadruplos.append(quad)
+            self.pilaO.append(temp)
+            self.pilaTipos.append(tipo)
+
+    def np_llamfunc1(self, tree):
+        nombre = tree.children[0].children[0].value
+        self.pilaO.append(nombre)
+        self.pilaTipos.append(self.directorioProcedimientos.searchProc(nombre).tipo)
 
     # NP END
     # Punto neuralgico que marca el fin del programa
