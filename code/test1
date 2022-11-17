@@ -48,6 +48,6 @@ genera(orientacion, categoria, problemas, nombreArchivo) {
 } 
 
 main() {
-    hello(2, 8)
-    genera(7)
+    hello(2)
+    genera()
 }

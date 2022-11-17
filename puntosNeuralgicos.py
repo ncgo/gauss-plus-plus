@@ -590,29 +590,42 @@ class PuntosNeuralgicos(Visitor):
         # Se reestablece el numero k para la verificacion de parametros
         self.k = 0
 
+    # NP LLAM
+    # Punto neuralgico que registra los parametros para una funcion
     def np_llam(self, tree):
         try:
+            # Revisamos si es posible acceder al parametro numero k en la tabla de parametros de la funcion
             self.procActual.parameterTable[self.k]
         except:
+            # Si la tabla de parametros no esta vacia, y se ocasiono un error, se han enviado mas parametros d elos declarados
             if len(self.procActual.parameterTable) > 0:
                 errores.errorNumParams(self.k + 1, len(self.procActual.parameterTable), self.procActual.nombre)
         else:
+            # Si no hay error, se prosigue con comparar los tipos entre los argumentos enviados y los parametros declarados
             argumento = self.pilaO.pop()
             argumento_type = self.pilaTipos.pop()
             parametro_type = self.procActual.parameterTable[self.k]
             if(argumento_type == parametro_type):
+                # Si coinciden, se genera el cuadruplo de asignacion de parametro
                 quad = directorios.Cuadruplo(self.newQuad(), "PARAMETER", argumento, "", "param" + str(self.k + 1))
                 self.cuadruplos.append(quad)
             else:
+                # Si no coinciden, hay error
                 errores.errorParamTypeMismatch(argumento_type, parametro_type, self.procActual.nombre )
+        # Se aumenta la cantidad de parametros
         self.k += 1
 
+    # NP LLAM SUB
+    # Al finalizar la declaracion de parametros se genera el cuadruplo GOSUB
     def np_llamsub(self, tree):
+        # Se compara la cantidad de argumentos enviados con los parametros definidos
         if self.k == len(self.procActual.parameterTable):
             quad = directorios.Cuadruplo(self.newQuad(), "GOSUB", self.procActual.nombre, "" , self.procActual.quadruple)
             self.cuadruplos.append(quad)
         else:
+            # Si no coincide hay error
             errores.errorNumParams(self.k, len(self.procActual.parameterTable), self.procActual.nombre)
+        # Se reestablece los valores de k y el procedimiento actual para una siguiente llamada de funcion
         self.k = 0
         self.procActual = None
 
