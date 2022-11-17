@@ -1,6 +1,6 @@
 from lark import Visitor
 import directorios
-import cubo_semantico
+from cubo_semantico import cuboSemantico 
 import errores
 
 class PuntosNeuralgicos(Visitor):
@@ -286,8 +286,8 @@ class PuntosNeuralgicos(Visitor):
             id_operand_type = self.pilaTipos[-1]
             operator = self.pOper.pop()
             # ⭐️  Revisa cubo semantico
-            result_type = 1
-            if (result_type != 0):
+            result_type = cuboSemantico[operator][resultado_type][id_operand_type]
+            if (result_type != "ERROR"):
                 quad = directorios.Cuadruplo(self.newQuad(), operator, resultado, "", id)
                 self.cuadruplos.append(quad)
             else:
@@ -326,8 +326,8 @@ class PuntosNeuralgicos(Visitor):
                 left_operand_type = self.pilaTipos.pop()
                 operator = self.pOper.pop()
                 # ⭐️ Revisa cubo semantico
-                result_type = 1
-                if (result_type != 0):
+                result_type = cuboSemantico[operator][right_operand_type][left_operand_type]
+                if (result_type != "ERROR"):
                     result = self.availNext()
                     quad = directorios.Cuadruplo(self.newQuad(), operator, left_operand, right_operand, result)
                     self.cuadruplos.append(quad)
@@ -347,8 +347,8 @@ class PuntosNeuralgicos(Visitor):
                 left_operand_type = self.pilaTipos.pop()
                 operator = self.pOper.pop()
                 # ⭐️ Revisa cubo semantico
-                result_type = 1
-                if (result_type != 0):
+                result_type = cuboSemantico[operator][right_operand_type][left_operand_type]
+                if (result_type != "ERROR"):
                     result = self.availNext()
                     quad = directorios.Cuadruplo(self.newQuad(), operator, left_operand, right_operand, result)
                     self.cuadruplos.append(quad)
@@ -381,8 +381,8 @@ class PuntosNeuralgicos(Visitor):
             id_operand_type = self.pilaTipos.pop()
             operator = self.pOper.pop()
             # ⭐️  Revisa cubo semantico
-            result_type = 1
-            if (result_type != 0):
+            result_type = cuboSemantico[operator][resultado_type][id_operand_type]
+            if (result_type != "ERROR"):
                 quad = directorios.Cuadruplo(self.newQuad(), operator, resultado, "", id)
                 self.cuadruplos.append(quad)
             else:
@@ -412,9 +412,7 @@ class PuntosNeuralgicos(Visitor):
                 printp = self.pilaO.pop()
                 printp_type = self.pilaTipos.pop()
                 operator = self.pOper.pop()
-                # ⭐️  Revisa cubo semantico
-                result_type = 1
-                if (result_type != 0):
+                if (printp_type == "string"):
                     quad = directorios.Cuadruplo(self.newQuad(), "PRINTP", "", "", printp)
                     self.cuadruplos.append(quad)
                 else:
@@ -430,9 +428,7 @@ class PuntosNeuralgicos(Visitor):
             expr = self.pilaO.pop()
             expr_type = self.pilaTipos.pop()
             operator = self.pOper.pop()
-            # ⭐️  Revisa cubo semantico
-            result_type = 1
-            if (result_type != 0):
+            if (expr_type == "string"):
                 quad = directorios.Cuadruplo(self.newQuad(), "EXPR", "", "", expr)
                 self.cuadruplos.append(quad)
             else:
@@ -448,9 +444,7 @@ class PuntosNeuralgicos(Visitor):
             imp = self.pilaO.pop()
             imp_type = self.pilaTipos.pop()
             operator = self.pOper.pop()
-            # ⭐️  Revisa cubo semantico
-            result_type = 1
-            if (result_type != 0):
+            if (imp_type == "path"):
                 quad = directorios.Cuadruplo(self.newQuad(), "IMPORT", "", "", imp)
                 self.cuadruplos.append(quad)
             else:
@@ -495,13 +489,8 @@ class PuntosNeuralgicos(Visitor):
             expr = self.pilaO.pop()
             expr_type = self.pilaTipos.pop()
             operator = self.pOper.pop()
-            # ⭐️  Revisa cubo semantico
-            result_type = 1
-            if (result_type != 0):
-                quad = directorios.Cuadruplo(self.newQuad(), "PRINT", "", "", expr)
-                self.cuadruplos.append(quad)
-            else:
-                errores.errorTypeMismatch(expr, "", operator)
+            quad = directorios.Cuadruplo(self.newQuad(), "PRINT", "", "", expr)
+            self.cuadruplos.append(quad)
     
     # ESCR2
     # Punto neuralgico que vuelve a agregar el operador print a la pila de operadores cuando hay varios argumentos para la funcion
@@ -514,7 +503,7 @@ class PuntosNeuralgicos(Visitor):
         result = self.pilaO.pop()
         result_type = self.pilaTipos.pop()
         # Se revisa que la condicion sea de tipo booleano
-        if (result_type != "bool" and result_type != "CTEBOOL"):
+        if (result_type != "bool"):
             # Error de mismatch de tipos
             errores.errorCondTypeMismatch(result_type)
         else:
@@ -538,8 +527,8 @@ class PuntosNeuralgicos(Visitor):
             left_operand_type = self.pilaTipos.pop()
             operator = self.pOper.pop()
             # ⭐️ Revisa cubo semantico
-            result_type = 1
-            if (result_type != 0):
+            result_type = cuboSemantico[operator][right_operand_type][left_operand_type]
+            if (result_type != "ERROR"):
                 result = self.availNext()
                 quad = directorios.Cuadruplo(self.newQuad(), operator, left_operand, right_operand, result)
                 self.cuadruplos.append(quad)
@@ -644,6 +633,7 @@ class PuntosNeuralgicos(Visitor):
         else:
             # Si no coincide hay error
             errores.errorNumParams(self.k, len(self.procActual.parameterTable), self.procActual.nombre)
+        # if(self.procActual.tipo != "void" ):
         # Se reestablece los valores de k y el procedimiento actual para una siguiente llamada de funcion
         self.k = 0
         self.procActual = None

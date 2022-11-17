@@ -103,6 +103,32 @@ cuboSemantico = {
             "string" : "ERROR"
         }
     },
+     "=" : {
+        "int": {
+            "int" : "int",
+            "float": "float",
+            "bool" : "ERROR",
+            "string" : "ERROR"
+        }, 
+        "float" : {
+            "int" : "float",
+            "float": "float",
+            "bool" : "ERROR",
+            "string" : "ERROR"
+        },
+        "bool": {
+            "int" : "ERROR",
+            "float": "ERROR",
+            "bool" : "bool",
+            "string" : "ERROR"
+        }, 
+        "string": {
+            "int" : "ERROR",
+            "float": "ERROR",
+            "bool" : "ERROR",
+            "string" : "string"
+        }
+    },
     "==" : {
         "int": {
             "int" : "bool",

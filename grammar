@@ -145,7 +145,7 @@ ter1: MULT termino | DIV termino
 np_termino:
 
 factor: LPAR expresion RPAR | fact1 
-fact1: varcte
+fact1: varcte | llamadafunc
 
 tipo: INT | FLOAT | STRING | BOOL
 
