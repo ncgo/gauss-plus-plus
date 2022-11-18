@@ -7,7 +7,7 @@ var int puntaje, year
 var float pesos = 50.0
 int hello(int g) {
     var int provisional
-    provisional = 5 * 6
+    provisional = 5 * 6 / pesos
     year = 2020 + 2 + provisional
     if (5 < 4) {
         print(True)
@@ -15,6 +15,7 @@ int hello(int g) {
         print(False, "hello")
         print(5 + 4 / 5)
         print("Else")
+        // puntaje = "punt"
     }
 
     if(True){
@@ -22,7 +23,7 @@ int hello(int g) {
     }
 
     while(5>9) {
-        year = 5 + 9
+        year = 5 + 9.0
     }
     print("hi")
     return 4 * 7 

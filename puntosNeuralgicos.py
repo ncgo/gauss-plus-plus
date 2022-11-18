@@ -17,6 +17,7 @@ class PuntosNeuralgicos(Visitor):
         self.cuadruplos = []
         self.quadCounter = 0
         self.k = 0
+        self.memoria = memoria.MapaDeMemoria()
 
     # Create Obj File
     # Funcion auxiliar que genera el archivo de codigo objeto con lso cuadruplso generados por el programa a ser ejecutado por la maquina virtual
@@ -114,6 +115,7 @@ class PuntosNeuralgicos(Visitor):
         tipo = tree.children[0].children[0].value
         id = tree.children[1].value
         var = directorios.Variable(id, tipo)
+        var.virtualAddress = self.memoria.virtualAddress(tipo)
         # Se agrega el parametro como variable local a la Tabla de Variables
         self.currProc().tablaVariables.addVar(var)
         # Se agrega el tipo a la Tabla de Parametros del procedimiento para generar la firma de la funcion 
@@ -190,10 +192,11 @@ class PuntosNeuralgicos(Visitor):
         op = tree.children[1].value
         res = tree.children[2].value
         var = directorios.Variable(id, "string", res)
+        var.virtualAddress = self.memoria.virtualAddress("string")
         # Se agrega el parametro como variable local a la Tabla de Variables
         self.currProc().tablaVariables.addVar(var)
         # Se genera el cuadruplo de asignacion del parametro
-        quad = directorios.Cuadruplo(self.newQuad(), "AREA", res, "", id)
+        quad = directorios.Cuadruplo(self.newQuad(), "AREA", res, "", var.virtualAddress)
         self.cuadruplos.append(quad)
 
     # GENERA
@@ -210,9 +213,13 @@ class PuntosNeuralgicos(Visitor):
     # Registra los parametros de la funcion genera
     def np_param_genera(self, tree):
         varOrientacion = directorios.Variable(tree.children[0].value, "string")
+        varOrientacion.virtualAddress = self.memoria.virtualAddress("string")
         varCategoria = directorios.Variable(tree.children[2].value, "string")
-        varProblemas = directorios.Variable(tree.children[4].value, "arr")
+        varCategoria.virtualAddress = self.memoria.virtualAddress("string")
+        varProblemas = directorios.Variable(tree.children[4].value, "string")
+        varProblemas.virtualAddress = self.memoria.virtualAddress("string")
         varNombreArchivo = directorios.Variable(tree.children[5].value, "string")
+        varNombreArchivo.virtualAddress = self.memoria.virtualAddress("string")
         # Se agregan los parametros como variables a la Tabla de Variables del programa
         self.currProc().tablaVariables.addVar(varOrientacion)
         self.currProc().tablaVariables.addVar(varCategoria)
@@ -236,16 +243,19 @@ class PuntosNeuralgicos(Visitor):
     def info(self, tree):
         # Registro de variable organizacion
         organizacion = directorios.Variable(tree.children[0].value, "string", tree.children[2].value)
+        organizacion.virtualAddress = self.memoria.virtualAddress("string")
         self.currProc().tablaVariables.addVar(organizacion)
         quadOrg = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[2].value, '', tree.children[0].value)
         
         # Registro de variable etapa
         etapa = directorios.Variable(tree.children[3].value, "string", tree.children[5].value)
+        etapa.virtualAddress = self.memoria.virtualAddress("string")
         self.currProc().tablaVariables.addVar(etapa)
         quadEtapa = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[5].value, '', tree.children[3].value)
         
         # Registro de variable categorias
-        categorias = directorios.Variable(tree.children[6].value, "arr", tree.children[6].value)
+        categorias = directorios.Variable(tree.children[6].value, "string", tree.children[6].value)
+        categorias.virtualAddress = self.memoria.virtualAddress("string")
         quadCategorias = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[6].value, '', tree.children[6].value)
         self.currProc().tablaVariables.addVar(categorias)
 
@@ -261,9 +271,10 @@ class PuntosNeuralgicos(Visitor):
         # Se agrega el tipo de la variable a la pila de variables
         self.pilaTipos.append(tipoVar)
         var = directorios.Variable(nombreVar, tipoVar)
+        var.virtualAddress = self.memoria.virtualAddress(tipoVar)
         # Se registra la variable en la Tabla de Variables
         self.currProc().tablaVariables.addVar(var)
-        self.pilaO.append(nombreVar)
+        self.pilaO.append(var.virtualAddress)
 
     # VARS 1
     # Punto neuralgico que prepara la asignacion de valores a una variable
@@ -282,9 +293,10 @@ class PuntosNeuralgicos(Visitor):
             tipoVar = self.pilaTipos[-1]
             nombreVar = tree.children[1].value
             var = directorios.Variable(nombreVar, tipoVar)
+            var.virtualAddress = self.memoria.virtualAddress(tipoVar)
             # Se registra la variable en la Tabla de Variables
             self.currProc().tablaVariables.addVar(var)
-            self.pilaO.append(nombreVar)
+            self.pilaO.append(var.virtualAddress)
     
     # NP FIN VARS
     # Punto neuralgico que elimina el tipo guardado de la declaracion al terminarse esta y proseguir a la siguiente
@@ -315,7 +327,7 @@ class PuntosNeuralgicos(Visitor):
             if(tree.children[0].children[0].type == "ID"):
                 id = tree.children[0].children[0].value
                 var = self.searchVar(id)
-                self.pilaO.append(id)
+                self.pilaO.append(var.virtualAddress)
                 self.pilaTipos.append(var.tipo)
             else:
                 self.pilaO.append(tree.children[0].children[0].value)
@@ -344,7 +356,7 @@ class PuntosNeuralgicos(Visitor):
                 # ⭐️ Revisa cubo semantico
                 result_type = cuboSemantico[operator][right_operand_type][left_operand_type]
                 if (result_type != "ERROR"):
-                    result = self.availNext()
+                    result = self.memoria.availNext(result_type)
                     quad = directorios.Cuadruplo(self.newQuad(), operator, left_operand, right_operand, result)
                     self.cuadruplos.append(quad)
                     self.pilaO.append(result)
@@ -365,7 +377,7 @@ class PuntosNeuralgicos(Visitor):
                 # ⭐️ Revisa cubo semantico
                 result_type = cuboSemantico[operator][right_operand_type][left_operand_type]
                 if (result_type != "ERROR"):
-                    result = self.availNext()
+                    result = self.memoria.availNext(result_type)
                     quad = directorios.Cuadruplo(self.newQuad(), operator, left_operand, right_operand, result)
                     self.cuadruplos.append(quad)
                     self.pilaO.append(result)
@@ -379,7 +391,7 @@ class PuntosNeuralgicos(Visitor):
         id = tree.children[0].value
         # Verifica que la variable ya haya sido declarada
         var = self.searchVar(id)
-        self.pilaO.append(id)
+        self.pilaO.append(var.virtualAddress)
         self.pilaTipos.append(var.tipo)
 
     # ASIG2
@@ -476,6 +488,7 @@ class PuntosNeuralgicos(Visitor):
         else:
             opciones = tree.children[0].value
             var = directorios.Variable(opciones, "opciones")
+            var.virtualAddress = self.memoria.virtualAddress("opciones")
             self.currProc().tablaVariables.addVar(var)
             self.pilaO.append(opciones)
             self.pilaTipos.append("opciones")
@@ -488,8 +501,9 @@ class PuntosNeuralgicos(Visitor):
         operator = tree.children[1].value
         valor  = tree.children[2].children[0].value
         var = directorios.Variable(respuesta, "respuesta", valor)
+        var.virtualAddress = self.memoria.virtualAddress(respuesta)
         self.currProc().tablaVariables.addVar(var)
-        quad = directorios.Cuadruplo(self.newQuad(), "RESPUESTA", valor, "", respuesta)
+        quad = directorios.Cuadruplo(self.newQuad(), "RESPUESTA", valor, "", var.virtualAddress)
         self.cuadruplos.append(quad)
 
     # ESCRITURA
@@ -545,7 +559,7 @@ class PuntosNeuralgicos(Visitor):
             # ⭐️ Revisa cubo semantico
             result_type = cuboSemantico[operator][right_operand_type][left_operand_type]
             if (result_type != "ERROR"):
-                result = self.availNext()
+                result = self.memoria.availNext(result_type)
                 quad = directorios.Cuadruplo(self.newQuad(), operator, left_operand, right_operand, result)
                 self.cuadruplos.append(quad)
                 self.pilaO.append(result)
@@ -659,7 +673,7 @@ class PuntosNeuralgicos(Visitor):
         if(self.pilaTipos[-1] != "void" ):
             func = self.pilaO.pop()
             tipo = self.pilaTipos.pop()
-            temp = self.availNext()
+            temp = self.memoria.availNext(tipo)
             quad = directorios.Cuadruplo(self.newQuad(), "=", func, "", temp)
             self.cuadruplos.append(quad)
             self.pilaO.append(temp)
@@ -686,6 +700,7 @@ class PuntosNeuralgicos(Visitor):
             tipo = tree.children[0].children[0].value
             id = tree.children[1].value
             var = directorios.Variable(id, tipo)
+            var.virtualAddress = self.memoria.virtualAddress(tipo)
             self.currProc().tablaVariables.addVar(var)
             self.pilaO.append(id)
             # NP 2
@@ -704,7 +719,7 @@ class PuntosNeuralgicos(Visitor):
         # Se guarda el limite superior
         var.nodosArreglo[-1].ls = tree.children[0].value
         # Se calcula R
-        var.nodosArreglo[-1].r = (var.nodosArreglo[-1].ls + 1) * var.nodosArreglo[-1].r
+        var.nodosArreglo[-1].r = (int(var.nodosArreglo[-1].ls) + 1) * var.nodosArreglo[-1].r
         
     def arrdec1(self, tree):
         var = self.currProc().tablaVariables.searchVar(self.pilaO[-1])
@@ -722,7 +737,7 @@ class PuntosNeuralgicos(Visitor):
         for dim in range(len(var.nodosArreglo)):
             # Se repite para todos los nodos
             # Se guarda m en el nodo actual
-            var.nodosArreglo[dim].m = r / (var.nodosArreglo[dim].ls + 1)
+            var.nodosArreglo[dim].m = r / (int(var.nodosArreglo[dim].ls) + 1)
             r = var.nodosArreglo[dim].m
             # no hay offset porque el limite inferior siempre sera 0
         # NP 8
