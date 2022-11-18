@@ -693,6 +693,30 @@ class PuntosNeuralgicos(Visitor):
         self.pilaO.append(nombre)
         self.pilaTipos.append(self.directorioProcedimientos.searchProc(nombre).tipo)
 
+    def arrdec(self, tree):
+        try:
+            tree.children[0]
+        except:
+            next
+        else:
+            # NP 1
+            tipo = tree.children[0].children[0].value
+            id = tree.children[1].value
+            var = directorios.Variable(id, tipo)
+            self.currProc().tablaVariables.addVar(var)
+            self.pilaO.append(id)
+            # NP 2
+            var.isArray = True
+            # NP 3
+            node = directorios.NodoArreglo(1, 1)
+
+    def arrsize(self, tree):
+        var = self.currProc().tablaVariables.searchVar(self.pilaO[-1])
+        var.nodosArreglo[-1].ls = tree.children[0].value
+        print(tree.children[0].value)
+        
+
+
     # NP END
     # Punto neuralgico que marca el fin del programa
     def np_end(self, tree):
