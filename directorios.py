@@ -97,6 +97,7 @@ class Variable():
         self.valor = valor
         self.isArray = False
         self.nodosArreglo = [NodoArreglo()]
+        self.virtualAddress = 0
 
     def printVar(self):
         print("{nombre:", self.nombre, "tipo:", self.tipo, "valor:", self.valor)
@@ -107,6 +108,7 @@ class NodoArreglo():
         self.r = r
         self.li = 0
         self.ls = 0
+        self.m = 1
 
 class Cuadruplo():
     def __init__(self, numero, operator, left_operand, right_operand, result):
