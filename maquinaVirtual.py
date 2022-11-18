@@ -7,31 +7,22 @@ class MaquinaVirtual():
         op = self.cuadruplos[0][0]
         while op != "ENDPROG":
             if op == "PROGRAM":
-                print("PROGRAM")
                 self.ip += 1
             elif op == "GOTO":
-                print("GOTO")
                 self.ip = int(self.cuadruplos[self.ip][3])
             elif op == "INFO":
-                print("INFO")
                 self.ip += 1
             elif op == "=":
-                print("=")
                 self.ip += 1
             elif op == "+":
-                print("+")
                 self.ip += 1
             elif op == "-":
-                print("-")
                 self.ip += 1
             elif op == "*":
-                print("*")
                 self.ip += 1
             elif op == "/":
-                print("/")
                 self.ip += 1
             else:
-                print(op)
                 op = "ENDPROG"
                 self.ip = 52
 

@@ -87,7 +87,7 @@ np_fin_vars:
 np_asig_vars:
 
 modulos: modulo | 
-modulo: tipomod ID LPAR modids RPAR LCURLY np_mod vars np_vars_mod estatutos return RCURLY modulos np_endfunc
+modulo: tipomod ID LPAR modids RPAR LCURLY np_mod vars arrdec np_vars_mod estatutos return RCURLY modulos np_endfunc
 np_vars_mod: 
 np_mod:
 
@@ -118,7 +118,7 @@ footer: FOOTER LPAR CATEGORIA RPAR
 main: MAIN LPAR RPAR bloque np_endfunc
 
 estatutos: estatuto estatutos |
-estatuto: asignacion | condicion | ciclo | escritura | llamadafunc
+estatuto: asignacion | condicion | ciclo | escritura | llamadafunc 
 
 return: np_return RETURN expresion np_return1 | 
 tipomod: INT | FLOAT | STRING | BOOL | VOID
@@ -128,6 +128,9 @@ modids2: COMA modids1 |
 np_return:
 np_return1:
 
+arrdec: tipo ID LCOR arrsize arrdec1 RCOR arrdec | 
+arrsize: CTEINT
+arrdec1: COMA arrsize arrdec1 | 
 arr: LCOR varcte arr1 RCOR
 arr1: COMA varcte arr1 | 
 

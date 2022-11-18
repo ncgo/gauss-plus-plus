@@ -95,10 +95,18 @@ class Variable():
         self.nombre = nombre
         self.tipo = tipo
         self.valor = valor
+        self.isArray = False
+        self.nodosArreglo = [NodoArreglo()]
 
     def printVar(self):
         print("{nombre:", self.nombre, "tipo:", self.tipo, "valor:", self.valor)
 
+class NodoArreglo():
+    def __init__(self, dim = 1, r = 1):
+        self.dim = dim
+        self.r = r
+        self.li = 0
+        self.ls = 0
 
 class Cuadruplo():
     def __init__(self, numero, operator, left_operand, right_operand, result):

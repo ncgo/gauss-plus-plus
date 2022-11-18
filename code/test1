@@ -29,6 +29,7 @@ int hello(int g) {
 }
 
 void pelos() {
+    int manzana[1]
 }
 
 int genial() {
