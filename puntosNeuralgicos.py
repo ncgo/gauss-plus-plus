@@ -2,25 +2,7 @@ from lark import Visitor
 import directorios
 from cubo_semantico import cuboSemantico 
 import errores
-
-class mapaDeMemoria():
-    def __init__(self):
-        self.varGlobalesInt = 0
-        self.varGlobalesFloat = 0
-        self.varGlobalesString = 0
-        self.varGlobalesBool = 0
-        self.varLocalesInt = 0
-        self.varLocalesFloat = 0
-        self.varLocalesString = 0
-        self.varLocalesBool = 0
-        self.tempsInt = 0
-        self.tempsFloat = 0
-        self.tempsString = 0
-        self.tempsBool = 0
-        self.ctesInt = 0
-        self.ctesFloat = 0
-        self.ctesString = 0
-        self.cteBool = 0
+import memoria
 
 class PuntosNeuralgicos(Visitor):
     def __init__(self):
@@ -700,21 +682,54 @@ class PuntosNeuralgicos(Visitor):
             next
         else:
             # NP 1
+            # Se agrega el arreglo a la tabla de variables
             tipo = tree.children[0].children[0].value
             id = tree.children[1].value
             var = directorios.Variable(id, tipo)
             self.currProc().tablaVariables.addVar(var)
             self.pilaO.append(id)
             # NP 2
+            # Se establece que el ID es un arreglo
             var.isArray = True
             # NP 3
+            # Se agrega un nuevo nodo para guardar información de las dimensiones
             node = directorios.NodoArreglo(1, 1)
+            var = self.currProc().tablaVariables.searchVar(self.pilaO[-1])
+            var.nodosArreglo.append(node)
+
 
     def arrsize(self, tree):
         var = self.currProc().tablaVariables.searchVar(self.pilaO[-1])
+        # NP 4 y 5
+        # Se guarda el limite superior
         var.nodosArreglo[-1].ls = tree.children[0].value
-        print(tree.children[0].value)
+        # Se calcula R
+        var.nodosArreglo[-1].r = (var.nodosArreglo[-1].ls + 1) * var.nodosArreglo[-1].r
         
+    def arrdec1(self, tree):
+        var = self.currProc().tablaVariables.searchVar(self.pilaO[-1])
+        # NP 6
+        # Se cambia de dimension y se crea un nuevo nodo
+        dim = var.nodosArreglo[-1].dim + 1
+        node = directorios.NodoArreglo(dim)
+        var.nodosArreglo.append(node)
+
+    def arrdecfin(self, tree):
+        var = self.currProc().tablaVariables.searchVar(self.pilaO[-1])
+        # NP 7
+        aux = r = var.nodosArreglo[-1].r
+        # Empezando en 0 empezamos en el primer nodo de la lista
+        for dim in range(len(var.nodosArreglo)):
+            # Se repite para todos los nodos
+            # Se guarda m en el nodo actual
+            var.nodosArreglo[dim].m = r / (var.nodosArreglo[dim].ls + 1)
+            r = var.nodosArreglo[dim].m
+            # no hay offset porque el limite inferior siempre sera 0
+        # NP 8
+        # Guarda la direccion virtual del id actual en la Tabla de Variables
+        # Calcula la siguiente direccion virtual 
+
+
 
 
     # NP END
