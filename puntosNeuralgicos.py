@@ -3,6 +3,25 @@ import directorios
 from cubo_semantico import cuboSemantico 
 import errores
 
+class mapaDeMemoria():
+    def __init__(self):
+        self.varGlobalesInt = 0
+        self.varGlobalesFloat = 0
+        self.varGlobalesString = 0
+        self.varGlobalesBool = 0
+        self.varLocalesInt = 0
+        self.varLocalesFloat = 0
+        self.varLocalesString = 0
+        self.varLocalesBool = 0
+        self.tempsInt = 0
+        self.tempsFloat = 0
+        self.tempsString = 0
+        self.tempsBool = 0
+        self.ctesInt = 0
+        self.ctesFloat = 0
+        self.ctesString = 0
+        self.cteBool = 0
+
 class PuntosNeuralgicos(Visitor):
     def __init__(self):
         self.directorioProcedimientos = None
@@ -83,6 +102,13 @@ class PuntosNeuralgicos(Visitor):
         self.directorioProcedimientos.addProc(startProc)
         # Se agrega el procedimiento a la Pila de Procedimientos para mantener el contexto
         self.pilaProcedimientos.append(nombre)
+        # Se crea el cuádruplo de regsitro de programa
+        quad = directorios.Cuadruplo(self.newQuad(), "PROGRAM", "", "", "nombre")
+        self.cuadruplos.append(quad)
+
+    # NP MAIN
+    # Punto neuralgico que llama la funcion de main despues de procesar las variables globales
+    def np_main(self, tree):
         # Se crea el cuádruplo de goto main a ser llenado posteriormente
         quad = directorios.Cuadruplo(self.newQuad(), "GOTO", "", "", "")
         self.cuadruplos.append(quad)
@@ -122,23 +148,30 @@ class PuntosNeuralgicos(Visitor):
     def np_vars_mod(self, tree):
         self.currProc().addNumVars()
 
+    # NP RETURN
+    # Punto neuralgico que agrega la instruccion return a la pila de operadores
     def np_return(self, tree):
         # Revisa si no es void y si aplica el return
         if (self.currProc().tipo != "void"):
             self.pOper.append("return")
         else:
+            # La funcion es de tipo void y no puede regresar valores
             errores.errorReturnVoid(self.currProc().nombre)
 
+    # NP RETURN1
+    # Punto neuralgico que genera el cuadruplo de return
     def np_return1(self, tree):
         if(self.pOper[-1] == 'return'):
             retorno = self.pilaO.pop()
             retorno_type = self.pilaTipos.pop()
             operator = self.pOper.pop()
             funcion_type = self.currProc().tipo
+            # Se revisa que el tipo de retorno corresponda con el tipo de funcion
             if (retorno_type == funcion_type):
-                quad = directorios.Cuadruplo(self.newQuad(), operator, "", "", retorno)
+                quad = directorios.Cuadruplo(self.newQuad(), "RETURN", "", "", retorno)
                 self.cuadruplos.append(quad)
             else:
+                # No corresponde el tipo de retorno con el tipo de funcion
                 errores.errorTypeMismatchReturn(retorno_type, funcion_type, self.currProc().nombre)
 
     # NP END FUNC
@@ -471,7 +504,7 @@ class PuntosNeuralgicos(Visitor):
     def respuesta(self, tree):
         respuesta = tree.children[0].value
         operator = tree.children[1].value
-        valor  = tree.children[2].children[0]
+        valor  = tree.children[2].children[0].value
         var = directorios.Variable(respuesta, "respuesta", valor)
         self.currProc().tablaVariables.addVar(var)
         quad = directorios.Cuadruplo(self.newQuad(), "RESPUESTA", valor, "", respuesta)
@@ -638,6 +671,8 @@ class PuntosNeuralgicos(Visitor):
         self.k = 0
         self.procActual = None
 
+    # NP LLAMFUNC2
+    # Punto neuralgico que maneja cuando se requiere el valor de una funcion como termino de una expresion
     def np_llamfunc2(self, tree):
         if(self.pilaTipos[-1] != "void" ):
             func = self.pilaO.pop()
@@ -647,7 +682,12 @@ class PuntosNeuralgicos(Visitor):
             self.cuadruplos.append(quad)
             self.pilaO.append(temp)
             self.pilaTipos.append(tipo)
+        else:
+            # La funcion llamada es de tipo void y no tiene valor de retorno. No puede ser utilizada
+            errores.errorReturnVoid(self.pilaO.pop())
 
+    # NP LLAMFUNC1
+    # Punto neuralgico que agrega los datos de una funcion a sus respectivas pilas cundo son llamadas como terminos de una expresion
     def np_llamfunc1(self, tree):
         nombre = tree.children[0].children[0].value
         self.pilaO.append(nombre)
@@ -656,6 +696,8 @@ class PuntosNeuralgicos(Visitor):
     # NP END
     # Punto neuralgico que marca el fin del programa
     def np_end(self, tree):
-        # self.directorioProcedimientos.printDir()
+        # Se genera el cuadruplo de fin de programa que indica el final de la ejecucion
+        quad = directorios.Cuadruplo(self.newQuad(), "ENDPROG", "", "", "")
+        self.cuadruplos.append(quad)
         del self.directorioProcedimientos
         self.createObjFile()

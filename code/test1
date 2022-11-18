@@ -32,10 +32,10 @@ void pelos() {
 }
 
 int genial() {
-    return hello(4)
+    return hello(4) 
 }
 
-problema problema1(area = "Teoría de Números") {
+problema problema1(area = "Teoria de Números") {
     categoria = categoria[0]
     >> "Considera cinco números de menor a mayor" 
     >> $expr("a<b<c<d<e") 

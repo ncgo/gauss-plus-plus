@@ -74,7 +74,8 @@ DOLLAR: /\$/
 
 // GRAMATICA
 start: program 
-program: PROGRAM ID info vars modulos problemas listas genera main np_end
+program: PROGRAM ID info vars np_main modulos problemas listas genera main np_end
+np_main:
 
 info: ORGANIZACION IGUAL CTESTRING ETAPA IGUAL CTESTRING CATEGORIAS IGUAL arr
 
