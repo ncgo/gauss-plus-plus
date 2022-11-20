@@ -64,4 +64,5 @@ genera(orientacion, categoria, problemas, nombreArchivo) {
 main() {
     hello(2)
     genera()
+    read(apellido)
 }

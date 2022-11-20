@@ -707,6 +707,12 @@ class PuntosNeuralgicos(Visitor):
     def escr2(self, tree):
         self.pOper.append("print")
 
+    def lectura(self, tree):
+        id = tree.children[2].value
+        if self.searchVar(id) != 0:
+            quad = directorios.Cuadruplo(self.newQuad(), "READ", "", "", id)
+            self.cuadruplos.append(quad)
+            
     # NP COND
     # Punto neuralgico que revisa la condicion y genera el cuadruplo GOTOF
     def np_cond(self, tree):

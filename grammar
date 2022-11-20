@@ -136,7 +136,7 @@ footer: FOOTER LPAR varcte RPAR
 main: MAIN LPAR RPAR bloque np_endfunc
 
 estatutos: estatuto estatutos |
-estatuto: asignacion | condicion | ciclo | escritura | llamadafunc | lectura
+estatuto: asignacion | condicion | ciclo | escritura | lectura | llamadafunc
 
 return: np_return RETURN expresion np_return1 | 
 tipomod: INT | FLOAT | STRING | BOOL | VOID
@@ -195,7 +195,7 @@ escritura: PRINT LPAR expresion escr1 RPAR
 escr1: COMA escr2 expresion escr1 | 
 escr2:
 
-lectura: READ 
+lectura: READ LPAR ID RPAR
 
 varcte: ID | CTEINT | CTEFLOAT | CTESTRING | CTEBOOL | arracc
 ctebool: TRUE | FALSE
