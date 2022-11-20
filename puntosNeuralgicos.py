@@ -1,25 +1,34 @@
+# PUNTOS NEURALGICOS
+# Acciones semánticas y de generación de código
+#
+# GAUSS++
+# Nadia Corina Garcia Orozco A01242428
+# Noviembre, 2022
+
 from lark import Visitor
+
 import directorios
-from cubo_semantico import cuboSemantico 
 import errores
 import memoria
+from cubo_semantico import cuboSemantico
+
 
 class PuntosNeuralgicos(Visitor):
     def __init__(self):
-        self.directorioProcedimientos = None
-        self.pilaProcedimientos = []
-        self.pilaTipos = []
-        self.pOper = []
-        self.pilaO = []
-        self.pilaSaltos = []
-        self.temp = 0
-        self.procActual = None
-        self.cuadruplos = []
-        self.quadCounter = 0
-        self.k = 0
-        self.memoria = memoria.MapaDeMemoria()
+        self.directorioProcedimientos = None    # Directorio de procedimientos 
+        self.pilaProcedimientos = []            # Pila que almacena el orden de los procedimentos para el manejo de contexto
+        self.pilaTipos = []                     # Pila que guarda los tipos de los operandos
+        self.pOper = []                         # Pila que guarda los operadores
+        self.pilaO = []                         # Pila que guarda los operandos 
+        self.pilaSaltos = []                    # Pila que guarda el numero del cuadruplo con saltos pendientes
+        self.temp = 0           
+        self.procActual = None          
+        self.cuadruplos = []                    # Lista de cuadruplos generados
+        self.quadCounter = 0                    # Contador de cuadruplos
+        self.k = 0                              # Auxiliar para el registro de parametros
+        self.memoria = memoria.MapaDeMemoria()  # Memoria
 
-    # Create Obj File
+    # CREATE OBJ FILE
     # Funcion auxiliar que genera el archivo de codigo objeto con lso cuadruplso generados por el programa a ser ejecutado por la maquina virtual
     def createObjFile(self):
         f = open("obj", "w")
@@ -27,24 +36,24 @@ class PuntosNeuralgicos(Visitor):
             f.write(x.printCuadruplo() + '\n')
         f.close()
 
-    # Avail Next
+    # AVAIL NEXT
     # Funcion auxiliar que regresa el siguiente temporal 
     def availNext(self):
         self.temp += 1
         return 't' + str(self.temp)
 
-    # New Quad
+    # NEW QUAD
     # Funcion auxiliar que regresa el número del siguiente cuádruplo
     def newQuad(self):
         self.quadCounter += 1
         return self.quadCounter
 
-    # Curr Proc
+    # CURR PROC
     # Funcion auxiliar que regresa el proceso actual para manejo de contextos
     def currProc(self):
         return self.directorioProcedimientos.searchProc(self.pilaProcedimientos[-1])
 
-    # Search Var
+    # SEARCH VAR
     # Funcion auxiliar que busca la variable en el contextoa actual y en el contexto global
     def searchVar(self, id):
         if (self.currProc().tablaVariables.searchVar(id) != 0):
@@ -55,13 +64,13 @@ class PuntosNeuralgicos(Visitor):
             else:
                 return errores.errorNoExiste("variable", id)
     
-    # Fill Quad
+    # FILL QUAD
     # Funcion auziliar para rellenar los cuadruplos pertinentes
     def fillQuad(self, quadToFill, filler):
         self.cuadruplos[quadToFill-1].fillCuadruplo(filler)
 
-    # Normalize Type
-    # Funcion auziliar que regresa el tipo correcto para constantes
+    # NORMALIZE TYPE
+    # Funcion auxiliar que regresa el tipo correcto para constantes
     def normalizeType(self, type):
         if type == "CTEINT":
             return "int"
@@ -712,7 +721,8 @@ class PuntosNeuralgicos(Visitor):
             var = self.currProc().tablaVariables.searchVar(self.pilaO[-1])
             var.nodosArreglo.append(node)
 
-
+    # ARR SIZE
+    # Punto neuralgico que registra los limites superiores de las dimensiones y hace el calculo de R
     def arrsize(self, tree):
         var = self.currProc().tablaVariables.searchVar(self.pilaO[-1])
         # NP 4 y 5
@@ -720,15 +730,19 @@ class PuntosNeuralgicos(Visitor):
         var.nodosArreglo[-1].ls = tree.children[0].value
         # Se calcula R
         var.nodosArreglo[-1].r = (int(var.nodosArreglo[-1].ls) + 1) * var.nodosArreglo[-1].r
-        
+    
+    # ARR DEC 1
+    # Punto neuralgico que cambia de dimension y crea un nuevo nodo
     def arrdec1(self, tree):
         var = self.currProc().tablaVariables.searchVar(self.pilaO[-1])
         # NP 6
-        # Se cambia de dimension y se crea un nuevo nodo
         dim = var.nodosArreglo[-1].dim + 1
         node = directorios.NodoArreglo(dim)
+        # Se liga el nodo a la variable
         var.nodosArreglo.append(node)
 
+    # ARR DEC FIN
+    # Punto neuralgico que hace los calculos de las dimensiones al terminar la declaracion del arreglo
     def arrdecfin(self, tree):
         var = self.currProc().tablaVariables.searchVar(self.pilaO[-1])
         # NP 7
@@ -744,14 +758,13 @@ class PuntosNeuralgicos(Visitor):
         # Guarda la direccion virtual del id actual en la Tabla de Variables
         # Calcula la siguiente direccion virtual 
 
-
-
-
     # NP END
     # Punto neuralgico que marca el fin del programa
     def np_end(self, tree):
         # Se genera el cuadruplo de fin de programa que indica el final de la ejecucion
         quad = directorios.Cuadruplo(self.newQuad(), "ENDPROG", "", "", "")
         self.cuadruplos.append(quad)
+        # Se elimina el directorio de Procedimientos
         del self.directorioProcedimientos
+        # Se crea el archivo con el codigo intermedio generado
         self.createObjFile()

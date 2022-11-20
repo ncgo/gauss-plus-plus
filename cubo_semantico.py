@@ -1,3 +1,11 @@
+# CUBO SEMANTICO
+# Diccionario que representa la tabla de consideraciones 
+# semánticas (combinaciones factibles y errores de tipo)
+#
+# GAUSS++
+# Nadia Corina Garcia Orozco A01242428
+# Noviembre, 2022
+
 cuboSemantico = {
     "+" : {
         "int": {

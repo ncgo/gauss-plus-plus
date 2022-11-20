@@ -1,3 +1,9 @@
+// GRAMMAR
+// Gramática de Gauss++
+//
+// Nadia Corina Garcia Orozco A01242428
+// Noviembre, 2022
+
 %import common.WS
 %import common.ESCAPED_STRING   -> CTESTRING
 %ignore WS
