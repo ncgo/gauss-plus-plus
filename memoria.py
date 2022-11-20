@@ -1,4 +1,3 @@
-
 class MapaDeMemoria():
     def __init__(self):
         self.varsGauss = 0
@@ -67,3 +66,5 @@ class MapaDeMemoria():
         elif (type == "respuesta" or type == "opciones"):
             self.varsGauss += 1
             return self.varsGauss
+
+        
