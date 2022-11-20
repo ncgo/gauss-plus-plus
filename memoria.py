@@ -85,3 +85,23 @@ class MapaDeMemoria():
         elif (type == "respuesta" or type == "opciones"):
             self.varsGauss += 1
             return self.varsGauss
+
+    def updateByArray(self, type, R, g = False):
+        if (type == "int" and g == False):
+            self.varLocalesInt += R
+        elif (type == "int" and g == True):
+            self.varGlobalesInt += R
+        elif (type == "float" and g == False):
+            self.varLocalesFloat += R
+        elif (type == "float" and g == True):
+            self.varGlobalesFloat += R
+        elif (type == "string" and g == False):
+            self.varLocalesString += R
+        elif (type == "string" and g == True):
+            self.varGlobalesString += R
+        elif (type == "bool" and g == False):
+            self.varLocalesBool += R
+        elif (type == "bool" and g == True):
+            self.varGlobalesBool += R
+        elif (type == "respuesta" or type == "opciones" or type == "categorias"):
+            self.varsGauss += R

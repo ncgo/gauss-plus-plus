@@ -137,7 +137,7 @@ class Variable():
         self.tipo = tipo                    # Tipo de la variable, string
         self.valor = valor                  # Valor de la variable, depende
         self.isArray = False                # determina si la variable es el identificador de un arreglo, bool
-        self.nodosArreglo = [NodoArreglo()] # Lista de los nodos de las dimensiones de un arreglo
+        self.nodosArreglo = []              # Lista de los nodos de las dimensiones de un arreglo
         self.virtualAddress = 0             # Direccion virtual, entero
 
     # PRINT VAR
@@ -149,12 +149,13 @@ class Variable():
 # Clase que representa los nodos de las dimensiones de un arreglo
 # para auxiliar en la indexación de los elementos y su acceso
 class NodoArreglo():
-    def __init__(self, dim = 1, r = 1):
+    def __init__(self, dim = 1, r = 1, help = "help"):
         self.dim = dim  # Numero de dimension 
         self.r = r      # R 
         self.li = 0     # Limite inferior. Gauss++ indexa desde 0.
         self.ls = 0     # Limite superior
         self.m = 1      # M
+        self.help = help
 
 # CUADRUPLO
 # Clase que representa un cuadruplo

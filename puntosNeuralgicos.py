@@ -27,6 +27,7 @@ class PuntosNeuralgicos(Visitor):
         self.quadCounter = 0                    # Contador de cuadruplos
         self.k = 0                              # Auxiliar para el registro de parametros
         self.memoria = memoria.MapaDeMemoria()  # Memoria
+        self.pilaDim = []                       # Pila que auxilia con el acceso a arreglos
 
     # CREATE OBJ FILE
     # Funcion auxiliar que genera el archivo de codigo objeto con lso cuadruplso generados por el programa a ser ejecutado por la maquina virtual
@@ -261,15 +262,47 @@ class PuntosNeuralgicos(Visitor):
         etapa.virtualAddress = self.memoria.virtualAddress("string")
         self.currProc().tablaVariables.addVar(etapa)
         quadEtapa = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[5].value, '', tree.children[3].value)
-        
-        # Registro de variable categorias
-        categorias = directorios.Variable(tree.children[6].value, "string", tree.children[6].value)
-        categorias.virtualAddress = self.memoria.virtualAddress("string")
-        quadCategorias = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[6].value, '', tree.children[6].value)
-        self.currProc().tablaVariables.addVar(categorias)
 
         # Se agregan los cuadruplos a la lista de cuadruplos
-        self.cuadruplos.extend([quadOrg, quadEtapa, quadCategorias])
+        self.cuadruplos.extend([quadOrg, quadEtapa])
+
+    # CATEGORIAS DEC
+    # Punto neuralgico que registra la variable categorias en la Tabla de Variables
+    def categoriasdec(self, tree):
+        # Registro de variable categorias
+        categorias = directorios.Variable(tree.children[0].value, "string", tree.children[0].value)
+        categorias.virtualAddress = self.memoria.virtualAddress("string", True)
+        # Se declara que la variable categorias es un arreglo
+        categorias.isArray = True
+        self.currProc().tablaVariables.addVar(categorias)
+
+    # CAT DEC
+    # Punto neuralgico que registra el valor de la primer categoria
+    def catdec(self, tree):
+        quad = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[0].value, self.k, "categorias")
+        self.cuadruplos.append(quad)
+        # Se incrementa el numero de categorias en 1
+        self.k += 1
+    
+    # CAT DEC 1
+    # Punto neuralgico que registra el valor del resto de las categorias
+    def catdec1(self, tree):
+        try:
+            tree.children[1]
+        except:
+            next
+        else:
+            quad = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[1].value, self.k, "categorias")
+            self.cuadruplos.append(quad)
+            self.k += 1
+
+    # NP CAT DEC FIN
+    # Punto neuralgico que da por finalizada la declaracion del arreglo categorias
+    def np_catdecfin(self, tree):
+        # Se suma la cantidad de categorias para las direcciones virtuales
+        self.memoria.updateByArray("string", self.k, True)
+        # Se reestablece k
+        self.k = 0
 
     # NP VARS
     # Punto neuralgico de adicion de variables
@@ -712,14 +745,16 @@ class PuntosNeuralgicos(Visitor):
             var.virtualAddress = self.memoria.virtualAddress(tipo)
             self.currProc().tablaVariables.addVar(var)
             self.pilaO.append(id)
+            self.pilaTipos.append(tipo)
             # NP 2
             # Se establece que el ID es un arreglo
             var.isArray = True
             # NP 3
             # Se agrega un nuevo nodo para guardar información de las dimensiones
-            node = directorios.NodoArreglo(1, 1)
+            node = directorios.NodoArreglo(1, 1, "help1")
             var = self.currProc().tablaVariables.searchVar(self.pilaO[-1])
             var.nodosArreglo.append(node)
+            print(tree)
 
     # ARR SIZE
     # Punto neuralgico que registra los limites superiores de las dimensiones y hace el calculo de R
@@ -756,7 +791,30 @@ class PuntosNeuralgicos(Visitor):
             # no hay offset porque el limite inferior siempre sera 0
         # NP 8
         # Guarda la direccion virtual del id actual en la Tabla de Variables
+        tipo = self.pilaTipos.pop()
+        var.virtualAddress = self.memoria.virtualAddress(tipo)
         # Calcula la siguiente direccion virtual 
+        self.memoria.updateByArray(tipo, aux)
+
+    def arracc(self, tree):
+        id = tree.children[0].value
+        var = self.searchVar(id)
+        if var.isArray == True:
+            dim = 1
+            self.pilaDim.append([id, dim])
+            self.pOper.append("[")
+        else:
+            errores.erroIDNotArray(id)
+
+    def np_arracc(self, tree):
+        id = self.pilaDim[0][0]
+        var = self.searchVar(id)
+        print(var.nombre)
+        print(var.nodosArreglo)
+        # nodo = var.nodosArreglo[self.pilaDim[0][1] - 1]
+        # print(nodo.help)
+        # quad = directorios.Cuadruplo(self.newQuad(), "VERIFY", nodo.li, nodo.ls, self.pilaO[-1] )
+        # self.cuadruplos.append(quad)
 
     # NP END
     # Punto neuralgico que marca el fin del programa

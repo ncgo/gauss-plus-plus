@@ -55,6 +55,7 @@ PROBLEMASINCLUIDOS: "problemasIncluidos"
 RANDOM: "random"
 FOOTER: "footer"
 PRINT: "print"
+READ: "read"
 PUNTOYCOMA: /;/
 DOSPUNTOS: /:/
 LCURLY: /{/
@@ -83,7 +84,11 @@ start: program
 program: PROGRAM ID info vars np_main modulos problemas listas genera main np_end
 np_main:
 
-info: ORGANIZACION IGUAL CTESTRING ETAPA IGUAL CTESTRING CATEGORIAS IGUAL arr
+info: ORGANIZACION IGUAL CTESTRING ETAPA IGUAL CTESTRING categoriasdec
+categoriasdec: CATEGORIAS IGUAL LCOR catdec
+catdec: CTESTRING catdec1 RCOR np_catdecfin
+catdec1: COMA CTESTRING catdec1 | 
+np_catdecfin: 
 
 vars: VAR np_vars | 
 vars1: vars2 | IGUAL expresion np_asig_vars vars2
@@ -124,7 +129,7 @@ footer: FOOTER LPAR CATEGORIA RPAR
 main: MAIN LPAR RPAR bloque np_endfunc
 
 estatutos: estatuto estatutos |
-estatuto: asignacion | condicion | ciclo | escritura | llamadafunc 
+estatuto: asignacion | condicion | ciclo | escritura | llamadafunc | lectura
 
 return: np_return RETURN expresion np_return1 | 
 tipomod: INT | FLOAT | STRING | BOOL | VOID
@@ -141,7 +146,9 @@ arr: LCOR varcte arr1 RCOR
 arr1: COMA varcte arr1 | 
 arrdecfin:
 
-arracc: ID LCOR CTEINT RCOR
+arracc: ID LCOR expresion np_arracc RCOR arrac1
+arrac1: LCOR expresion np_arracc RCOR | 
+np_arracc:
 
 expresion: exp expresion1 exp np_expresion | exp
 expresion1: MENORQUE | MAYORQUE | MENORIGUALQUE | MAYORIGUALQUE | DIFERENTE
@@ -181,7 +188,9 @@ escritura: PRINT LPAR expresion escr1 RPAR
 escr1: COMA escr2 expresion escr1 | 
 escr2:
 
-varcte: ID | CTEINT | CTEFLOAT | CTESTRING | CTEBOOL
+lectura: READ 
+
+varcte: ID | CTEINT | CTEFLOAT | CTESTRING | CTEBOOL | arracc
 ctebool: TRUE | FALSE
 
 llamadafunc: ID LPAR llamadaaux llam1 RPAR np_llamsub

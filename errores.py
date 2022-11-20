@@ -11,7 +11,7 @@ import sys
 # ENTRADAS: elemento -> tipo de elemento (funcion o variable), string
 #           nombre -> nombre del elemento (nombre de la funcion o variable), string
 def errorDuplicado(elemento, nombre):
-    message = "🚨ERROR DE COMPILACIÓN.\n🚨El elemento" + " " + elemento + " " + nombre + " ya ha sido declarado."
+    message = "🚨ERROR DE COMPILACIÓN.\n🚨El elemento" + " " + str(elemento) + " " + str(nombre) + " ya ha sido declarado."
     sys.exit(message)
 
 # ERROR NO EXISTE
@@ -19,7 +19,7 @@ def errorDuplicado(elemento, nombre):
 # ENTRADAS: elemento -> tipo de elemento (funcion o variable), string
 #           nombre -> nombre del elemento (nombre de la funcion o variable), string
 def errorNoExiste(elemento, nombre):
-    message = "🚨ERROR DE COMPILACIÓN.\n🚨El elemento" + " " + elemento + " " + nombre + " no existe."
+    message = "🚨ERROR DE COMPILACIÓN.\n🚨El elemento" + " " + str(elemento) + " " + str(nombre) + " no existe."
     sys.exit(message)
 
 # ERROR TYPE MISMATCH
@@ -28,14 +28,14 @@ def errorNoExiste(elemento, nombre):
 #           tipo2 -> tipo 2 del elemento, string
 #           operator -> operador con el que se trata de hacer la operacion, string
 def errorTypeMismatch(tipo1, tipo2, operator):
-    message = "🚨ERROR DE COMPILACIÓN.\n🚨Type mismatch. Los tipos " + tipo1 + " y " + tipo2 + " no son compatibles para la operacion " + operator
+    message = "🚨ERROR DE COMPILACIÓN.\n🚨Type mismatch. Los tipos " + str(tipo1) + " y " + str(tipo2) + " no son compatibles para la operacion " + str(operator)
     sys.exit(message)
 
 # ERROR COND TYPE MISMATCH
 # Aparece cuando se hace una condición con un valor diferente de booleano.
 # ENTRADAS: tipo1 -> tipo recibido, string
 def errorCondTypeMismatch(tipo1):
-    message = "🚨ERROR DE COMPILACIÓN.\n🚨Type mismatch. Se esperaba un valor booleano y se recibió un valor de tipo " + tipo1
+    message = "🚨ERROR DE COMPILACIÓN.\n🚨Type mismatch. Se esperaba un valor booleano y se recibió un valor de tipo " + str(tipo1)
     sys.exit(message)
 
 # ERROR PARAM TYPE MISMATCH
@@ -44,7 +44,7 @@ def errorCondTypeMismatch(tipo1):
 #           tipoEsperado -> tipo del elemento esperado, string
 #           funcion -> nombre de la funcion, string
 def errorParamTypeMismatch(tipoDado, tipoEsperado, funcion):
-    message = "🚨ERROR DE COMPILACIÓN.\n🚨Type mismatch. Se ha dado un parametro de tipo " + tipoDado + " cuando se esperaba un valor de tipo " + tipoEsperado + " en la función " + funcion + "."
+    message = "🚨ERROR DE COMPILACIÓN.\n🚨Type mismatch. Se ha dado un parametro de tipo " + str(tipoDado) + " cuando se esperaba un valor de tipo " + str(tipoEsperado) + " en la función " + str(funcion) + "."
     sys.exit(message)
 
 # ERROR NUM PARAMS
@@ -53,14 +53,14 @@ def errorParamTypeMismatch(tipoDado, tipoEsperado, funcion):
 #           numEsperado -> numero de parametros esperados, entero
 #           funcion -> nombre de la funcion, string
 def errorNumParams(numDado, numEsperado, funcion): 
-    message = "🚨ERROR DE COMPILACIÓN.\n🚨Type mismatch. Se han dado " + str(numDado) + " parametros cuando se esperaban " + str(numEsperado) + " parametros en la función " + funcion + "."
+    message = "🚨ERROR DE COMPILACIÓN.\n🚨Type mismatch. Se han dado " + str(numDado) + " parametros cuando se esperaban " + str(numEsperado) + " parametros en la función " + str(funcion) + "."
     sys.exit(message)
 
 # ERROR RETURN VOID
 # Aparece cuando una función void tiene un estatuto de retorno.
 # ENTRADAS: funcion -> nombre de la funcion, string
 def errorReturnVoid(funcion):
-    message = "🚨ERROR DE COMPILACIÓN.\n🚨 La funcion " + funcion + " es de tipo void. No puede tener un valor de retorno."
+    message = "🚨ERROR DE COMPILACIÓN.\n🚨 La funcion " + str(funcion) + " es de tipo void. No puede tener un valor de retorno."
     sys.exit(message)
 
 # ERROR TYPE MISMATCH
@@ -69,7 +69,14 @@ def errorReturnVoid(funcion):
 #           tipoEsperado -> tipo del elemento esperado, string
 #           funcion -> nombre de la funcion, string
 def errorTypeMismatchReturn(tipoDado, tipoEsperado, funcion):
-    message = "🚨ERROR DE COMPILACIÓN.\n🚨Type mismatch. Se esperaba regresar un valor " + tipoEsperado + " y se ha regresado un valor de tipo " + tipoDado + " para la funcion " + funcion
+    message = "🚨ERROR DE COMPILACIÓN.\n🚨Type mismatch. Se esperaba regresar un valor " + str(tipoEsperado) + " y se ha regresado un valor de tipo " + str(tipoDado) + " para la funcion " + str(funcion)
+    sys.exit(message)
+
+# ERROR ID NOT ARRAY
+# Aparece cuando se trata de hacer un acceso de arreglo a una variable que no fue declarada como arreglo
+# ENTRADAS:  id -> nombre de la variable
+def erroIDNotArray(id):
+    message = "🚨ERROR DE COMPILACIÓN.\n🚨 La variable " + str(id) + " no fue declarada como un arreglo."
     sys.exit(message)
 
 # ERROR FILE NOT FOUND
