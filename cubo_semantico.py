@@ -155,7 +155,7 @@ cuboSemantico = {
             "string" : "bool"
         }
     },
-    "=!" : {
+    "!=" : {
         "int": {
             "int" : "bool",
             "float": "bool",

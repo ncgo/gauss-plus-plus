@@ -8,7 +8,7 @@ class MapaDeMemoria():
         self.varLocalesInt = 10000
         self.varLocalesFloat = 12000
         self.varLocalesString = 14000
-        self.varLocalesBool = 15000
+        self.varLocalesBool = 16000
         self.tempsInt = 20000
         self.tempsFloat = 22000
         self.tempsString = 24000
@@ -67,4 +67,3 @@ class MapaDeMemoria():
             self.varsGauss += 1
             return self.varsGauss
 
-        
