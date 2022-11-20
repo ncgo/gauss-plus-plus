@@ -54,7 +54,7 @@ problema problema1(area = "Teoria de Números") {
 listaProb = [problema1]
 
 genera(orientacion, categoria, problemas, nombreArchivo) {
-    header(organizacion, fecha = "22 de sept 22", etapa)
+    header(organizacion, fecha, etapa)
     titulo("Examen Estatal")
     instrucciones("Contesta los siguientes problemas y entrega tu respuesta en una hoja separada. Tienes 50 minutos")
     problemasIncluidos(problemas, random = False)

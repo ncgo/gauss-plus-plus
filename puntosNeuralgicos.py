@@ -236,6 +236,70 @@ class PuntosNeuralgicos(Visitor):
         self.currProc().tablaVariables.addVar(varProblemas)
         self.currProc().tablaVariables.addVar(varNombreArchivo)
 
+    def header(self, tree):
+        organizacion = tree.children[2].children[0].value
+        if tree.children[2].children[0].type == "ID":
+            var = self.searchVar(organizacion)
+            quad = directorios.Cuadruplo(self.newQuad(), "GENERA", "HEADER", 0, var.virtualAddress)
+        else:
+            quad = directorios.Cuadruplo(self.newQuad(), "GENERA", "HEADER", 0, organizacion)
+        self.cuadruplos.append(quad)
+
+    def fecha(self, tree):
+        fecha = tree.children[0].children[0].value
+        if tree.children[0].children[0].type == "ID" and fecha != "fecha":
+            var = self.searchVar(fecha)
+            quad = directorios.Cuadruplo(self.newQuad(), "GENERA", "HEADER", 1, var.virtualAddress)
+        else:
+            quad = directorios.Cuadruplo(self.newQuad(), "GENERA", "HEADER", 1, fecha)
+        self.cuadruplos.append(quad)
+
+    def etapa(self, tree):
+        etapa = tree.children[0].children[0].value
+        if tree.children[0].children[0].type == "ID":
+            var = self.searchVar(etapa)
+            quad = directorios.Cuadruplo(self.newQuad(), "GENERA", "HEADER", 2, var.virtualAddress)
+        else:
+            quad = directorios.Cuadruplo(self.newQuad(), "GENERA", "HEADER", 2, etapa)
+        self.cuadruplos.append(quad)
+
+    def titulo(self, tree):
+        titulo = tree.children[2].children[0].value
+        if tree.children[2].children[0].type == "ID":
+            var = self.searchVar(titulo)
+            quad = directorios.Cuadruplo(self.newQuad(), "GENERA", "TITULO", 0, var.virtualAddress)
+        else:
+            quad = directorios.Cuadruplo(self.newQuad(), "GENERA", "TITULO", 0, titulo)
+        self.cuadruplos.append(quad)
+
+    def instrucciones(self, tree):
+        instrucciones = tree.children[2].children[0].value
+        if tree.children[2].children[0].type == "ID":
+            var = self.searchVar(instrucciones)
+            quad = directorios.Cuadruplo(self.newQuad(), "GENERA", "INSTRUCCIONES", 0, var.virtualAddress)
+        else:
+            quad = directorios.Cuadruplo(self.newQuad(), "GENERA", "INSTRUCCIONES", 0, instrucciones)
+        self.cuadruplos.append(quad)
+
+    def problemasincluidos(self, tree):
+        problemas = tree.children[2].value
+        var = self.currProc().tablaVariables.searchVar(problemas)
+        if (var != 0):
+            problemas = directorios.Cuadruplo(self.newQuad(), "GENERA", "PROBLEMASINCLUIDOS", 0, var.virtualAddress)
+            self.cuadruplos.append(problemas)
+            randomV = directorios.Cuadruplo(self.newQuad(), "GENERA", "PROBLEMASINCLUIDOS", 1, tree.children[6].children[0].value)
+            self.cuadruplos.append(randomV)
+
+    def footer(self, tree):
+        footer = tree.children[2].children[0].value
+        if tree.children[2].children[0].type == "ID":
+            var = self.searchVar(footer)
+            quad = directorios.Cuadruplo(self.newQuad(), "GENERA", "FOOTER", 0, var.virtualAddress)
+        else:
+            quad = directorios.Cuadruplo(self.newQuad(), "GENERA", "FOOTER", 0, footer)
+        self.cuadruplos.append(quad)
+
+
     # MAIN
     # Registro de proceso main en Directorio de Procedimientos
     def main(self, tree):

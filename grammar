@@ -125,12 +125,13 @@ np_listafin:
 
 genera: GENERA LPAR np_param_genera RPAR LCURLY header titulo instrucciones problemasincluidos footer RCURLY np_endfunc
 np_param_genera: ORIENTACION COMA CATEGORIA COMA PROBLEMAS COMA NOMBREARCHIVO
-header: HEADER LPAR ORGANIZACION COMA FECHA head1 COMA ETAPA RPAR
-head1: IGUAL CTESTRING | 
-titulo: TITULO LPAR CTESTRING RPAR
-instrucciones: INSTRUCCIONES LPAR CTESTRING RPAR
+header: HEADER LPAR varcte COMA fecha COMA etapa RPAR
+etapa: varcte
+fecha: varcte
+titulo: TITULO LPAR varcte RPAR
+instrucciones: INSTRUCCIONES LPAR varcte RPAR
 problemasincluidos: PROBLEMASINCLUIDOS LPAR PROBLEMAS COMA RANDOM IGUAL ctebool RPAR
-footer: FOOTER LPAR CATEGORIA RPAR 
+footer: FOOTER LPAR varcte RPAR 
 
 main: MAIN LPAR RPAR bloque np_endfunc
 
