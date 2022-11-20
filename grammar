@@ -118,7 +118,10 @@ np_opcionesdecfin:
 respuesta: RESPUESTA IGUAL varcte 
 
 listas: lista | 
-lista: ID IGUAL arr listas
+lista: ID IGUAL LCOR elista listas
+elista: ID elista1 RCOR np_listafin
+elista1: COMA ID elista1 |
+np_listafin:
 
 genera: GENERA LPAR np_param_genera RPAR LCURLY header titulo instrucciones problemasincluidos footer RCURLY np_endfunc
 np_param_genera: ORIENTACION COMA CATEGORIA COMA PROBLEMAS COMA NOMBREARCHIVO

@@ -50,7 +50,8 @@ problema problema1(area = "Teoria de Números") {
     respuesta = 19
 }
 
-listaProblemas = [problema1, problema2, problema3]
+// listaProblemas = [problema1, problema2, problema3]
+listaProb = [problema1]
 
 genera(orientacion, categoria, problemas, nombreArchivo) {
     header(organizacion, fecha = "22 de sept 22", etapa)

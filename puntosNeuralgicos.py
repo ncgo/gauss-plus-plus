@@ -577,6 +577,51 @@ class PuntosNeuralgicos(Visitor):
         quad = directorios.Cuadruplo(self.newQuad(), "RESPUESTA", valor, "", var.virtualAddress)
         self.cuadruplos.append(quad)
 
+    # LISTA
+    # Punto neuralgico que registra las variables de tipo listas
+    def lista(self, tree):
+        id = tree.children[0].value
+        var = directorios.Variable(id, "lista")
+        # Registro de la variable
+        self.currProc().tablaVariables.addVar(var)
+        # Se declara que la variable es un arreglo
+        var.isArray = True
+        self.pilaO.append(id)
+
+    # E LISTA
+    # Punto neuralgico que registra el valor del primer elemento de la lista
+    def elista(self, tree):
+        problema = tree.children[0].value
+        if self.directorioProcedimientos.searchProc(problema):
+            quad = directorios.Cuadruplo(self.newQuad(), "LISTA", tree.children[0].value, self.k, self.pilaO[-1])
+            self.cuadruplos.append(quad)
+            # Se incrementa el numero de elementos en 1
+            self.k += 1
+        
+    # E LISTA 1
+    #P Punto neuralgico que registra el valor del resto de los elementos de la lista
+    def elista1(self, tree):
+        try:
+            tree.children[1]
+        except:
+            next
+        else:
+            problema = tree.children[1].value
+            if self.directorioProcedimientos.searchProc(problema):
+                quad = directorios.Cuadruplo(self.newQuad(), "LISTA", problema, self.k, self.pilaO[-1])
+                self.cuadruplos.append(quad)
+                # Se incrementa el numero de elementos en 1
+                self.k += 1
+    
+    # NP LISTA FIN
+    # Punto neuralgico que da por finalizada la declaracion de la lista
+    def np_listafin(self, tree):
+        # Se suma la cantidad de elementos de la lista para las direcciones virtuales
+        self.memoria.updateByArray("lista", self.k, True)
+        # Se reestablece k
+        self.k = 0
+        self.pilaO.pop()
+
     # ESCRITURA
     # Punto neuralgico que agrega el operador de print a la pila de operadores
     def escritura(self, tree):

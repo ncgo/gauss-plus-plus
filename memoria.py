@@ -103,5 +103,5 @@ class MapaDeMemoria():
             self.varLocalesBool += R
         elif (type == "bool" and g == True):
             self.varGlobalesBool += R
-        elif (type == "respuesta" or type == "opciones" or type == "categorias"):
+        elif (type == "respuesta" or type == "opciones" or type == "categorias" or type == "lista"):
             self.varsGauss += R
