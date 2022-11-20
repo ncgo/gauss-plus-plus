@@ -98,7 +98,7 @@ np_fin_vars:
 np_asig_vars:
 
 modulos: modulo | 
-modulo: tipomod ID LPAR modids RPAR LCURLY np_mod vars arrdec np_vars_mod estatutos return RCURLY modulos np_endfunc
+modulo: tipomod ID LPAR modids RPAR LCURLY np_mod vars arrdec np_vars_mod estatutos return RCURLY np_endfunc modulos
 np_vars_mod: 
 np_mod:
 
@@ -111,7 +111,10 @@ printprob: PRINTP printprob1 printprob |
 printprob1: CTESTRING | printexpr | printimport
 printexpr: DOLLAR EXPR LPAR CTESTRING RPAR
 printimport: DOLLAR IMPORT LPAR PATH RPAR
-opciones: OPCIONES IGUAL arr | 
+opciones: OPCIONES IGUAL LCOR opcionesdec | 
+opcionesdec: varcte opcionesdec1 RCOR np_opcionesdecfin
+opcionesdec1: COMA varcte opcionesdec1 |
+np_opcionesdecfin:
 respuesta: RESPUESTA IGUAL varcte 
 
 listas: lista | 

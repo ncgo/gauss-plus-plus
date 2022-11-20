@@ -177,7 +177,7 @@ class PuntosNeuralgicos(Visitor):
         # Se cambia el contexto actual
         self.procActual = self.pilaProcedimientos[-1]
         # Se genera el cuadruplo para finalizar la funcion
-        quad = directorios.Cuadruplo(self.newQuad(), 'ENDFUNC', '', '', '')
+        quad = directorios.Cuadruplo(self.newQuad(), 'ENDFUNC', '', '', proc.nombre)
         self.cuadruplos.append(quad)
         # Se inserta al Directorio de Procedimientos el numero de variables temporales utilizadas
         proc.addTemps(self.temp)
@@ -270,7 +270,7 @@ class PuntosNeuralgicos(Visitor):
     # Punto neuralgico que registra la variable categorias en la Tabla de Variables
     def categoriasdec(self, tree):
         # Registro de variable categorias
-        categorias = directorios.Variable(tree.children[0].value, "string", tree.children[0].value)
+        categorias = directorios.Variable(tree.children[0].value, "string")
         categorias.virtualAddress = self.memoria.virtualAddress("string", True)
         # Se declara que la variable categorias es un arreglo
         categorias.isArray = True
@@ -294,6 +294,7 @@ class PuntosNeuralgicos(Visitor):
         else:
             quad = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[1].value, self.k, "categorias")
             self.cuadruplos.append(quad)
+            # Se incrementa en 1 el numero de categorias
             self.k += 1
 
     # NP CAT DEC FIN
@@ -456,7 +457,7 @@ class PuntosNeuralgicos(Visitor):
                 quad = directorios.Cuadruplo(self.newQuad(), operator, resultado, "", id)
                 self.cuadruplos.append(quad)
             else:
-                errores.errorTypeMismatch(resultado, id, operator)
+                errores.errorTypeMismatch(resultado_type, id_operand_type, operator)
 
     # PRINT PROB
     # Punto neuralgico que agrega el simbolo de impresion de problema a la pila de operadores
@@ -521,20 +522,48 @@ class PuntosNeuralgicos(Visitor):
                 errores.errorTypeMismatch(imp, "", operator)
 
     # OPCIONES
-    # Punto neuralgico que registra las opciones de un problema
+    # Punto neuralgico que registra la variable problema
     def opciones(self, tree):
         try:
             tree.children
         except:
             next
         else:
-            opciones = tree.children[0].value
-            var = directorios.Variable(opciones, "opciones")
-            var.virtualAddress = self.memoria.virtualAddress("opciones")
-            self.currProc().tablaVariables.addVar(var)
-            self.pilaO.append(opciones)
-            self.pilaTipos.append("opciones")
-            self.pOper.append(tree.children[1])
+            # Registro de la variable opciones
+            opciones = directorios.Variable(tree.children[0].value, "string")
+            opciones.virtualAddress = self.memoria.virtualAddress("opciones")
+            # Se declara que la variable opciones es un arreglo
+            opciones.isArray = True
+            self.currProc().tablaVariables.addVar(opciones)
+
+    # OPCIONES DEC
+    # Punto neuralgico que registra el primer valor de la variable opciones
+    def opcionesdec(self, tree):
+        quad = directorios.Cuadruplo(self.newQuad(), "OPCIONES", tree.children[0].children[0].value, self.k, "opciones")
+        self.cuadruplos.append(quad)
+        # Se incrementa el numero de opciones en 1
+        self.k += 1
+
+    # OPCIONES DEC 1
+    # Punto neuralgico que registra los valroes del resto de las opciones
+    def opcionesdec1(self, tree):
+        try:
+            tree.children[1].children[0].value
+        except:
+            next
+        else:
+            quad = directorios.Cuadruplo(self.newQuad(), "OPCIONES", tree.children[1].children[0].value, self.k, "opciones")
+            self.cuadruplos.append(quad)
+            # Se incrementa en 1 el numero de opciones
+            self.k += 1
+
+    # NP OPCIONES DEC FIN
+    # Punto neuralgico que da por finalizada la declaracion de opciones
+    def np_opcionesdecfin(self, tree):
+        # Se suma la cantidad de opciones para las direcciones virtuales
+        self.memoria.updateByArray("string", self.k)
+        # Se reestablece k
+        self.k = 0
 
     # RESPUESTA
     # Punto neuralgico que registra la respuesta de un problema
@@ -549,7 +578,7 @@ class PuntosNeuralgicos(Visitor):
         self.cuadruplos.append(quad)
 
     # ESCRITURA
-    # Punto neuralgico que agrega el operador d eprint a la pila de operadores
+    # Punto neuralgico que agrega el operador de print a la pila de operadores
     def escritura(self, tree):
         operador = tree.children[0].value
         self.pOper.append(operador)
@@ -754,7 +783,6 @@ class PuntosNeuralgicos(Visitor):
             node = directorios.NodoArreglo(1, 1, "help1")
             var = self.currProc().tablaVariables.searchVar(self.pilaO[-1])
             var.nodosArreglo.append(node)
-            print(tree)
 
     # ARR SIZE
     # Punto neuralgico que registra los limites superiores de las dimensiones y hace el calculo de R
@@ -809,8 +837,6 @@ class PuntosNeuralgicos(Visitor):
     def np_arracc(self, tree):
         id = self.pilaDim[0][0]
         var = self.searchVar(id)
-        print(var.nombre)
-        print(var.nodosArreglo)
         # nodo = var.nodosArreglo[self.pilaDim[0][1] - 1]
         # print(nodo.help)
         # quad = directorios.Cuadruplo(self.newQuad(), "VERIFY", nodo.li, nodo.ls, self.pilaO[-1] )
