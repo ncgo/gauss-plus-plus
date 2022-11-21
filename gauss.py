@@ -14,4 +14,4 @@ tree = parser.parse(open("code/test1",'r').read())
 # Se genera el código intermedio
 puntosNeuralgicos.PuntosNeuralgicos().visit_topdown(tree)
 # El código intermedio es ejecutado por la máquina virtual
-# maquinaVirtual.main()
+maquinaVirtual.main()
