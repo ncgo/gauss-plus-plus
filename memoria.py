@@ -7,10 +7,58 @@
 
 class MemoriaLocal():
     def __init__(self):
-        self.varsInt = []
-        self.varsFloat = []
-        self.varsString = []
-        self.varsBool = []
+        self.memoria = MapaDeMemoria()
+        self.varsInt = [None] * 1000
+        self.varsFloat = [None] * 1000
+        self.varsString = [None] * 1000
+        self.varsBool = [None] * 1000
+        self.tempsInt = [None] * 1000
+        self.tempsFloat = [None] * 1000
+        self.tempsString = [None] * 1000
+        self.tempsBool = [None] * 1000
+        self.tempsPointer = [None] * 1000
+
+    def index(self, dir, result):
+        if dir >= self.memoria.varLocalesInt and dir < self.memoria.varLocalesFloat:
+            self.varsInt[dir - self.memoria.varLocalesInt] = result
+        elif dir >= self.memoria.varLocalesFloat and dir < self.memoria.varLocalesString:
+            self.varsFloat[dir - self.memoria.varLocalesFloat] = result
+        elif dir >= self.memoria.varLocalesString and dir < self.memoria.varLocalesBool:
+            self.varsString[dir - self.memoria.varLocalesString] = result
+        elif dir >= self.memoria.varLocalesBool and dir < (self.memoria.varLocalesBool + 2000):
+            self.varsBool[dir - self.memoria.varLocalesBool] = result
+        elif dir >= self.memoria.tempsInt and dir < self.memoria.tempsFloat:
+            self.tempsInt[dir - self.memoria.tempsInt] = result
+        elif dir >= self.memoria.tempsFloat and dir < self.memoria.tempsString:
+            self.tempsFloat[dir - self.memoria.tempsFloat] = result
+        elif dir >= self.memoria.tempsString and dir < self.memoria.tempsBool:
+            self.tempsString[dir - self.memoria.tempsString] = result
+        elif dir >= self.memoria.tempsBool and dir < self.memoria.tempsPointers:
+            self.tempsBool[dir - self.memoria.tempsBool] = result
+        elif dir >= self.memoria.tempsPointers and dir < (self.memoria.tempsPointers + 2000):
+            self.tempsPointer[dir - self.memoria.tempsPointers] = result
+
+    def value(self, dir):
+        if dir >= self.memoria.varLocalesInt and dir < self.memoria.varLocalesFloat:
+            return self.varsInt[dir - self.memoria.varLocalesInt]
+        elif dir >= self.memoria.varLocalesFloat and dir < self.memoria.varLocalesString:
+            return self.varsFloat[dir - self.memoria.varLocalesFloat]
+        elif dir >= self.memoria.varLocalesString and dir < self.memoria.varLocalesBool:
+            return self.varsString[dir - self.memoria.varLocalesString]
+        elif dir >= self.memoria.varLocalesBool and dir < (self.memoria.varLocalesBool + 2000):
+            return self.varsBool[dir - self.memoria.varLocalesBool]
+        elif dir >= self.memoria.tempsInt and dir < self.memoria.tempsFloat:
+            return self.tempsInt[dir - self.memoria.tempsInt]
+        elif dir >= self.memoria.tempsFloat and dir < self.memoria.tempsString:
+            return self.tempsFloat[dir - self.memoria.tempsFloat]
+        elif dir >= self.memoria.tempsString and dir < self.memoria.tempsBool:
+            return self.tempsString[dir - self.memoria.tempsString]
+        elif dir >= self.memoria.tempsBool and dir < self.memoria.tempsPointers:
+            return self.tempsBool[dir - self.memoria.tempsBool]
+        elif dir >= self.memoria.tempsPointers and dir < (self.memoria.tempsPointers + 2000):
+            return self.tempsPointer[dir - self.memoria.tempsPointers]
+
+    
 
 class MapaDeMemoria():
     def __init__(self):
@@ -21,22 +69,28 @@ class MapaDeMemoria():
         self.varGlobalesFloat = 3000
         self.varGlobalesString = 5000
         self.varGlobalesBool = 7000
+        # TEMPORALES GLOBALES
+        self.tempsGlobalesInt = 20000
+        self.tempsGlobalesFloat = 22000
+        self.tempsGlobalesString = 24000
+        self.tempsGlobalesBool = 26000
+        self.tempsGlobalesPointers = 28000
         # VARIABLES LOCALES
-        self.varLocalesInt = 10000
-        self.varLocalesFloat = 12000
-        self.varLocalesString = 14000
-        self.varLocalesBool = 16000
-        # TEMPORALES
-        self.tempsInt = 20000
-        self.tempsFloat = 22000
-        self.tempsString = 24000
-        self.tempsBool = 26000
-        self.tempsPointers = 28000
+        self.varLocalesInt = 20000
+        self.varLocalesFloat = 22000
+        self.varLocalesString = 24000
+        self.varLocalesBool = 26000
+        # TEMPORALES LOCALES
+        self.tempsInt = 30000
+        self.tempsFloat = 32000
+        self.tempsString = 34000
+        self.tempsBool = 36000
+        self.tempsPointers = 38000
         # CONSTANTES
-        self.ctesInt = 30000
-        self.ctesFloat = 32000
-        self.ctesString = 34000
-        self.cteBool = 36000
+        self.ctesInt = 40000
+        self.ctesFloat = 42000
+        self.ctesString = 44000
+        self.cteBool = 46000
     
     # AVAIL NEXT
     # Funcion auxiliar que regresa el siguiente temporal 

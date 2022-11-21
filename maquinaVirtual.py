@@ -5,6 +5,7 @@
 # Nadia Corina Garcia Orozco A01242428
 # Noviembre, 2022
 import errores
+import memoria
 
 # MAQUINA VIRTUAL
 # Clase que maneja la ejecución con base al código intermedio
@@ -14,7 +15,39 @@ class MaquinaVirtual():
         self.ip = 0             # Instruction Pointer
         self.instancias = []
         self.memGlobalGauss = [None] * 1000
+        self.varsGlobalesInt = [None] * 1000
+        self.varsGlobalesFloat = [None] * 1000
+        self.varsGlobalesString = [None] * 1000
+        self.varsGlobalesBool = [None] * 1000
+        self.tempsGlobalesInt = [None] * 1000
+        self.tempsGlobalesFloat = [None] * 1000
+        self.tempsGlobalesString = [None] * 1000
+        self.tempsGlobalesBool = [None] * 1000
+        self.tempsGlobalesPointers = [None] * 1000
+        self.memoria = memoria.MapaDeMemoria()
 
+    def index(self, dir, result):
+        if dir >= self.memoria.varsGauss and dir < self.memoria.varGlobalesInt:
+            self.memGlobalGauss[dir] = result
+        elif dir >= self.memoria.varGlobalesInt and dir < self.memoria.varGlobalesFloat:
+            self.varsGlobalesInt[dir - self.memoria.varGlobalesInt] = result
+        elif dir >= self.memoria.varGlobalesFloat and dir < self.memoria.varGlobalesString:
+            self.varsGlobalesFloat[dir - self.memoria.varGlobalesFloat] = result
+        elif dir >= self.memoria.varGlobalesString and dir < self.memoria.varGlobalesBool:
+            self.varsGlobalesString[dir - self.memoria.varGlobalesString] = result
+        elif dir >= self.memoria.varGlobalesBool and self.memoria.tempsGlobalesInt:
+            self.varsGlobalesBool[dir - self.memoria.varGlobalesBool] = result
+        elif dir >= self.memoria.tempsGlobalesInt and dir < self.memoria.tempsGlobalesFloat:
+            self.tempsGlobalesInt[dir - self.memoria.tempsGlobalesInt] = result
+        elif dir >= self.memoria.tempsGlobalesFloat and dir < self.memoria.tempsGlobalesString:
+            self.tempsGlobalesFloat[dir - self.memoria.tempsGlobalesFloat] = result
+        elif dir >= self.memoria.tempsGlobalesString and dir < self.memoria.tempsGlobalesBool:
+            self.tempsGlobalesString[dir - self.memoria.tempsGlobalesString] = result
+        elif dir >= self.memoria.tempsGlobalesBool and dir < self.memoria.varLocalesInt:
+            self.tempsGlobalesBool[dir - self.memoria.tempsGlobalesBool] = result
+        else:
+            self.instancias[-1].index(dir, result)
+    
     # EJECUTAR
     # Funcion que maneja la ejecucion
     def ejecutar(self):
@@ -42,15 +75,17 @@ class MaquinaVirtual():
             elif op == "INFO":
                 # Indexa las variables de tipo arreglo en la memoria global
                 if right_operand != "":
-                    self.memGlobalGauss[int(result) - 5000 + int(right_operand)] = left_operand
+                    self.index(int(result) + int(right_operand), left_operand)
+                    # self.memGlobalGauss[int(result) - 5000 + int(right_operand)] = left_operand
                 # Indexa el resto de las variables en la memoria gloabl
                 else:
-                    self.memGlobalGauss[int(result) - 5000] = left_operand
+                    self.index(int(result), left_operand)
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
             # OPERACION = 
             elif op == "=":
+                self.index(int(result), left_operand)
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
@@ -106,8 +141,11 @@ class MaquinaVirtual():
 
             # OPERACION GOTOF
             elif op == "GOTOF":
-                # Se incrementa el IP en uno para pasar al siguiente cuadruplo
-                self.ip += 1
+                if ():
+                    self.ip = int(result)
+                else:
+                    # Se incrementa el IP en uno para pasar al siguiente cuadruplo
+                    self.ip += 1
 
             # OPERACION PRINT
             elif op == "PRINT":
@@ -132,6 +170,8 @@ class MaquinaVirtual():
 
             # OPERACION ERA
             elif op == "ERA":
+                instancia = memoria.MemoriaLocal()
+                self.instancias.append(instancia)
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
@@ -143,7 +183,7 @@ class MaquinaVirtual():
             # OPERACION GOSUB
             elif op == "GOSUB":
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
-                self.ip += 1
+                self.ip = int(result)
 
             # OPERACION AREA
             elif op == "AREA":
