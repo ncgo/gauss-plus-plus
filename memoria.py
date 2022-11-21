@@ -82,26 +82,26 @@ class MapaDeMemoria():
         elif (type == "bool" and g == True):
             self.varGlobalesBool += 1
             return self.varGlobalesBool
-        elif (type == "respuesta" or type == "opciones"):
+        elif (type == "respuesta" or type == "opciones" or type == "lista" or type == "categorias"):
             self.varsGauss += 1
             return self.varsGauss
 
     def updateByArray(self, type, R, g = False):
         if (type == "int" and g == False):
-            self.varLocalesInt += R
+            self.varLocalesInt += R - 1
         elif (type == "int" and g == True):
-            self.varGlobalesInt += R
+            self.varGlobalesInt += R - 1
         elif (type == "float" and g == False):
-            self.varLocalesFloat += R
+            self.varLocalesFloat += R - 1
         elif (type == "float" and g == True):
-            self.varGlobalesFloat += R
+            self.varGlobalesFloat += R - 1
         elif (type == "string" and g == False):
-            self.varLocalesString += R
+            self.varLocalesString += R - 1
         elif (type == "string" and g == True):
-            self.varGlobalesString += R
+            self.varGlobalesString += R - 1
         elif (type == "bool" and g == False):
-            self.varLocalesBool += R
+            self.varLocalesBool += R - 1
         elif (type == "bool" and g == True):
-            self.varGlobalesBool += R
+            self.varGlobalesBool += R - 1
         elif (type == "respuesta" or type == "opciones" or type == "categorias" or type == "lista"):
-            self.varsGauss += R
+            self.varsGauss += R - 1 

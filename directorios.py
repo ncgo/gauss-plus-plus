@@ -177,3 +177,14 @@ class Cuadruplo():
     # ENTRADAS: fill -> valor a rellenar el resultado
     def fillCuadruplo(self, fill):
         self.result = fill
+
+class TablaConstantes():
+    def __init__(self):
+        self.tablaConstantes = []
+    
+
+class Constante():
+    def __init__(self, valor, tipo, virtualAddress):
+        self.valor = valor
+        self.tipo = tipo
+        self.virtualAddress = virtualAddress

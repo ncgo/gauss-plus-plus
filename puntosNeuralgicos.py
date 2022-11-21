@@ -28,6 +28,7 @@ class PuntosNeuralgicos(Visitor):
         self.k = 0                              # Auxiliar para el registro de parametros
         self.memoria = memoria.MapaDeMemoria()  # Memoria
         self.pilaDim = []                       # Pila que auxilia con el acceso a arreglos
+        self.tablaConstantes = None
 
     # CREATE OBJ FILE
     # Funcion auxiliar que genera el archivo de codigo objeto con lso cuadruplso generados por el programa a ser ejecutado por la maquina virtual
@@ -96,8 +97,10 @@ class PuntosNeuralgicos(Visitor):
         # Se agrega el procedimiento a la Pila de Procedimientos para mantener el contexto
         self.pilaProcedimientos.append(nombre)
         # Se crea el cuádruplo de regsitro de programa
-        quad = directorios.Cuadruplo(self.newQuad(), "PROGRAM", "", "", "nombre")
+        quad = directorios.Cuadruplo(self.newQuad(), "PROGRAM", "", "", nombre)
         self.cuadruplos.append(quad)
+        # Se crea la tabla de Constantes
+        self.tablaConstantes = directorios.TablaConstantes()
 
     # NP MAIN
     # Punto neuralgico que llama la funcion de main despues de procesar las variables globales
@@ -218,6 +221,7 @@ class PuntosNeuralgicos(Visitor):
         self.directorioProcedimientos.addProc(generaProc)
         # Se agrega el procedimiento genera a la Pila de Procedimientos para mantener el contexto
         self.pilaProcedimientos.append(tree.children[0].value)
+        generaProc.addStartQuadruple(self.quadCounter + 1)
 
     # NP PARAM GENERA
     # Registra los parametros de la funcion genera
@@ -226,16 +230,20 @@ class PuntosNeuralgicos(Visitor):
         varOrientacion.virtualAddress = self.memoria.virtualAddress("string")
         varCategoria = directorios.Variable(tree.children[2].value, "string")
         varCategoria.virtualAddress = self.memoria.virtualAddress("string")
-        varProblemas = directorios.Variable(tree.children[4].value, "string")
-        varProblemas.virtualAddress = self.memoria.virtualAddress("string")
+        varProblemas = directorios.Variable(tree.children[4].value, "lista")
+        varProblemas.virtualAddress = self.memoria.virtualAddress("lista")
         varProblemas.isArray = True
         varNombreArchivo = directorios.Variable(tree.children[5].value, "string")
         varNombreArchivo.virtualAddress = self.memoria.virtualAddress("string")
         # Se agregan los parametros como variables a la Tabla de Variables del programa
         self.currProc().tablaVariables.addVar(varOrientacion)
+        self.currProc().addParam("string")
         self.currProc().tablaVariables.addVar(varCategoria)
+        self.currProc().addParam("string")
         self.currProc().tablaVariables.addVar(varProblemas)
+        self.currProc().addParam("lista")
         self.currProc().tablaVariables.addVar(varNombreArchivo)
+        self.currProc().addParam("string")
 
     # HEADER
     # Punto neuralgico que registra el primer valor del Header
@@ -335,15 +343,15 @@ class PuntosNeuralgicos(Visitor):
     def info(self, tree):
         # Registro de variable organizacion
         organizacion = directorios.Variable(tree.children[0].value, "string", tree.children[2].value)
-        organizacion.virtualAddress = self.memoria.virtualAddress("string")
+        organizacion.virtualAddress = self.memoria.virtualAddress("string", True)
         self.currProc().tablaVariables.addVar(organizacion)
-        quadOrg = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[2].value, '', tree.children[0].value)
+        quadOrg = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[2].value, '', organizacion.virtualAddress)
         
         # Registro de variable etapa
         etapa = directorios.Variable(tree.children[3].value, "string", tree.children[5].value)
-        etapa.virtualAddress = self.memoria.virtualAddress("string")
+        etapa.virtualAddress = self.memoria.virtualAddress("string", True)
         self.currProc().tablaVariables.addVar(etapa)
-        quadEtapa = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[5].value, '', tree.children[3].value)
+        quadEtapa = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[5].value, '', etapa.virtualAddress)
 
         # Se agregan los cuadruplos a la lista de cuadruplos
         self.cuadruplos.extend([quadOrg, quadEtapa])
@@ -361,7 +369,8 @@ class PuntosNeuralgicos(Visitor):
     # CAT DEC
     # Punto neuralgico que registra el valor de la primer categoria
     def catdec(self, tree):
-        quad = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[0].value, self.k, "categorias")
+        var = self.searchVar("categorias")
+        quad = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[0].value, self.k, var.virtualAddress)
         self.cuadruplos.append(quad)
         # Se incrementa el numero de categorias en 1
         self.k += 1
@@ -374,7 +383,8 @@ class PuntosNeuralgicos(Visitor):
         except:
             next
         else:
-            quad = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[1].value, self.k, "categorias")
+            var = self.searchVar("categorias")
+            quad = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[1].value, self.k, var.virtualAddress)
             self.cuadruplos.append(quad)
             # Se incrementa en 1 el numero de categorias
             self.k += 1
@@ -621,7 +631,8 @@ class PuntosNeuralgicos(Visitor):
     # OPCIONES DEC
     # Punto neuralgico que registra el primer valor de la variable opciones
     def opcionesdec(self, tree):
-        quad = directorios.Cuadruplo(self.newQuad(), "OPCIONES", tree.children[0].children[0].value, self.k, "opciones")
+        var = self.searchVar("opciones")
+        quad = directorios.Cuadruplo(self.newQuad(), "OPCIONES", tree.children[0].children[0].value, self.k, var.virtualAddress)
         self.cuadruplos.append(quad)
         # Se incrementa el numero de opciones en 1
         self.k += 1
@@ -634,7 +645,8 @@ class PuntosNeuralgicos(Visitor):
         except:
             next
         else:
-            quad = directorios.Cuadruplo(self.newQuad(), "OPCIONES", tree.children[1].children[0].value, self.k, "opciones")
+            var = self.searchVar("opciones")
+            quad = directorios.Cuadruplo(self.newQuad(), "OPCIONES", tree.children[1].children[0].value, self.k, var.virtualAddress)
             self.cuadruplos.append(quad)
             # Se incrementa en 1 el numero de opciones
             self.k += 1
@@ -666,6 +678,7 @@ class PuntosNeuralgicos(Visitor):
         var = directorios.Variable(id, "lista")
         # Registro de la variable
         self.currProc().tablaVariables.addVar(var)
+        var.virtualAddress = self.memoria.virtualAddress("lista", True)
         # Se declara que la variable es un arreglo
         var.isArray = True
         self.pilaO.append(id)
@@ -675,7 +688,8 @@ class PuntosNeuralgicos(Visitor):
     def elista(self, tree):
         problema = tree.children[0].value
         if self.directorioProcedimientos.searchProc(problema):
-            quad = directorios.Cuadruplo(self.newQuad(), "LISTA", tree.children[0].value, self.k, self.pilaO[-1])
+            var = self.searchVar(self.pilaO[-1])
+            quad = directorios.Cuadruplo(self.newQuad(), "LISTA", tree.children[0].value, self.k, var.virtualAddress)
             self.cuadruplos.append(quad)
             # Se incrementa el numero de elementos en 1
             self.k += 1
@@ -690,7 +704,8 @@ class PuntosNeuralgicos(Visitor):
         else:
             problema = tree.children[1].value
             if self.directorioProcedimientos.searchProc(problema):
-                quad = directorios.Cuadruplo(self.newQuad(), "LISTA", problema, self.k, self.pilaO[-1])
+                var = self.searchVar(self.pilaO[-1])
+                quad = directorios.Cuadruplo(self.newQuad(), "LISTA", problema, self.k, var.virtualAddress)
                 self.cuadruplos.append(quad)
                 # Se incrementa el numero de elementos en 1
                 self.k += 1
@@ -725,10 +740,13 @@ class PuntosNeuralgicos(Visitor):
     def escr2(self, tree):
         self.pOper.append("print")
 
+    # LECTURA
+    # Punto neuralgico que maneja la lectura 
     def lectura(self, tree):
         id = tree.children[2].value
         if self.searchVar(id) != 0:
-            quad = directorios.Cuadruplo(self.newQuad(), "READ", "", "", id)
+            var = self.searchVar(id)
+            quad = directorios.Cuadruplo(self.newQuad(), "READ", "", "", var.virtualAddress)
             self.cuadruplos.append(quad)
 
     # NP COND

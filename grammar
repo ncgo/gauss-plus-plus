@@ -103,7 +103,7 @@ np_vars_mod:
 np_mod:
 
 problemas: problema | 
-problema: PROBLEMA ID LPAR np_param_prob prob1 RPAR LCURLY categoria printprob opciones respuesta RCURLY np_endfunc
+problema: PROBLEMA ID LPAR np_param_prob prob1 RPAR LCURLY categoria printprob opciones respuesta RCURLY np_endfunc problemas
 np_param_prob: AREA IGUAL CTESTRING
 prob1: COMA ID prob1 | 
 categoria: CATEGORIA IGUAL arracc | 

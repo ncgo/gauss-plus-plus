@@ -50,8 +50,18 @@ problema problema1(area = "Teoria de Números") {
     respuesta = 19
 }
 
+problema problema2(area = "Teoria de Números") {
+    categoria = categorias[0]
+    >> "Considera cinco números de menor a mayor" 
+    >> $expr("a<b<c<d<e") 
+    >> ". Después de que se calculan las 10 sumas de cada pareja de números se sabe que las tres sumas más pequeñas son 32, 36 y 37, mientras que las sumas más grandes son 48 y 51. ¿Cuánto vale e?"
+    opciones = [16, 17, 18, 19, "No se puede saber"]
+    respuesta = 19
+}
+
 // listaProblemas = [problema1, problema2, problema3]
-listaProb = [problema1]
+listaProb = [problema1, problema2]
+lista2 = [problema1]
 
 genera(orientacion, categoria, problemas, nombreArchivo) {
     header(organizacion, fecha, etapa)
@@ -62,7 +72,7 @@ genera(orientacion, categoria, problemas, nombreArchivo) {
 } 
 
 main() {
-    hello(2)
-    genera()
+    hello(4)
+    genera("vertical", "categorias[1]", lista2, "principiantes")
     read(apellido)
 }
