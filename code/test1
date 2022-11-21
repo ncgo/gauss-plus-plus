@@ -42,7 +42,7 @@ int genial() {
 }
 
 problema problema1(area = "Teoria de Números") {
-    categoria = categorias[0]
+    // categoria = categorias[0]
     >> "Considera cinco números de menor a mayor" 
     >> $expr("a<b<c<d<e") 
     >> ". Después de que se calculan las 10 sumas de cada pareja de números se sabe que las tres sumas más pequeñas son 32, 36 y 37, mientras que las sumas más grandes son 48 y 51. ¿Cuánto vale e?"
@@ -51,7 +51,7 @@ problema problema1(area = "Teoria de Números") {
 }
 
 problema problema2(area = "Teoria de Números") {
-    categoria = categorias[0]
+    // categoria = categorias[0]
     >> "Considera cinco números de menor a mayor" 
     >> $expr("a<b<c<d<e") 
     >> ". Después de que se calculan las 10 sumas de cada pareja de números se sabe que las tres sumas más pequeñas son 32, 36 y 37, mientras que las sumas más grandes son 48 y 51. ¿Cuánto vale e?"

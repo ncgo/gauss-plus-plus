@@ -149,13 +149,12 @@ class Variable():
 # Clase que representa los nodos de las dimensiones de un arreglo
 # para auxiliar en la indexación de los elementos y su acceso
 class NodoArreglo():
-    def __init__(self, dim = 1, r = 1, help = "help"):
+    def __init__(self, dim = 1, r = 1):
         self.dim = dim  # Numero de dimension 
         self.r = r      # R 
         self.li = 0     # Limite inferior. Gauss++ indexa desde 0.
         self.ls = 0     # Limite superior
         self.m = 1      # M
-        self.help = help
 
 # CUADRUPLO
 # Clase que representa un cuadruplo

@@ -523,11 +523,14 @@ class PuntosNeuralgicos(Visitor):
     # ASIGNACION
     # Agrega la variable a ser asignada a la Pila de operandos y su tipo a la fila de tipos
     def asignacion(self, tree):
-        id = tree.children[0].value
-        # Verifica que la variable ya haya sido declarada
-        var = self.searchVar(id)
-        self.pilaO.append(var.virtualAddress)
-        self.pilaTipos.append(var.tipo)
+        try:
+            id = tree.children[0].value
+            # Verifica que la variable ya haya sido declarada
+            var = self.searchVar(id)
+            self.pilaO.append(var.virtualAddress)
+            self.pilaTipos.append(var.tipo)
+        except:
+            next
 
     # ASIG2
     # Agrega el operador a la pila de operadores
@@ -933,7 +936,7 @@ class PuntosNeuralgicos(Visitor):
             var.isArray = True
             # NP 3
             # Se agrega un nuevo nodo para guardar información de las dimensiones
-            node = directorios.NodoArreglo(1, 1, "help1")
+            node = directorios.NodoArreglo(1, 1)
             var = self.currProc().tablaVariables.searchVar(self.pilaO[-1])
             var.nodosArreglo.append(node)
 
@@ -977,9 +980,15 @@ class PuntosNeuralgicos(Visitor):
         # Calcula la siguiente direccion virtual 
         self.memoria.updateByArray(tipo, aux)
 
+    # ARR ACC
+    # Punto neuralgico que maneja el acceso a un arreglo
     def arracc(self, tree):
+        # NP 1
         id = tree.children[0].value
         var = self.searchVar(id)
+        # NP 2
+        # Se verifica que la variable sea un arreglo
+        # y que tenga dimensiones
         if var.isArray == True:
             dim = 1
             self.pilaDim.append([id, dim])
@@ -987,13 +996,25 @@ class PuntosNeuralgicos(Visitor):
         else:
             errores.erroIDNotArray(id)
 
+    # ARR ACC
+    # Punto neuralgico que registra los accesos
     def np_arracc(self, tree):
         id = self.pilaDim[0][0]
         var = self.searchVar(id)
-        # nodo = var.nodosArreglo[self.pilaDim[0][1] - 1]
-        # print(nodo.help)
-        # quad = directorios.Cuadruplo(self.newQuad(), "VERIFY", nodo.li, nodo.ls, self.pilaO[-1] )
-        # self.cuadruplos.append(quad)
+        dim = self.pilaDim[0][1]
+        nodo = var.nodosArreglo[dim - 1]
+        # NP 3
+        # Se rea el cuadruplo para verificar limites
+        quad = directorios.Cuadruplo(self.newQuad(), "VERIFY", nodo.li, nodo.ls, self.pilaO[-1] )
+        self.cuadruplos.append(quad)
+        try:
+            var.nodosArreglo[dim]
+        except:
+            next
+        else:
+            aux = self.pilaO.pop()
+            quad = directorios.Cuadruplo(self.newQuad(), "*", aux, nodo.m, self.memoria.availNext("int"))
+            self.cuadruplos.append(quad)
 
     # NP END
     # Punto neuralgico que marca el fin del programa

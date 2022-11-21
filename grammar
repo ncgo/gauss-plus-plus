@@ -176,8 +176,7 @@ np_llamfunc2:
 
 tipo: INT | FLOAT | STRING | BOOL
 
-asignacion: ID asig1 IGUAL asig2 np_asig
-asig1: LCOR CTEINT RCOR | 
+asignacion: ID IGUAL asig2 np_asig | arracc IGUAL asig2 
 asig2: expresion | np_llamfunc1 llamadafunc np_llamfunc2 | arracc
 np_asig:
 
