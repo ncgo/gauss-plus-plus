@@ -181,9 +181,24 @@ class TablaConstantes():
     def __init__(self):
         self.tablaConstantes = []
     
+    def addCte(self, cte):
+        self.tablaConstantes.append(cte)
+
+    # CREATE CTE TABLE FILE
+    # Funcion auxiliar que genera el archivo de la tabla de constantes
+    def createCteTable(self):
+        f = open("ctetable", "w")
+        for x in self.tablaConstantes:
+            f.write(x.cteFormat() + '\n')
+        f.close()
+
+    
 
 class Constante():
     def __init__(self, valor, tipo, virtualAddress):
         self.valor = valor
         self.tipo = tipo
         self.virtualAddress = virtualAddress
+
+    def cteFormat(self):
+        return (str(self.virtualAddress) + '@' + str(self.valor))

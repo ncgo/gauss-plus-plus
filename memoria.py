@@ -19,7 +19,9 @@ class MemoriaLocal():
         self.tempsPointer = [None] * 1000
 
     def index(self, dir, result):
-        if dir >= self.memoria.varLocalesInt and dir < self.memoria.varLocalesFloat:
+        if dir >= self.memoria.varLocalesGauss and dir < self.memoria.varLocalesInt:
+            self.varsInt[dir - self.memoria.varLocalesGauss] = result
+        elif dir >= self.memoria.varLocalesInt and dir < self.memoria.varLocalesFloat:
             self.varsInt[dir - self.memoria.varLocalesInt] = result
         elif dir >= self.memoria.varLocalesFloat and dir < self.memoria.varLocalesString:
             self.varsFloat[dir - self.memoria.varLocalesFloat] = result
@@ -39,7 +41,9 @@ class MemoriaLocal():
             self.tempsPointer[dir - self.memoria.tempsPointers] = result
 
     def value(self, dir):
-        if dir >= self.memoria.varLocalesInt and dir < self.memoria.varLocalesFloat:
+        if dir >= self.memoria.varLocalesGauss and dir < self.memoria.varLocalesInt:
+            return self.varsInt[dir - self.memoria.varLocalesGauss]
+        elif dir >= self.memoria.varLocalesInt and dir < self.memoria.varLocalesFloat:
             return self.varsInt[dir - self.memoria.varLocalesInt]
         elif dir >= self.memoria.varLocalesFloat and dir < self.memoria.varLocalesString:
             return self.varsFloat[dir - self.memoria.varLocalesFloat]
@@ -70,16 +74,17 @@ class MapaDeMemoria():
         self.varGlobalesString = 5000
         self.varGlobalesBool = 7000
         # TEMPORALES GLOBALES
-        self.tempsGlobalesInt = 20000
-        self.tempsGlobalesFloat = 22000
-        self.tempsGlobalesString = 24000
-        self.tempsGlobalesBool = 26000
-        self.tempsGlobalesPointers = 28000
+        self.tempsGlobalesInt = 10000
+        self.tempsGlobalesFloat = 12000
+        self.tempsGlobalesString = 14000
+        self.tempsGlobalesBool = 16000
+        self.tempsGlobalesPointers = 18000
         # VARIABLES LOCALES
-        self.varLocalesInt = 20000
-        self.varLocalesFloat = 22000
-        self.varLocalesString = 24000
-        self.varLocalesBool = 26000
+        self.varLocalesGauss = 20000
+        self.varLocalesInt = 21000
+        self.varLocalesFloat = 23000
+        self.varLocalesString = 25000
+        self.varLocalesBool = 27000
         # TEMPORALES LOCALES
         self.tempsInt = 30000
         self.tempsFloat = 32000
@@ -90,7 +95,7 @@ class MapaDeMemoria():
         self.ctesInt = 40000
         self.ctesFloat = 42000
         self.ctesString = 44000
-        self.cteBool = 46000
+        self.ctesBool = 46000
     
     # AVAIL NEXT
     # Funcion auxiliar que regresa el siguiente temporal 
@@ -157,9 +162,32 @@ class MapaDeMemoria():
             res = self.varGlobalesBool
             self.varGlobalesBool += 1
 
-        elif (type == "respuesta" or type == "opciones" or type == "lista" or type == "categorias"):
+        elif (type == "lista" or type == "categorias"):
             res = self.varsGauss
             self.varsGauss += 1
+
+        elif (type == "respuesta" or type == "opciones"):
+            res = self.varLocalesGauss
+            self.varLocalesGauss += 1
+            
+        return res
+
+    def addressCte(self, type):
+        if (type == "int"):
+            res = self.ctesInt
+            self.ctesInt += 1
+
+        elif (type == "float" ):
+            res = self.ctesFloat
+            self.ctesFloat += 1
+
+        elif (type == "string"):
+            res = self.ctesString
+            self.ctesString += 1
+
+        elif (type == "bool"):
+            res = self.ctesBool
+            self.ctesBool += 1
             
         return res
 
