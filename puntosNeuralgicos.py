@@ -406,7 +406,10 @@ class PuntosNeuralgicos(Visitor):
         # Se agrega el tipo de la variable a la pila de variables
         self.pilaTipos.append(tipoVar)
         var = directorios.Variable(nombreVar, tipoVar)
-        var.virtualAddress = self.memoria.virtualAddress(tipoVar)
+        if (len(self.pilaProcedimientos) == 1):
+            var.virtualAddress = self.memoria.virtualAddress(tipoVar, True)
+        else:
+            var.virtualAddress = self.memoria.virtualAddress(tipoVar)
         # Se registra la variable en la Tabla de Variables
         self.currProc().tablaVariables.addVar(var)
         self.pilaO.append(var.virtualAddress)
@@ -428,7 +431,10 @@ class PuntosNeuralgicos(Visitor):
             tipoVar = self.pilaTipos[-1]
             nombreVar = tree.children[1].value
             var = directorios.Variable(nombreVar, tipoVar)
-            var.virtualAddress = self.memoria.virtualAddress(tipoVar)
+            if (len(self.pilaProcedimientos) == 1):
+                var.virtualAddress = self.memoria.virtualAddress(tipoVar, True)
+            else:
+                var.virtualAddress = self.memoria.virtualAddress(tipoVar)
             # Se registra la variable en la Tabla de Variables
             self.currProc().tablaVariables.addVar(var)
             self.pilaO.append(var.virtualAddress)

@@ -5,6 +5,13 @@
 # Nadia Corina Garcia Orozco A01242428
 # Noviembre, 2022
 
+class MemoriaLocal():
+    def __init__(self):
+        self.varsInt = []
+        self.varsFloat = []
+        self.varsString = []
+        self.varsBool = []
+
 class MapaDeMemoria():
     def __init__(self):
         # VARIABLES PROPIAS DEL PROGRAMA
@@ -37,20 +44,26 @@ class MapaDeMemoria():
     # SALIDAS: temporal apropiado de acuerdo al tipo
     def availNext(self, type):
         if (type == "int"):
+            res = self.tempsInt
             self.tempsInt += 1
-            return 'tI' + str(self.tempsInt)
+
         elif (type == "float"):
+            res = self.tempsFloat
             self.tempsFloat += 1
-            return 'tF' + str(self.tempsFloat)
+
         elif (type == "string"):
+            res = self.tempsString
             self.tempsString += 1
-            return 'tS' + str(self.tempsString)
+
         elif (type == "bool"):
+            res = self.tempsBool
             self.tempsBool += 1
-            return 'tB' + str(self.tempsBool)
+
         elif (type == "pointer"):
+            res = self.tempsPointers
             self.tempsPointers += 1
-            return 'tP' + str(self.tempsPointers)
+
+        return res
 
     # VIRTUAL ADDRESS
     # Funcion que retorna la direccion virtual apropiada de acuerdo al tipo
@@ -59,32 +72,42 @@ class MapaDeMemoria():
     # SALIDAS: direccion apropaiada de acuerdo al tipo y contexto
     def virtualAddress(self, type, g = False):
         if (type == "int" and g == False):
+            res = self.varLocalesInt
             self.varLocalesInt += 1
-            return self.varLocalesInt
+
         elif (type == "int" and g == True):
+            res = self.varGlobalesInt
             self.varGlobalesInt += 1
-            return self.varGlobalesInt
+
         elif (type == "float" and g == False):
+            res = self.varLocalesFloat
             self.varLocalesFloat += 1
-            return self.varLocalesFloat
+
         elif (type == "float" and g == True):
+            res = self.varGlobalesFloat
             self.varGlobalesFloat += 1
-            return self.varGlobalesFloat
+
         elif (type == "string" and g == False):
+            res = self.varLocalesString
             self.varLocalesString += 1
-            return self.varLocalesString
+
         elif (type == "string" and g == True):
+            res = self.varGlobalesString
             self.varGlobalesString += 1
-            return self.varGlobalesString
+
         elif (type == "bool" and g == False):
+            res = self.varLocalesBool
             self.varLocalesBool += 1
-            return self.varLocalesBool
+
         elif (type == "bool" and g == True):
+            res = self.varGlobalesBool
             self.varGlobalesBool += 1
-            return self.varGlobalesBool
+
         elif (type == "respuesta" or type == "opciones" or type == "lista" or type == "categorias"):
+            res = self.varsGauss
             self.varsGauss += 1
-            return self.varsGauss
+            
+        return res
 
     def updateByArray(self, type, R, g = False):
         if (type == "int" and g == False):
