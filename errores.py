@@ -98,3 +98,7 @@ def errorDivZero():
 def errorLimits(id):
     message = "🚨ERROR DE EJECUCIÓN.\n🚨 Error de limites. La casilla " + id + " no existe."
     sys.exit(message)
+
+def errorCodeNotFound(name):
+    message = "🚨ERROR.\n🚨 Archivo no encontrado. El archivo de codigo Gauss " + name + " no existe."
+    sys.exit(message)
