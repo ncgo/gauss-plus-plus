@@ -9,6 +9,7 @@ var string apellido
 
 int hello(int g) {
     var int provisional
+    var int i = 0
     provisional = 5 * 6 / pesos
     year = 2020 + 2 + provisional
     puntaje = year
@@ -25,9 +26,11 @@ int hello(int g) {
         print("If simple")
     }
 
-    //while(5>9) {
-    //    year = 5 + 9.0
-    //}
+    while(i<3) {
+        year = 5 + 9.0
+        i = i + 1
+        print(i)
+    }
     print("hi")
     return 4 * 7 
 }

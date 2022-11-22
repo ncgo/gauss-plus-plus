@@ -881,7 +881,7 @@ class PuntosNeuralgicos(Visitor):
         end = self.pilaSaltos.pop()
         returnQuad = self.pilaSaltos.pop()
         # Genera cuadruplo para dar instruccion de regresar y volver a revisar la condicion
-        quad = directorios.Cuadruplo(self.newQuad(), "GOTO","", "", returnQuad)
+        quad = directorios.Cuadruplo(self.newQuad(), "GOTO","", "", returnQuad - 1)
         self.cuadruplos.append(quad)
         # Se llena el GOTOF
         self.fillQuad(end, self.quadCounter + 1)

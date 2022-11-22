@@ -120,7 +120,7 @@ class MaquinaVirtual():
         # Se inicia la ejecución en el primer cuádruplo 
         op = self.cuadruplos[0][0]
         while op != "ENDPROG":
-            print(self.ip, op)
+            # print(self.ip, op)
             left_operand = self.cuadruplos[self.ip][1]
             right_operand = self.cuadruplos[self.ip][2]
             result = self.cuadruplos[self.ip][3]
