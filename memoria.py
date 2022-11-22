@@ -69,7 +69,7 @@ class MemoriaLocal():
             return float(self.varsFloat[dir - self.memoria.varLocalesFloat])
         # Variables locales tipadas de tipo string
         elif dir >= self.memoria.varLocalesString and dir < self.memoria.varLocalesBool:
-            return str(self.varsString[dir - self.memoria.varLocalesString])
+            return self.varsString[dir - self.memoria.varLocalesString]
         # Variables locales tipadas de tipo booleano
         elif dir >= self.memoria.varLocalesBool and dir < (self.memoria.varLocalesBool + 2000):
             return self.varsBool[dir - self.memoria.varLocalesBool]
@@ -81,7 +81,7 @@ class MemoriaLocal():
             return float(self.tempsFloat[dir - self.memoria.tempsFloat])
         # Temporales locales tipados de tipo string
         elif dir >= self.memoria.tempsString and dir < self.memoria.tempsBool:
-            return str(self.tempsString[dir - self.memoria.tempsString])
+            return self.tempsString[dir - self.memoria.tempsString]
         # Temporales locales tipados de tipo booleano
         elif dir >= self.memoria.tempsBool and dir < self.memoria.tempsPointers:
             return self.tempsBool[dir - self.memoria.tempsBool]

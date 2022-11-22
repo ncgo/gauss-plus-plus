@@ -82,7 +82,7 @@ class MaquinaVirtual():
             return float(self.varsGlobalesFloat[dir - self.memoria.varGlobalesFloat])
         # Variables globales tipadas de tipo string
         elif dir >= self.memoria.varGlobalesString and dir < self.memoria.varGlobalesBool:
-            return str(self.varsGlobalesString[dir - self.memoria.varGlobalesString])
+            return self.varsGlobalesString[dir - self.memoria.varGlobalesString]
         # Variables globales tipadas de tipo bool
         elif dir >= self.memoria.varGlobalesBool and dir < self.memoria.tempsGlobalesInt:
             return self.varsGlobalesBool[dir - self.memoria.varGlobalesBool] 
@@ -94,7 +94,7 @@ class MaquinaVirtual():
             return float(self.tempsGlobalesFloat[dir - self.memoria.tempsGlobalesFloat])
         # Temporales globales tipados de tipo string
         elif dir >= self.memoria.tempsGlobalesString and dir < self.memoria.tempsGlobalesBool:
-            return str(self.tempsGlobalesString[dir - self.memoria.tempsGlobalesString])
+            return self.tempsGlobalesString[dir - self.memoria.tempsGlobalesString]
         # Temporales globales tipados de tipo bool
         elif dir >= self.memoria.tempsGlobalesBool and dir < self.memoria.varLocalesInt:
             return self.tempsGlobalesBool[dir - self.memoria.tempsGlobalesBool]
@@ -106,7 +106,7 @@ class MaquinaVirtual():
             return float(self.ctesFloat[dir - self.memoria.ctesFloat])
         # Constantes de tipo string
         elif dir >= self.memoria.ctesString and dir < self.memoria.ctesBool:
-            return str(self.ctesString[dir - self.memoria.ctesString])
+            return self.ctesString[dir - self.memoria.ctesString]
         # Constantes de tipo bool
         elif dir >= self.memoria.ctesBool and dir < (self.memoria.ctesBool + 2000):
             return self.ctesBool[dir - self.memoria.ctesBool]
@@ -158,7 +158,11 @@ class MaquinaVirtual():
 
             # OPERACION +
             elif op == "+":
-                res = self.getValue(left_operand) + self.getValue(right_operand)
+                try: self.getValue(left_operand) + self.getValue(right_operand)
+                except TypeError:
+                    res = str(self.getValue(left_operand)).strip('"') + str(self.getValue(right_operand)).strip('"')
+                else:
+                    res = self.getValue(left_operand) + self.getValue(right_operand)
                 self.index(result, res)
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
@@ -254,9 +258,8 @@ class MaquinaVirtual():
                     self.ip = int(result)
 
             # OPERACION PRINT
-            elif op == "PRINT":
-                print(self.getValue(result))
-                # Se incrementa el IP en uno para pasar al siguiente cuadruplo
+            elif op == "PRINT" :
+                print(self.getValue(result).strip('"'))
                 self.ip += 1
 
             # OPERACION RETURN
@@ -295,6 +298,9 @@ class MaquinaVirtual():
 
             # OPERACION PARAMETER
             elif op == "PARAMETER":
+                param = int(result.strip("param"))
+                if int(left_operand) >= self.memoria.ctesInt:
+                    self.index(self.tipoCte(left_operand) + param - 1, self.getValue(left_operand))
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
@@ -371,7 +377,7 @@ class MaquinaVirtual():
             self.ctesFloat[dir - self.memoria.ctesFloat] = float(linea[1].strip('"'))
         # Constantes de tipo string
         elif(dir >= self.memoria.ctesString and dir < self.memoria.ctesBool):
-            self.ctesString[dir - self.memoria.ctesString] = linea[1]
+            self.ctesString[dir - self.memoria.ctesString] = linea[1].strip('"')
         # Constantes de tipo bool
         elif(dir >= self.memoria.ctesBool and dir < (self.memoria.ctesBool + 1000)):
             if linea[1].strip('"') == 'True':
@@ -379,6 +385,20 @@ class MaquinaVirtual():
             elif linea[1].strip('"') == 'False':
                 self.ctesBool[dir - self.memoria.ctesBool] = False
 
+    def tipoCte(self, dir):
+        dir = int(dir)
+        # Constantes de tipo entero
+        if(dir >= self.memoria.ctesInt and dir < self.memoria.ctesFloat):
+            return self.memoria.varLocalesInt
+        # Constantes de tipo flotante
+        elif(dir >= self.memoria.ctesFloat and dir < self.memoria.ctesString):
+            return self.memoria.varLocalesFloat
+        # Constantes de tipo string
+        elif(dir >= self.memoria.ctesString and dir < self.memoria.ctesBool):
+            return self.memoria.varLocalesString
+        # Constantes de tipo bool
+        elif(dir >= self.memoria.ctesBool and dir < (self.memoria.ctesBool + 1000)):
+            return self.memoria.varLocalesBool
 # MAIN
 # Punto de entrada a la maquina virtual
 def main():

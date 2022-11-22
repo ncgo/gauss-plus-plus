@@ -86,7 +86,7 @@ start: program
 program: PROGRAM ID info vars np_main modulos problemas listas genera main np_end
 np_main:
 
-info: ORGANIZACION IGUAL CTESTRING ETAPA IGUAL CTESTRING categoriasdec
+info: ORGANIZACION IGUAL CTESTRING ETAPA IGUAL CTESTRING categoriasdec | 
 categoriasdec: CATEGORIAS IGUAL LCOR catdec
 catdec: CTESTRING catdec1 RCOR np_catdecfin
 catdec1: COMA CTESTRING catdec1 | 

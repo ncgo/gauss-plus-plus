@@ -9,7 +9,7 @@ import maquinaVirtual
 # Se genera el parser de la gramática
 parser = Lark(open("grammar", 'r').read())
 # Se parsea el código recibido
-tree = parser.parse(open("code/test1",'r').read())
+tree = parser.parse(open("code/factorial",'r').read())
 # Se escanea el aárbol y se ejecutan las acciones semánticas pertinentes
 # Se genera el código intermedio
 puntosNeuralgicos.PuntosNeuralgicos().visit_topdown(tree)

@@ -217,13 +217,18 @@ class PuntosNeuralgicos(Visitor):
     # GENERA
     # Registro de proceso genera en Directorio de Procedimientos
     def genera(self, tree):
-        genera = tree.children[0].value
-        generaProc = directorios.Procedimiento(genera, genera)
-        # Se agrega el procedimiento genera al Directorio de Procedimientos
-        self.directorioProcedimientos.addProc(generaProc)
-        # Se agrega el procedimiento genera a la Pila de Procedimientos para mantener el contexto
-        self.pilaProcedimientos.append(tree.children[0].value)
-        generaProc.addStartQuadruple(self.quadCounter + 1)
+        try:
+            tree.children[0].value
+        except:
+            next
+        else:
+            genera = tree.children[0].value
+            generaProc = directorios.Procedimiento(genera, genera)
+            # Se agrega el procedimiento genera al Directorio de Procedimientos
+            self.directorioProcedimientos.addProc(generaProc)
+            # Se agrega el procedimiento genera a la Pila de Procedimientos para mantener el contexto
+            self.pilaProcedimientos.append(tree.children[0].value)
+            generaProc.addStartQuadruple(self.quadCounter + 1)
 
     # NP PARAM GENERA
     # Registra los parametros de la funcion genera
@@ -351,26 +356,31 @@ class PuntosNeuralgicos(Visitor):
     # INFO    
     # Registro de variables generales del programa
     def info(self, tree):
-        # Registro de variable organizacion
-        organizacion = directorios.Variable(tree.children[0].value, "string")
-        # Se registra la constante en la tabla de constantes
-        cte = directorios.Constante(tree.children[2].value, "string", self.memoria.addressCte("string"))
-        self.tablaConstantes.addCte(cte)
-        organizacion.virtualAddress = self.memoria.virtualAddress("string", True)
-        self.currProc().tablaVariables.addVar(organizacion)
-        quadOrg = directorios.Cuadruplo(self.newQuad(), "INFO", cte.virtualAddress, '', organizacion.virtualAddress)
-        
-        # Registro de variable etapa
-        etapa = directorios.Variable(tree.children[3].value, "string")
-        # Se registra la constante en la tabla de constantes
-        cte = directorios.Constante(tree.children[5].value, "string", self.memoria.addressCte("string"))
-        self.tablaConstantes.addCte(cte)
-        etapa.virtualAddress = self.memoria.virtualAddress("string", True)
-        self.currProc().tablaVariables.addVar(etapa)
-        quadEtapa = directorios.Cuadruplo(self.newQuad(), "INFO", cte.virtualAddress, '', etapa.virtualAddress)
+        try:
+            tree.children[0].value
+        except:
+            next
+        else:
+            # Registro de variable organizacion
+            organizacion = directorios.Variable(tree.children[0].value, "string")
+            # Se registra la constante en la tabla de constantes
+            cte = directorios.Constante(tree.children[2].value, "string", self.memoria.addressCte("string"))
+            self.tablaConstantes.addCte(cte)
+            organizacion.virtualAddress = self.memoria.virtualAddress("string", True)
+            self.currProc().tablaVariables.addVar(organizacion)
+            quadOrg = directorios.Cuadruplo(self.newQuad(), "INFO", cte.virtualAddress, '', organizacion.virtualAddress)
+            
+            # Registro de variable etapa
+            etapa = directorios.Variable(tree.children[3].value, "string")
+            # Se registra la constante en la tabla de constantes
+            cte = directorios.Constante(tree.children[5].value, "string", self.memoria.addressCte("string"))
+            self.tablaConstantes.addCte(cte)
+            etapa.virtualAddress = self.memoria.virtualAddress("string", True)
+            self.currProc().tablaVariables.addVar(etapa)
+            quadEtapa = directorios.Cuadruplo(self.newQuad(), "INFO", cte.virtualAddress, '', etapa.virtualAddress)
 
-        # Se agregan los cuadruplos a la lista de cuadruplos
-        self.cuadruplos.extend([quadOrg, quadEtapa])
+            # Se agregan los cuadruplos a la lista de cuadruplos
+            self.cuadruplos.extend([quadOrg, quadEtapa])
 
     # CATEGORIAS DEC
     # Punto neuralgico que registra la variable categorias en la Tabla de Variables
@@ -892,7 +902,7 @@ class PuntosNeuralgicos(Visitor):
         quad = directorios.Cuadruplo(self.newQuad(), "GOTO","", "", returnQuad - 1)
         self.cuadruplos.append(quad)
         # Se llena el GOTOF
-        self.fillQuad(end, self.quadCounter + 1)
+        self.fillQuad(end, self.quadCounter)
 
     # LLAMADA FUNC
     # Punto neuralgico que genera el cuadruplo de ERA para la llamada de una funcion
