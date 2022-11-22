@@ -4,7 +4,7 @@ etapa = "Examen Estatal"
 categorias = ["Nivel A", "Nivel B", "Nivel C", "Nivel D"]
 
 var int puntaje, year
-var float pesos = 50.0
+var float pesos = 30.0
 var string apellido
 
 int hello(int g) {

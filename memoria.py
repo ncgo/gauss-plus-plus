@@ -57,31 +57,31 @@ class MemoriaLocal():
 
     # VALUE
     # Funcion auxiliar que retorna el valor de una variable o temporal en la memoria local 
-    def value(self, dir):
+    def getValue(self, dir):
         # Variables generales del programa Gauss en la memoria local
         if dir >= self.memoria.varLocalesGauss and dir < self.memoria.varLocalesInt:
             return self.memLocalGauss[dir - self.memoria.varLocalesGauss]
         # Variables locales tipadas de tipo entero
         elif dir >= self.memoria.varLocalesInt and dir < self.memoria.varLocalesFloat:
-            return self.varsInt[dir - self.memoria.varLocalesInt]
+            return int(self.varsInt[dir - self.memoria.varLocalesInt])
         # Variables locales tipadas de tipo flotante
         elif dir >= self.memoria.varLocalesFloat and dir < self.memoria.varLocalesString:
-            return self.varsFloat[dir - self.memoria.varLocalesFloat]
+            return float(self.varsFloat[dir - self.memoria.varLocalesFloat])
         # Variables locales tipadas de tipo string
         elif dir >= self.memoria.varLocalesString and dir < self.memoria.varLocalesBool:
-            return self.varsString[dir - self.memoria.varLocalesString]
+            return str(self.varsString[dir - self.memoria.varLocalesString])
         # Variables locales tipadas de tipo booleano
         elif dir >= self.memoria.varLocalesBool and dir < (self.memoria.varLocalesBool + 2000):
             return self.varsBool[dir - self.memoria.varLocalesBool]
         # Temporales locales tipados de tipo entero
         elif dir >= self.memoria.tempsInt and dir < self.memoria.tempsFloat:
-            return self.tempsInt[dir - self.memoria.tempsInt]
+            return int(self.tempsInt[dir - self.memoria.tempsInt])
         # Temporales locales tipados de tipo flotante
         elif dir >= self.memoria.tempsFloat and dir < self.memoria.tempsString:
-            return self.tempsFloat[dir - self.memoria.tempsFloat]
+            return float(self.tempsFloat[dir - self.memoria.tempsFloat])
         # Temporales locales tipados de tipo string
         elif dir >= self.memoria.tempsString and dir < self.memoria.tempsBool:
-            return self.tempsString[dir - self.memoria.tempsString]
+            return str(self.tempsString[dir - self.memoria.tempsString])
         # Temporales locales tipados de tipo booleano
         elif dir >= self.memoria.tempsBool and dir < self.memoria.tempsPointers:
             return self.tempsBool[dir - self.memoria.tempsBool]
