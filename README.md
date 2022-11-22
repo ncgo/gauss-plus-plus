@@ -1,7 +1,7 @@
 # gauss++
 
 ## Avance 7
-Como parte de este avance, se ha documentado todo el codigo generado hasta este momento. S ehan generado todas las acciones de compilacion necesaria y se tiene listo el equeleto de la mquina virtual. 
+Como parte de este avance, se ha documentado todo el codigo generado hasta este momento. Se han generado todas las acciones de compilacion necesaria y se tiene listo el esqueleto de la maquina virtual. 
 
 ## To-Do
 - [ ] Terminar acceso de arreglos en compilacion

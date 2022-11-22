@@ -85,3 +85,16 @@ def erroIDNotArray(id):
 def errorFileNotFound(file):
     message = "🚨ERROR DE EJECUCIÓN.\n🚨 File not found. El archivo de la " + file + " no ha sido generado o encontrado."
     sys.exit(message)
+
+# ERROR DIV ZERO
+# Aparece cuando se trata de hcaer una division enre 0
+def errorDivZero():
+    message = "🚨ERROR DE EJECUCIÓN.\n🚨 División entre 0. El denominador de esta división es 0."
+    sys.exit(message)
+
+# ERROR LIMITS
+# Aparece cuando el indice de un arreglo esta fuera de limites
+# ENTRADAS: id -> indice que se trata de accesar
+def errorLimits(id):
+    message = "🚨ERROR DE EJECUCIÓN.\n🚨 Error de limites. La casilla " + id + " no existe."
+    sys.exit(message)
