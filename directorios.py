@@ -177,10 +177,15 @@ class Cuadruplo():
     def fillCuadruplo(self, fill):
         self.result = fill
 
+# TABLA DE CONSTANTES
+# Clase que representa la tabla de constante spara el programa
 class TablaConstantes():
     def __init__(self):
-        self.tablaConstantes = []
+        self.tablaConstantes = []           # Arreglo vacio que almacenará las constantes
     
+    # ADD CTE
+    # Funcion auxiliar que agrega las constantes a la tabla de constantes
+    # ENTRADA:  cte -> cosntante de tipo Constante a ser agregada
     def addCte(self, cte):
         self.tablaConstantes.append(cte)
 
@@ -192,13 +197,15 @@ class TablaConstantes():
             f.write(x.cteFormat() + '\n')
         f.close()
 
-    
-
+# CONSTANTE
+# Clase que representa una constante
 class Constante():
     def __init__(self, valor, tipo, virtualAddress):
-        self.valor = valor
-        self.tipo = tipo
-        self.virtualAddress = virtualAddress
+        self.valor = valor                      # Valor de la constante
+        self.tipo = tipo                        # Tipo de la constante
+        self.virtualAddress = virtualAddress    # Direccion virtual de acuedo a su tipo
 
+    # CTE FORMAT
+    # Funcion auxiiar que le da formato a la constante para ser agregada al archivo de la tabla de constantes
     def cteFormat(self):
         return (str(self.virtualAddress) + '@' + str(self.valor))

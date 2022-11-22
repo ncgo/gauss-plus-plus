@@ -81,6 +81,7 @@ def erroIDNotArray(id):
 
 # ERROR FILE NOT FOUND
 # Aparece cuando se trata de ejecutar el programa sin haber antes llevado a cabo la compilacion
-def errorFileNotFound():
-    message = "🚨ERROR DE EJECUCIÓN.\n🚨 File not found. El archivo obj no ha sido generado o encontrado."
+# ENTRADAS: file -> archivo que no pudo ser abierto
+def errorFileNotFound(file):
+    message = "🚨ERROR DE EJECUCIÓN.\n🚨 File not found. El archivo de la " + file + " no ha sido generado o encontrado."
     sys.exit(message)
