@@ -22,7 +22,7 @@ int hello(int g) {
         // puntaje = "punt"
     }
 
-    if(True){
+    if(True and False){
         print("If simple")
     }
 

@@ -56,6 +56,8 @@ RANDOM: "random"
 FOOTER: "footer"
 PRINT: "print"
 READ: "read"
+AND: "and"
+OR: "or"
 PUNTOYCOMA: /;/
 DOSPUNTOS: /:/
 LCURLY: /{/
@@ -65,7 +67,7 @@ MENORQUE: /</
 MAYORQUE: />/
 MENORIGUALQUE: /<=/
 MAYORIGUALQUE: />=/
-DIFERENTE: /<>/
+DIFERENTE: /!=/
 MAS: /\+/
 MENOS: /-/
 MULT: /\*/
@@ -158,7 +160,7 @@ arrac1: LCOR expresion np_arracc RCOR |
 np_arracc:
 
 expresion: exp expresion1 exp np_expresion | exp
-expresion1: MENORQUE | MAYORQUE | MENORIGUALQUE | MAYORIGUALQUE | DIFERENTE
+expresion1: MENORQUE | MAYORQUE | MENORIGUALQUE | MAYORIGUALQUE | DIFERENTE | AND | OR
 np_expresion:
 
 exp: termino np_exp exp1 | termino np_exp
@@ -180,11 +182,12 @@ asignacion: ID IGUAL asig2 np_asig | arracc IGUAL asig2
 asig2: expresion | np_llamfunc1 llamadafunc np_llamfunc2 | arracc
 np_asig:
 
-condicion: IF LPAR expresion RPAR np_cond bloque else cond1
-else: np_else ELSE bloque | 
+condicion: IF LPAR expresion RPAR np_cond bloque else 
+else: np_else ELSE bloque cond1 | np_cond1
 np_cond: 
 cond1:
 np_else:
+np_cond1:
 
 ciclo: WHILE LPAR expresion np_ciclo RPAR bloque np_ciclo_end
 np_ciclo:

@@ -822,7 +822,7 @@ class PuntosNeuralgicos(Visitor):
     # NP EXPRESION
     # Punto neuralgico que genera los cuadruplos de comparacion logica
     def np_expresion(self, tree):
-        if ((self.pOper[-1] == '<' or self.pOper[-1] == '>' or self.pOper[-1] == '<=' or self.pOper[-1] == '>=' or self.pOper[-1] == '<>')):
+        if ((self.pOper[-1] == '<' or self.pOper[-1] == '>' or self.pOper[-1] == '<=' or self.pOper[-1] == '>=' or self.pOper[-1] == '!=' or self.pOper[-1] == "and" or self.pOper[-1] == "or")):
             right_operand = self.pilaO.pop()
             right_operand_type = self.pilaTipos.pop()
             left_operand = self.pilaO.pop()
@@ -831,6 +831,10 @@ class PuntosNeuralgicos(Visitor):
             # ⭐️ Revisa cubo semantico
             result_type = cuboSemantico[operator][right_operand_type][left_operand_type]
             if (result_type != "ERROR"):
+                if operator == "and":
+                    operator = "AND"
+                elif operator == "or":
+                    operator = "OR"
                 result = self.memoria.availNext(result_type)
                 quad = directorios.Cuadruplo(self.newQuad(), operator, left_operand, right_operand, result)
                 self.cuadruplos.append(quad)
@@ -844,7 +848,11 @@ class PuntosNeuralgicos(Visitor):
     # y GOTOF para condiciones sin
     def cond1(self, tree):
         end = self.pilaSaltos.pop()
-        self.fillQuad(end, self.quadCounter + 1)
+        self.fillQuad(end, self.quadCounter)
+
+    def np_cond1(self, tree):
+        end = self.pilaSaltos.pop()
+        self.fillQuad(end, self.quadCounter)
 
     # NP ELSE
     # Punto neuralgico que genera el cuadruplo GOTO y rellena el GOTOF
@@ -853,7 +861,7 @@ class PuntosNeuralgicos(Visitor):
         self.cuadruplos.append(quad)
         false = self.pilaSaltos.pop()
         self.pilaSaltos.append(self.quadCounter)
-        self.fillQuad(false, self.quadCounter + 1)
+        self.fillQuad(false, self.quadCounter)
 
     # CICLO
     # Punto neuralgico que agrega la condicion a la pila de saltos para regresar en el estatuto while

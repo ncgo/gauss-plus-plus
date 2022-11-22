@@ -229,6 +229,20 @@ class MaquinaVirtual():
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
+            # OPERACION and
+            elif op == "AND":
+                res = self.getValue(left_operand) and self.getValue(right_operand)
+                self.index(result, res)
+                # Se incrementa el IP en uno para pasar al siguiente cuadruplo
+                self.ip += 1
+
+            # OPERACION OR
+            elif op == "OR":
+                res = self.getValue(left_operand) or self.getValue(right_operand)
+                self.index(result, res)
+                # Se incrementa el IP en uno para pasar al siguiente cuadruplo
+                self.ip += 1
+
             # OPERACION GOTOF
             elif op == "GOTOF":
                 # Si la condicion evalua en Verdadero, se continua con el siguiente cuadruplo
@@ -335,7 +349,8 @@ class MaquinaVirtual():
                 self.ip += 1
 
             else:
-                sys.exit()
+                message = "Operador no reconocido " + op
+                sys.exit(message)
 
             # Cambiamos a la siguiente instruccion
             op = self.cuadruplos[self.ip][0]
