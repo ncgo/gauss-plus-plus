@@ -1,4 +1,4 @@
-Gauss prueba_factorial
+Gauss prueba_factorial_iterativo
 
 int factorial(int num) {
     var int i = 1

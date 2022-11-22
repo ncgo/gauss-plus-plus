@@ -1,0 +1,32 @@
+Gauss prueba_fibonacci_iterativo
+
+int fibonacci(int num) {
+    var int numAnteriorAnterior, numAnterior = 0, numActual = 1
+    var int i = 1
+    if (num == 0) {
+        numActual = 0
+    }
+    else {
+        while( i < num ) {
+            numAnteriorAnterior = numAnterior
+            numAnterior = numActual
+            numActual = numAnteriorAnterior + numAnterior
+            i = i + 1
+        }
+    }
+
+    print("Fibonacci de " + num + " es " + numActual)
+}
+
+
+main() {
+    fibonacci(0)
+    fibonacci(1)
+    fibonacci(2)
+    fibonacci(3)
+    fibonacci(4)
+    fibonacci(5)
+    fibonacci(6)
+    fibonacci(7)
+    fibonacci(8)
+}

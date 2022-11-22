@@ -68,6 +68,7 @@ MAYORQUE: />/
 MENORIGUALQUE: /<=/
 MAYORIGUALQUE: />=/
 DIFERENTE: /!=/
+IGUALQUE: /==/
 MAS: /\+/
 MENOS: /-/
 MULT: /\*/
@@ -160,7 +161,7 @@ arrac1: LCOR expresion np_arracc RCOR |
 np_arracc:
 
 expresion: exp expresion1 exp np_expresion | exp
-expresion1: MENORQUE | MAYORQUE | MENORIGUALQUE | MAYORIGUALQUE | DIFERENTE | AND | OR
+expresion1: MENORQUE | MAYORQUE | MENORIGUALQUE | MAYORIGUALQUE | DIFERENTE | AND | OR | IGUALQUE
 np_expresion:
 
 exp: termino np_exp exp1 | termino np_exp

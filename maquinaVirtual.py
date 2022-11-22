@@ -259,7 +259,7 @@ class MaquinaVirtual():
 
             # OPERACION PRINT
             elif op == "PRINT" :
-                print(self.getValue(result).strip('"'))
+                print(self.getValue(result))
                 self.ip += 1
 
             # OPERACION RETURN

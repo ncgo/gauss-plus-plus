@@ -832,7 +832,7 @@ class PuntosNeuralgicos(Visitor):
     # NP EXPRESION
     # Punto neuralgico que genera los cuadruplos de comparacion logica
     def np_expresion(self, tree):
-        if ((self.pOper[-1] == '<' or self.pOper[-1] == '>' or self.pOper[-1] == '<=' or self.pOper[-1] == '>=' or self.pOper[-1] == '!=' or self.pOper[-1] == "and" or self.pOper[-1] == "or")):
+        if ((self.pOper[-1] == '<' or self.pOper[-1] == '>' or self.pOper[-1] == '<=' or self.pOper[-1] == '>=' or self.pOper[-1] == '!=' or self.pOper[-1] == "and" or self.pOper[-1] == "or" or self.pOper[-1] == "==")):
             right_operand = self.pilaO.pop()
             right_operand_type = self.pilaTipos.pop()
             left_operand = self.pilaO.pop()
