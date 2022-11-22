@@ -123,7 +123,7 @@ elista: ID elista1 RCOR np_listafin
 elista1: COMA ID elista1 |
 np_listafin:
 
-genera: GENERA LPAR np_param_genera RPAR LCURLY header titulo instrucciones problemasincluidos footer RCURLY np_endfunc
+genera: GENERA LPAR np_param_genera RPAR LCURLY header titulo instrucciones problemasincluidos footer RCURLY np_endfunc |
 np_param_genera: ORIENTACION COMA CATEGORIA COMA PROBLEMAS COMA NOMBREARCHIVO
 header: HEADER LPAR varcte COMA fecha COMA etapa RPAR
 etapa: varcte
