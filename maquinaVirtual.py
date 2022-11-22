@@ -15,6 +15,7 @@ class MaquinaVirtual():
         self.cuadruplos = []                        # Cuadruplos, lista de cuadruplos rescatados de la generacion de codigo intermedio
         self.ip = 0                                 # Instruction Pointer
         self.instancias = []                        # Arreglo de memorias locales generadas por las instancias de una funcion
+        self.pilaProc = []
         self.memGlobalGauss = [None] * 1000         # Arreglo vacio de memoria de variables generales de Gauss globales
         self.varsGlobalesInt = [None] * 1000        # Arreglo vacio de variables enteras globales
         self.varsGlobalesFloat = [None] * 1000      # Arreglo vacio de variables flotantes globales
@@ -253,8 +254,8 @@ class MaquinaVirtual():
             elif op == "ENDFUNC":
                 instancia = self.instancias.pop()
                 del instancia
-                # Se incrementa el IP en uno para pasar al siguiente cuadruplo
-                self.ip += 1
+                # Se cambia el IP al cuadruplo en el que nos habiamos quedado y se incrementa en uno para pasar al siguiente 
+                self.ip = (self.pilaProc.pop() + 1)
 
             # OPERACION VERIFY
             elif op == "VERIFY":
@@ -263,6 +264,13 @@ class MaquinaVirtual():
                     self.ip += 1
                 else:
                     errores.errorLimits(str(result))
+            
+            # OPERACION MAIN
+            elif op == "MAIN":
+                instancia = memoria.MemoriaLocal()
+                self.instancias.append(instancia)
+                # Se incrementa el IP en uno para pasar al siguiente cuadruplo
+                self.ip += 1
 
             # OPERACION ERA
             elif op == "ERA":
@@ -278,7 +286,9 @@ class MaquinaVirtual():
 
             # OPERACION GOSUB
             elif op == "GOSUB":
-                # Se incrementa el IP en uno para pasar al siguiente cuadruplo
+                # Se guarda el cuadruplo actual
+                self.pilaProc.append(self.ip)
+                # Se cambia el IP al cuadruplo inicial de la funcion especificada
                 self.ip = int(result)
 
             # OPERACION AREA
@@ -318,6 +328,9 @@ class MaquinaVirtual():
 
             # OPERACION READ
             elif op == "READ":
+                x = input()
+                # Se indexa el valor leido en la memoria
+                self.index(result, x)
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 

@@ -337,6 +337,8 @@ class PuntosNeuralgicos(Visitor):
     # MAIN
     # Registro de proceso main en Directorio de Procedimientos
     def main(self, tree):
+        quad = directorios.Cuadruplo(self.newQuad(), "MAIN", "", "", "")
+        self.cuadruplos.append(quad)
         mainProc = directorios.Procedimiento(tree.children[0].value, tree.children[0].value)
         # Se agrega el procedimiento main al Directorio de Procedimientos
         self.directorioProcedimientos.addProc(mainProc)
@@ -344,7 +346,7 @@ class PuntosNeuralgicos(Visitor):
         self.pilaProcedimientos.append(tree.children[0].value)
         # Se rellena el cuadruplo inicial para indicar que aqui inicia la ejecucion del programa
         main = self.pilaSaltos.pop()
-        self.fillQuad(main, self.quadCounter)
+        self.fillQuad(main, self.quadCounter - 1)
         
     # INFO    
     # Registro de variables generales del programa

@@ -34,7 +34,7 @@ int hello(int g) {
 
 void pelos() {
     int manzana[1]
-    manzana[1] = 4
+    // manzana[1] = 4
 }
 
 int genial() {

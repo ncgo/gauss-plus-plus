@@ -133,7 +133,7 @@ instrucciones: INSTRUCCIONES LPAR varcte RPAR
 problemasincluidos: PROBLEMASINCLUIDOS LPAR PROBLEMAS COMA RANDOM IGUAL ctebool RPAR
 footer: FOOTER LPAR varcte RPAR 
 
-main: MAIN LPAR RPAR bloque np_endfunc
+main: MAIN LPAR RPAR bloque
 
 estatutos: estatuto estatutos |
 estatuto: asignacion | condicion | ciclo | escritura | lectura | llamadafunc
