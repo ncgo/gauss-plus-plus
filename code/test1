@@ -11,6 +11,7 @@ int hello(int g) {
     var int provisional
     provisional = 5 * 6 / pesos
     year = 2020 + 2 + provisional
+    puntaje = year
     if (5 < 4) {
         print(True)
     } else {
@@ -24,9 +25,9 @@ int hello(int g) {
         print("If simple")
     }
 
-    while(5>9) {
-        year = 5 + 9.0
-    }
+    //while(5>9) {
+    //    year = 5 + 9.0
+    //}
     print("hi")
     return 4 * 7 
 }

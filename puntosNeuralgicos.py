@@ -38,12 +38,6 @@ class PuntosNeuralgicos(Visitor):
             f.write(x.printCuadruplo() + '\n')
         f.close()
 
-    # AVAIL NEXT
-    # Funcion auxiliar que regresa el siguiente temporal 
-    def availNext(self):
-        self.temp += 1
-        return 't' + str(self.temp)
-
     # NEW QUAD
     # Funcion auxiliar que regresa el número del siguiente cuádruplo
     def newQuad(self):
@@ -58,11 +52,15 @@ class PuntosNeuralgicos(Visitor):
     # SEARCH VAR
     # Funcion auxiliar que busca la variable en el contextoa actual y en el contexto global
     def searchVar(self, id):
+        # Busca la variable en el contexto actual
         if (self.currProc().tablaVariables.searchVar(id) != 0):
             return self.currProc().tablaVariables.searchVar(id)
+        
         else:
+            # Busca la variable en el contexto global
             if (self.directorioProcedimientos.searchProc(self.pilaProcedimientos[0]).tablaVariables.searchVar(id) != 0):
                 return self.directorioProcedimientos.searchProc(self.pilaProcedimientos[0]).tablaVariables.searchVar(id)
+            
             else:
                 return errores.errorNoExiste("variable", id)
     
@@ -202,14 +200,18 @@ class PuntosNeuralgicos(Visitor):
     # Punto neuralgico que procesa el parametro de un problema
     def np_param_prob(self, tree):
         id = tree.children[0].value
-        op = tree.children[1].value
         res = tree.children[2].value
+
+        # Se registra la constante en la tabla de constantes
+        cte = directorios.Constante(tree.children[2].value, "string", self.memoria.addressCte("string"))
+        self.tablaConstantes.addCte(cte)
+
         var = directorios.Variable(id, "string", res)
         var.virtualAddress = self.memoria.virtualAddress("string")
         # Se agrega el parametro como variable local a la Tabla de Variables
         self.currProc().tablaVariables.addVar(var)
         # Se genera el cuadruplo de asignacion del parametro
-        quad = directorios.Cuadruplo(self.newQuad(), "AREA", res, "", var.virtualAddress)
+        quad = directorios.Cuadruplo(self.newQuad(), "AREA", cte.virtualAddress, "", var.virtualAddress)
         self.cuadruplos.append(quad)
 
     # GENERA
@@ -286,7 +288,10 @@ class PuntosNeuralgicos(Visitor):
             var = self.searchVar(titulo)
             quad = directorios.Cuadruplo(self.newQuad(), "GENERA", "TITULO", 0, var.virtualAddress)
         else:
-            quad = directorios.Cuadruplo(self.newQuad(), "GENERA", "TITULO", 0, titulo)
+            # Se registra la constante en la tabla de constantes
+            cte = directorios.Constante(titulo, "string", self.memoria.addressCte("string"))
+            self.tablaConstantes.addCte(cte)
+            quad = directorios.Cuadruplo(self.newQuad(), "GENERA", "TITULO", 0, cte.virtualAddress)
         self.cuadruplos.append(quad)
 
     # INSTRUCCIONES
@@ -297,7 +302,10 @@ class PuntosNeuralgicos(Visitor):
             var = self.searchVar(instrucciones)
             quad = directorios.Cuadruplo(self.newQuad(), "GENERA", "INSTRUCCIONES", 0, var.virtualAddress)
         else:
-            quad = directorios.Cuadruplo(self.newQuad(), "GENERA", "INSTRUCCIONES", 0, instrucciones)
+            # Se registra la constante en la tabla de constantes
+            cte = directorios.Constante(instrucciones, "string", self.memoria.addressCte("string"))
+            self.tablaConstantes.addCte(cte)
+            quad = directorios.Cuadruplo(self.newQuad(), "GENERA", "INSTRUCCIONES", 0, cte.virtualAddress)
         self.cuadruplos.append(quad)
 
     # PROBLEMAS INCLUIDOS
@@ -336,22 +344,28 @@ class PuntosNeuralgicos(Visitor):
         self.pilaProcedimientos.append(tree.children[0].value)
         # Se rellena el cuadruplo inicial para indicar que aqui inicia la ejecucion del programa
         main = self.pilaSaltos.pop()
-        self.fillQuad(main, self.quadCounter + 1)
+        self.fillQuad(main, self.quadCounter)
         
     # INFO    
     # Registro de variables generales del programa
     def info(self, tree):
         # Registro de variable organizacion
-        organizacion = directorios.Variable(tree.children[0].value, "string", tree.children[2].value)
+        organizacion = directorios.Variable(tree.children[0].value, "string")
+        # Se registra la constante en la tabla de constantes
+        cte = directorios.Constante(tree.children[2].value, "string", self.memoria.addressCte("string"))
+        self.tablaConstantes.addCte(cte)
         organizacion.virtualAddress = self.memoria.virtualAddress("string", True)
         self.currProc().tablaVariables.addVar(organizacion)
-        quadOrg = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[2].value, '', organizacion.virtualAddress)
+        quadOrg = directorios.Cuadruplo(self.newQuad(), "INFO", cte.virtualAddress, '', organizacion.virtualAddress)
         
         # Registro de variable etapa
-        etapa = directorios.Variable(tree.children[3].value, "string", tree.children[5].value)
+        etapa = directorios.Variable(tree.children[3].value, "string")
+        # Se registra la constante en la tabla de constantes
+        cte = directorios.Constante(tree.children[5].value, "string", self.memoria.addressCte("string"))
+        self.tablaConstantes.addCte(cte)
         etapa.virtualAddress = self.memoria.virtualAddress("string", True)
         self.currProc().tablaVariables.addVar(etapa)
-        quadEtapa = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[5].value, '', etapa.virtualAddress)
+        quadEtapa = directorios.Cuadruplo(self.newQuad(), "INFO", cte.virtualAddress, '', etapa.virtualAddress)
 
         # Se agregan los cuadruplos a la lista de cuadruplos
         self.cuadruplos.extend([quadOrg, quadEtapa])
@@ -370,7 +384,10 @@ class PuntosNeuralgicos(Visitor):
     # Punto neuralgico que registra el valor de la primer categoria
     def catdec(self, tree):
         var = self.searchVar("categorias")
-        quad = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[0].value, self.k, var.virtualAddress)
+        # Se registra la constante en la tabla de constantes
+        cte = directorios.Constante(tree.children[0].value, "string", self.memoria.addressCte("string"))
+        self.tablaConstantes.addCte(cte)
+        quad = directorios.Cuadruplo(self.newQuad(), "INFO", cte.virtualAddress, self.k, var.virtualAddress)
         self.cuadruplos.append(quad)
         # Se incrementa el numero de categorias en 1
         self.k += 1
@@ -384,7 +401,10 @@ class PuntosNeuralgicos(Visitor):
             next
         else:
             var = self.searchVar("categorias")
-            quad = directorios.Cuadruplo(self.newQuad(), "INFO", tree.children[1].value, self.k, var.virtualAddress)
+            # Se registra la constante en la tabla de constantes
+            cte = directorios.Constante(tree.children[1].value, "string", self.memoria.addressCte("string"))
+            self.tablaConstantes.addCte(cte)
+            quad = directorios.Cuadruplo(self.newQuad(), "INFO", cte.virtualAddress, self.k, var.virtualAddress)
             self.cuadruplos.append(quad)
             # Se incrementa en 1 el numero de categorias
             self.k += 1
@@ -471,8 +491,11 @@ class PuntosNeuralgicos(Visitor):
                 self.pilaO.append(var.virtualAddress)
                 self.pilaTipos.append(var.tipo)
             else:
-                self.pilaO.append(tree.children[0].children[0].value)
-                self.pilaTipos.append(self.normalizeType(tree.children[0].children[0].type))
+                # Se registra la constante en la tabla de constantes
+                cte = directorios.Constante(tree.children[0].children[0].value, self.normalizeType(tree.children[0].children[0].type), self.memoria.addressCte(self.normalizeType(tree.children[0].children[0].type)))
+                self.tablaConstantes.addCte(cte)
+                self.pilaO.append(cte.virtualAddress)
+                self.pilaTipos.append(cte.tipo)
 
     # TER1
     # Agrega * o / a la pila de Operadores
@@ -578,7 +601,10 @@ class PuntosNeuralgicos(Visitor):
         except:
             next
         else:
-            self.pilaO.append(tree.children[0].value)
+            # Se registra la constante en la tabla de constantes
+            cte = directorios.Constante(tree.children[0].value, "string", self.memoria.addressCte("string"))
+            self.tablaConstantes.addCte(cte)
+            self.pilaO.append(cte.virtualAddress)
             self.pilaTipos.append("string")
             if(self.pOper[-1] == '>>'):
                 printp = self.pilaO.pop()
@@ -593,7 +619,10 @@ class PuntosNeuralgicos(Visitor):
     # PRINT EXPR
     # Punto neuralgico que genera el cuadruplo de expresion
     def printexpr(self, tree):
-        self.pOper.append(tree.children[0].value)
+        # Se registra la constante en la tabla de constantes
+        cte = directorios.Constante(tree.children[0].value, "string", self.memoria.addressCte("string"))
+        self.tablaConstantes.addCte(cte)
+        self.pOper.append(cte.virtualAddress)
         self.pilaO.append(tree.children[3].value)
         self.pilaTipos.append("string")
         if(self.pOper[-1] == '$'):
@@ -609,7 +638,10 @@ class PuntosNeuralgicos(Visitor):
     # PRINT IMPORT 
     # Punto neuralgico que genera el cuadruplo de importar
     def printimport(self, tree):
-        self.pOper.append(tree.children[0].value)
+        # Se registra la constante en la tabla de constantes
+        cte = directorios.Constante(tree.children[0].value, "string", self.memoria.addressCte("string"))
+        self.tablaConstantes.addCte(cte)
+        self.pOper.append(cte.virtualAddress)
         self.pilaO.append(tree.children[3].value)
         self.pilaTipos.append("string")
         if(self.pOper[-1] == '$'):
@@ -641,7 +673,10 @@ class PuntosNeuralgicos(Visitor):
     # Punto neuralgico que registra el primer valor de la variable opciones
     def opcionesdec(self, tree):
         var = self.searchVar("opciones")
-        quad = directorios.Cuadruplo(self.newQuad(), "OPCIONES", tree.children[0].children[0].value, self.k, var.virtualAddress)
+        # Se registra la constante en la tabla de constantes
+        cte = directorios.Constante(tree.children[0].children[0].value, self.normalizeType(tree.children[0].children[0].type), self.memoria.addressCte(self.normalizeType(tree.children[0].children[0].type)))
+        self.tablaConstantes.addCte(cte)
+        quad = directorios.Cuadruplo(self.newQuad(), "OPCIONES", cte.virtualAddress, self.k, var.virtualAddress)
         self.cuadruplos.append(quad)
         # Se incrementa el numero de opciones en 1
         self.k += 1
@@ -655,7 +690,10 @@ class PuntosNeuralgicos(Visitor):
             next
         else:
             var = self.searchVar("opciones")
-            quad = directorios.Cuadruplo(self.newQuad(), "OPCIONES", tree.children[1].children[0].value, self.k, var.virtualAddress)
+            # Se registra la constante en la tabla de constantes
+            cte = directorios.Constante(tree.children[1].children[0].value, self.normalizeType(tree.children[1].children[0].type), self.memoria.addressCte(self.normalizeType(tree.children[1].children[0].type)))
+            self.tablaConstantes.addCte(cte)
+            quad = directorios.Cuadruplo(self.newQuad(), "OPCIONES", cte.virtualAddress, self.k, var.virtualAddress)
             self.cuadruplos.append(quad)
             # Se incrementa en 1 el numero de opciones
             self.k += 1
@@ -672,12 +710,13 @@ class PuntosNeuralgicos(Visitor):
     # Punto neuralgico que registra la respuesta de un problema
     def respuesta(self, tree):
         respuesta = tree.children[0].value
-        operator = tree.children[1].value
-        valor  = tree.children[2].children[0].value
-        var = directorios.Variable(respuesta, "respuesta", valor)
+        # Se registra la constante en la tabla de constantes
+        cte = directorios.Constante(tree.children[2].children[0].value, self.normalizeType(tree.children[2].children[0].type), self.memoria.addressCte(self.normalizeType(tree.children[2].children[0].type)))
+        self.tablaConstantes.addCte(cte)
+        var = directorios.Variable(respuesta, "respuesta")
         var.virtualAddress = self.memoria.virtualAddress(respuesta)
         self.currProc().tablaVariables.addVar(var)
-        quad = directorios.Cuadruplo(self.newQuad(), "RESPUESTA", valor, "", var.virtualAddress)
+        quad = directorios.Cuadruplo(self.newQuad(), "RESPUESTA", cte.virtualAddress, "", var.virtualAddress)
         self.cuadruplos.append(quad)
 
     # LISTA
@@ -889,7 +928,7 @@ class PuntosNeuralgicos(Visitor):
     def np_llamsub(self, tree):
         # Se compara la cantidad de argumentos enviados con los parametros definidos
         if self.k == len(self.procActual.parameterTable):
-            quad = directorios.Cuadruplo(self.newQuad(), "GOSUB", self.procActual.nombre, "" , self.procActual.quadruple)
+            quad = directorios.Cuadruplo(self.newQuad(), "GOSUB", self.procActual.nombre, "" , self.procActual.quadruple - 1)
             self.cuadruplos.append(quad)
         else:
             # Si no coincide hay error
@@ -1032,3 +1071,4 @@ class PuntosNeuralgicos(Visitor):
         del self.directorioProcedimientos
         # Se crea el archivo con el codigo intermedio generado
         self.createObjFile()
+        self.tablaConstantes.createCteTable()
