@@ -32,6 +32,7 @@ class MaquinaVirtual():
         self.ctesString = [None] * 1000             # Arreglo vacio de constantes string para el programa
         self.ctesBool = [None] * 1000               # Arreglo vacio de constantes booleanas para el programa
         self.returns = []
+        self.policia = 0
 
     # INDEX
     # Funcion auxiliar que indexa los valores de las variables en la memoria global
@@ -124,7 +125,6 @@ class MaquinaVirtual():
             left_operand = self.cuadruplos[self.ip][1]
             right_operand = self.cuadruplos[self.ip][2]
             result = self.cuadruplos[self.ip][3]
-
             # OPERACION PROGRAM
             # Indica que se ha iniciado la ejecucion del programa
             if op == "PROGRAM":
@@ -372,6 +372,7 @@ class MaquinaVirtual():
                 message = "Operador no reconocido " + op
                 sys.exit(message)
 
+            
             # Cambiamos a la siguiente instruccion
             op = self.cuadruplos[self.ip][0]
     

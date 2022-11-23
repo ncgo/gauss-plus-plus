@@ -1,8 +1,7 @@
 Gauss prueba_fibonacci_recursivo
 
 int fibonacci(int num) {
-    print("⭐️" + num)
-    if ( num == 0 ) {
+    if ( num <= 0 ) {
         return 0
     }
     else {
@@ -15,6 +14,16 @@ int fibonacci(int num) {
 
 main() {
     var int x 
-    x = fibonacci(5)
-    print(x)
+    //x = fibonacci(5)
+    //print(x)
+    print(fibonacci(0))
+    print(fibonacci(1))
+    print(fibonacci(2))
+    print(fibonacci(3))
+    print(fibonacci(4))
+    print(fibonacci(5))
+    print(fibonacci(6))
+    print(fibonacci(7))
+    print(fibonacci(8))
+
 }

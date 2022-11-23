@@ -29,7 +29,8 @@ class PuntosNeuralgicos(Visitor):
         self.memoria = memoria.MapaDeMemoria()  # Memoria
         self.pilaDim = []                       # Pila que auxilia con el acceso a arreglos
         self.tablaConstantes = None
-
+        self.returns = 0
+        self.pReturns = []
     # CREATE OBJ FILE
     # Funcion auxiliar que genera el archivo de codigo objeto con lso cuadruplso generados por el programa a ser ejecutado por la maquina virtual
     def createObjFile(self):
@@ -166,6 +167,10 @@ class PuntosNeuralgicos(Visitor):
             if (retorno_type == funcion_type):
                 quad = directorios.Cuadruplo(self.newQuad(), "RETURN", "", "", retorno)
                 self.cuadruplos.append(quad)
+                quad = directorios.Cuadruplo(self.newQuad(), "GOTO", "", "", "FILL")
+                self.cuadruplos.append(quad)
+                self.pReturns.append(self.quadCounter)
+                self.returns += 1
             else:
                 # No corresponde el tipo de retorno con el tipo de funcion
                 errores.errorTypeMismatchReturn(retorno_type, funcion_type, self.currProc().nombre)
@@ -181,6 +186,9 @@ class PuntosNeuralgicos(Visitor):
         # Se genera el cuadruplo para finalizar la funcion
         quad = directorios.Cuadruplo(self.newQuad(), 'ENDFUNC', '', '', proc.nombre)
         self.cuadruplos.append(quad)
+        while (self.returns >= 1):
+            self.fillQuad(self.pReturns.pop(), self.quadCounter - 1)
+            self.returns -= 1
         # Se inserta al Directorio de Procedimientos el numero de variables temporales utilizadas
         proc.addTemps(self.temp)
         # Se reinicia el contador de temporales
@@ -1087,6 +1095,7 @@ class PuntosNeuralgicos(Visitor):
     # NP END
     # Punto neuralgico que marca el fin del programa
     def np_end(self, tree):
+        print(self.pilaSaltos)
         # Se genera el cuadruplo de fin de programa que indica el final de la ejecucion
         quad = directorios.Cuadruplo(self.newQuad(), "ENDPROG", "", "", "")
         self.cuadruplos.append(quad)
