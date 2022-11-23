@@ -165,11 +165,15 @@ class PuntosNeuralgicos(Visitor):
             funcion_type = self.currProc().tipo
             # Se revisa que el tipo de retorno corresponda con el tipo de funcion
             if (retorno_type == funcion_type):
+                # Se genera el cuadruplo RETURN
                 quad = directorios.Cuadruplo(self.newQuad(), "RETURN", "", "", retorno)
                 self.cuadruplos.append(quad)
+                # Se genera el cuadruplo GOTO que cortará la ejecución de una función al tener un return
                 quad = directorios.Cuadruplo(self.newQuad(), "GOTO", "", "", "FILL")
                 self.cuadruplos.append(quad)
+                # Se agrega el cuadruplo a la pila de retornos para ser rellenada posteriormente
                 self.pReturns.append(self.quadCounter)
+                # Se incrementa el numero de retornos
                 self.returns += 1
             else:
                 # No corresponde el tipo de retorno con el tipo de funcion
@@ -186,8 +190,11 @@ class PuntosNeuralgicos(Visitor):
         # Se genera el cuadruplo para finalizar la funcion
         quad = directorios.Cuadruplo(self.newQuad(), 'ENDFUNC', '', '', proc.nombre)
         self.cuadruplos.append(quad)
+        # Mientras hayan retornos pendientes
         while (self.returns >= 1):
+            # Se rellenan los cuadruplos de GOTO generados por los retornos
             self.fillQuad(self.pReturns.pop(), self.quadCounter - 1)
+            # Se decrementa la cantidad de retornos faltantes
             self.returns -= 1
         # Se inserta al Directorio de Procedimientos el numero de variables temporales utilizadas
         proc.addTemps(self.temp)
@@ -507,15 +514,18 @@ class PuntosNeuralgicos(Visitor):
     def fact1(self, tree):
         try: tree.children[0].children[0].value
         except: 
+            # Si se tiene una llamada a una funcion como un factor
             if (tree.children[0].children[0].data == "llamadafunc"):
                 procNombre = tree.children[0].children[0].children[0].value
                 proc = self.directorioProcedimientos.searchProc(procNombre)
+                # Se agrega el nombre del procedimiento como variable local del procedimiento para guardar los valores de retorno
                 var = directorios.Variable(procNombre, proc.tipo)
-                var.virtualAddress = self.memoria.virtualAddress(proc.tipo)
                 self.pilaO.append(procNombre)
                 self.pilaTipos.append(proc.tipo)
         else:
+            # Si se tiene una constante como factor
             if (tree.children[0].data == "varcte"):
+                # Si se tiene un ID como factor
                 if(tree.children[0].children[0].type == "ID"):
                     id = tree.children[0].children[0].value
                     var = self.searchVar(id)
@@ -528,6 +538,8 @@ class PuntosNeuralgicos(Visitor):
                     self.pilaO.append(cte.virtualAddress)
                     self.pilaTipos.append(cte.tipo)
 
+    # LLAMADA AUX
+    # Punto neuralgico que agrega un fondo falso a la pila de operadores cuando se empieza una llamada a una funcion
     def llamadaaux(self, tipo):
         self.pOper.append('[')
 
@@ -940,14 +952,17 @@ class PuntosNeuralgicos(Visitor):
         # Se reestablece el numero k para la verificacion de parametros
         self.k = 0
 
+    # NP RETURN LLAM
+    #Punto neuralgico que genera el cuadruplo IGUAL para la asignacion de valor de una funcion con retorno
     def np_returnllam(self, tree):
-        self.pOper.append('IGUAL')
         left_operand = self.pilaO.pop()
         tipo = self.pilaTipos.pop()
+        # Se obtiene el siguiente temporal de acuerdo al tipo
         right_operand = self.memoria.availNext(tipo)
         self.pilaO.append(right_operand)
         self.pilaTipos.append(tipo)
-        quad = directorios.Cuadruplo(self.newQuad(), self.pOper.pop(), left_operand, "", right_operand)
+        # Se genera el cuadruplo de aisgnacion
+        quad = directorios.Cuadruplo(self.newQuad(), "IGUAL", left_operand, "", right_operand)
         self.cuadruplos.append(quad)
 
     # NP LLAM
@@ -985,6 +1000,7 @@ class PuntosNeuralgicos(Visitor):
         else:
             # Si no coincide hay error
             errores.errorNumParams(self.k, len(self.procActual.parameterTable), self.procActual.nombre)
+        # Se elimina el fondo falso 
         self.pOper.pop()
         # Se reestablece los valores de k y el procedimiento actual para una siguiente llamada de funcion
         self.k = 0
