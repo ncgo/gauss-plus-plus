@@ -1111,7 +1111,6 @@ class PuntosNeuralgicos(Visitor):
     # NP END
     # Punto neuralgico que marca el fin del programa
     def np_end(self, tree):
-        print(self.pilaSaltos)
         # Se genera el cuadruplo de fin de programa que indica el final de la ejecucion
         quad = directorios.Cuadruplo(self.newQuad(), "ENDPROG", "", "", "")
         self.cuadruplos.append(quad)

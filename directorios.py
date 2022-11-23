@@ -54,14 +54,14 @@ class TablaVariables():
     # revisando que no exista previamente
     # ENTRADAS: var -> objeto variable a agregar
     def addVar(self, var):
-        # Si ya existe, retorna error
+        '''# Si ya existe, retorna error
         if var.nombre in self.tablaVariables.keys():
             return errores.errorDuplicado("variable", var)
-        else:
+        else:'''
             # Si no existe, se agrega a la Tabla 
-            self.tablaVariables[var.nombre] = var
+        self.tablaVariables[var.nombre] = var
             # Se incrementa el tamaño de la tabla
-            self.sizeTabla += 1
+        self.sizeTabla += 1
 
     # SEARCH VAR
     # Funcion que busca la existencia de una variable en la Tabla de Variables
