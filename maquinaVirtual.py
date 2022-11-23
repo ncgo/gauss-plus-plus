@@ -17,11 +17,11 @@ class MaquinaVirtual():
         self.instancias = []                        # Arreglo de memorias locales generadas por las instancias de una funcion
         self.pilaProc = []
         self.memGlobalGauss = [None] * 1000         # Arreglo vacio de memoria de variables generales de Gauss globales
-        self.varsGlobalesInt = [None] * 1000        # Arreglo vacio de variables enteras globales
+        self.varsGlobalesInt = [None] * 1000           # Arreglo vacio de variables enteras globales
         self.varsGlobalesFloat = [None] * 1000      # Arreglo vacio de variables flotantes globales
         self.varsGlobalesString = [None] * 1000     # Arreglo vacio de variables strings globales
         self.varsGlobalesBool = [None] * 1000       # Arreglo vacio de variables booleanas globales
-        self.tempsGlobalesInt = [None] * 1000       # Arreglo vacio de temporales enteros globales
+        self.tempsGlobalesInt = [None] * 1000          # Arreglo vacio de temporales enteros globales
         self.tempsGlobalesFloat = [None] * 1000     # Arreglo vacio de temporales flotantes globales
         self.tempsGlobalesString = [None] * 1000    # Arreglo vacio de temporales strings globales
         self.tempsGlobalesBool = [None] * 1000      # Arreglo vacio de temporales booleanos globales
@@ -31,6 +31,11 @@ class MaquinaVirtual():
         self.ctesFloat = [None] * 1000              # Arreglo vacio de constantes flotantes para el programa
         self.ctesString = [None] * 1000             # Arreglo vacio de constantes string para el programa
         self.ctesBool = [None] * 1000               # Arreglo vacio de constantes booleanas para el programa
+        self.helper = 0
+        self.copy = False
+        self.params = []
+        self.police = 1
+        self.results = []
 
     # INDEX
     # Funcion auxiliar que indexa los valores de las variables en la memoria global
@@ -70,7 +75,6 @@ class MaquinaVirtual():
     # VALUE
     # Funcion auxiliar que indexa los valores de las variables en la memoria global
     def getValue(self, dir):
-        print(self.ip, dir)
         dir = int(dir)
         # Variables globales generales del programa Gauss 
         if dir >= self.memoria.varsGauss and dir < self.memoria.varGlobalesInt:
@@ -113,19 +117,19 @@ class MaquinaVirtual():
             return self.ctesBool[dir - self.memoria.ctesBool]
         # Si el valor es mayor, es una variable local y hay que indexar en su determinada instancia
         else:
-            return self.instancias[-1].getValue(dir)
-    
+            val = self.instancias[self.helper].getValue(dir)
+            return val
+
     # EJECUTAR
     # Funcion que maneja la ejecucion
     def ejecutar(self):
         # Se inicia la ejecución en el primer cuádruplo 
         op = self.cuadruplos[0][0]
         while op != "ENDPROG":
-            # print(self.ip, op)
             left_operand = self.cuadruplos[self.ip][1]
             right_operand = self.cuadruplos[self.ip][2]
             result = self.cuadruplos[self.ip][3]
-
+            
             # OPERACION PROGRAM
             # Indica que se ha iniciado la ejecucion del programa
             if op == "PROGRAM":
@@ -161,24 +165,24 @@ class MaquinaVirtual():
             elif op == "+":
                 try: self.getValue(left_operand) + self.getValue(right_operand)
                 except TypeError:
-                    res = str(self.getValue(left_operand)).strip('"') + str(self.getValue(right_operand)).strip('"')
+                    val = str(self.getValue(left_operand)).strip('"') + str(self.getValue(right_operand)).strip('"')
                 else:
-                    res = self.getValue(left_operand) + self.getValue(right_operand)
-                self.index(result, res)
+                    val = self.getValue(left_operand) + self.getValue(right_operand)
+                self.index(result, val)
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
             # OPERACION -
             elif op == "-":
-                res = self.getValue(left_operand) - self.getValue(right_operand)
-                self.index(result, res)
+                val = self.getValue(left_operand) - self.getValue(right_operand)
+                self.index(result, val)
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
             # OPERACION *
             elif op == "*":
-                res = self.getValue(left_operand) * self.getValue(right_operand)
-                self.index(result, res)
+                val = self.getValue(left_operand) * self.getValue(right_operand)
+                self.index(result, val)
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
@@ -187,64 +191,64 @@ class MaquinaVirtual():
                 if self.getValue(right_operand) == 0 or self.getValue(right_operand) == 0.0:
                     return errores.errorDivZero()
                 else:
-                    res = self.getValue(left_operand) / self.getValue(right_operand)
-                    self.index(result, res)
+                    val = self.getValue(left_operand) / self.getValue(right_operand)
+                    self.index(result, val)
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
             # OPERACION >
             elif op == ">":
-                res = self.getValue(left_operand) > self.getValue(right_operand)
-                self.index(result, res)
+                val = self.getValue(left_operand) > self.getValue(right_operand)
+                self.index(result, val)
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
             # OPERACION <
             elif op == "<":
-                res = self.getValue(left_operand) < self.getValue(right_operand)
-                self.index(result, res)
+                val = self.getValue(left_operand) < self.getValue(right_operand)
+                self.index(result, val)
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
             # OPERACION <=
             elif op == "<=":
-                res = self.getValue(left_operand) <= self.getValue(right_operand)
-                self.index(result, res)
+                val = self.getValue(left_operand) <= self.getValue(right_operand)
+                self.index(result, val)
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
             # OPERACION >=
             elif op == ">=":
-                res = self.getValue(left_operand) >= self.getValue(right_operand)
-                self.index(result, res)
+                val = self.getValue(left_operand) >= self.getValue(right_operand)
+                self.index(result, val)
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
             # OPERACION !=
             elif op == "!=":
-                res = self.getValue(left_operand) != self.getValue(right_operand)
-                self.index(result, res)
+                val = self.getValue(left_operand) != self.getValue(right_operand)
+                self.index(result, val)
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
             # OPERACION ==
             elif op == "==":
-                res = self.getValue(left_operand) == self.getValue(right_operand)
-                self.index(result, res)
+                val = self.getValue(left_operand) == self.getValue(right_operand)
+                self.index(result, val)
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
             # OPERACION and
             elif op == "AND":
-                res = self.getValue(left_operand) and self.getValue(right_operand)
-                self.index(result, res)
+                val = self.getValue(left_operand) and self.getValue(right_operand)
+                self.index(result, val)
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
             # OPERACION OR
             elif op == "OR":
-                res = self.getValue(left_operand) or self.getValue(right_operand)
-                self.index(result, res)
+                val = self.getValue(left_operand) or self.getValue(right_operand)
+                self.index(result, val)
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
@@ -265,7 +269,13 @@ class MaquinaVirtual():
 
             # OPERACION RETURN
             elif op == "RETURN":
-                # Se incrementa el IP en uno para pasar al siguiente cuadruplo
+                self.results.append(self.getValue(result))
+                self.ip = self.pilaProc.pop() + 1
+
+            elif op == "IGUAL":
+                self.instancias[-2].index(result, self.results.pop())
+                instancia = self.instancias.pop()
+                del instancia
                 self.ip += 1
 
             # OPERACION ENDFUNC
@@ -293,7 +303,7 @@ class MaquinaVirtual():
             # OPERACION ERA
             elif op == "ERA":
                 instancia = memoria.MemoriaLocal()
-                self.instancias.append(instancia)
+                self.copy = True
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
@@ -302,15 +312,21 @@ class MaquinaVirtual():
                 param = int(result.strip("param"))
                 if int(left_operand) >= self.memoria.ctesInt:
                     self.index(self.tipoCte(left_operand) + param - 1, self.getValue(left_operand))
+                    instancia.index(self.tipoCte(left_operand) + param - 1, self.getValue(left_operand))
+                elif int(left_operand) >= self.memoria.tempsInt and int(left_operand) < (self.memoria.tempsBool + 2000):
+                    self.index(self.memoria.tempVar(int(left_operand)) + param - 1, self.getValue(left_operand))
+                    instancia.index(self.memoria.tempVar(int(left_operand)) + param - 1, self.getValue(left_operand))
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
             # OPERACION GOSUB
             elif op == "GOSUB":
+                self.instancias.append(instancia)
                 # Se guarda el cuadruplo actual
                 self.pilaProc.append(self.ip)
                 # Se cambia el IP al cuadruplo inicial de la funcion especificada
                 self.ip = int(result)
+                self.copy = False
 
             # OPERACION AREA
             elif op == "AREA":
@@ -359,8 +375,16 @@ class MaquinaVirtual():
                 message = "Operador no reconocido " + op
                 sys.exit(message)
 
+            try: self.getValue(result)
+            except: next
+            else:
+                if self.copy :
+                    self.helper = - 1
+                    instancia.index(result, self.getValue(result))
+
             # Cambiamos a la siguiente instruccion
             op = self.cuadruplos[self.ip][0]
+            self.police += 1
     
     # CARGA CTES
     # Funcion auxiliar que carga el archivo de la Tabla de Constantes a la Maquina Virtual

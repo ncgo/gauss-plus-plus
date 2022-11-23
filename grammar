@@ -139,7 +139,7 @@ footer: FOOTER LPAR varcte RPAR
 main: MAIN LPAR RPAR bloque
 
 estatutos: estatuto estatutos |
-estatuto: return | asignacion | condicion | ciclo | escritura | lectura | llamadafunc
+estatuto: return | escritura | asignacion | condicion | ciclo | lectura | llamadafunc np_llamcte
 
 return: np_return expresion np_return1 | 
 tipomod: INT | FLOAT | STRING | BOOL | VOID
@@ -173,15 +173,13 @@ ter1: MULT termino | DIV termino
 np_termino:
 
 factor: LPAR expresion RPAR factor1 | fact1 
-fact1: varcte | np_llamfunc1
-np_llamfunc1: llamadafunc np_llamfunc2
-np_llamfunc2:
+fact1: varcte 
 factor1: 
 
 tipo: INT | FLOAT | STRING | BOOL
 
 asignacion: ID IGUAL asig2 np_asig | arracc IGUAL asig2 
-asig2: expresion | np_llamfunc1 llamadafunc np_llamfunc2 | arracc
+asig2: expresion | arracc
 np_asig:
 
 condicion: IF LPAR expresion RPAR np_cond bloque else 
@@ -211,7 +209,7 @@ llam1: COMA expresion np_llam llam1 |
 np_llamsub:
 np_llam:
 
-bloque: LCURLY estatutos RCURLY
+bloque: LCURLY vars estatutos RCURLY
 
 np_end: 
 np_endfunc:

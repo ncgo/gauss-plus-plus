@@ -165,8 +165,6 @@ class PuntosNeuralgicos(Visitor):
             if (retorno_type == funcion_type):
                 quad = directorios.Cuadruplo(self.newQuad(), "RETURN", "", "", retorno)
                 self.cuadruplos.append(quad)
-                quad = directorios.Cuadruplo(self.newQuad(), "ENDFUNC", "", "", self.currProc().nombre)
-                self.cuadruplos.append(quad)
             else:
                 # No corresponde el tipo de retorno con el tipo de funcion
                 errores.errorTypeMismatchReturn(retorno_type, funcion_type, self.currProc().nombre)
@@ -509,14 +507,12 @@ class PuntosNeuralgicos(Visitor):
     def np_llamcte(self, tree):
         proc = self.pilaProcedimientos.pop()
         var = self.currProc().tablaVariables.searchVar(proc)
-        if ( var != 0):
+        if (var != 0):
             quad = directorios.Cuadruplo(self.newQuad(), "IGUAL", proc, "", var.virtualAddress)
             self.cuadruplos.append(quad)
             self.pilaO.append(var.virtualAddress)
             self.pilaTipos.append(var.tipo)
-            if self.pOper[-1] == '[':
-                self.pOper.pop()
-
+            self.pOper.pop()
 
     # FACT1
     # Punto neuralgico que agrega a la pila de operandos un factor
@@ -525,8 +521,8 @@ class PuntosNeuralgicos(Visitor):
             try: tree.children[0].children[0].type
             except:
                 if(tree.children[0].children[0].data == "llamadafunc"):
-                    self.pOper.append('[')
                     procNombre = tree.children[0].children[0].children[0].value
+                    self.pOper.append('[')
                     proc = self.directorioProcedimientos.searchProc(procNombre)
                     self.pilaProcedimientos.append(procNombre)
                     var = directorios.Variable(procNombre, proc.tipo)
@@ -984,7 +980,12 @@ class PuntosNeuralgicos(Visitor):
     def np_llamsub(self, tree):
         # Se compara la cantidad de argumentos enviados con los parametros definidos
         if self.k == len(self.procActual.parameterTable):
-            quad = directorios.Cuadruplo(self.newQuad(), "GOSUB", self.procActual.nombre, "" , self.procActual.quadruple - 1)
+            proc = self.currProc()
+            if (proc.tipo != "void"):
+                var = directorios.Variable(proc.nombre,proc.tipo)
+                var.virtualAddress = self.memoria.virtualAddress(proc.tipo)
+                proc.tablaVariables.addVar(var)
+            quad = directorios.Cuadruplo(self.newQuad(), "GOSUB", self.procActual.nombre,  var.virtualAddress, self.procActual.quadruple - 1)
             self.cuadruplos.append(quad)
         else:
             # Si no coincide hay error
@@ -992,6 +993,8 @@ class PuntosNeuralgicos(Visitor):
         # Se reestablece los valores de k y el procedimiento actual para una siguiente llamada de funcion
         self.k = 0
         self.procActual = None
+        if(self.pOper[-1] == '['):
+            self.pOper.pop()
 
     # NP LLAMFUNC2
     # Punto neuralgico que maneja cuando se requiere el valor de una funcion como termino de una expresion

@@ -24,6 +24,7 @@ class MemoriaLocal():
     # INDEX
     # Funcion auxiliar que indexa valores en la memoria local
     def index(self, dir, result):
+        dir = int(dir)
         # Variables locales del programa Gauss
         if dir >= self.memoria.varLocalesGauss and dir < self.memoria.varLocalesInt:
             self.memLocalGauss[dir - self.memoria.varLocalesGauss] = result
@@ -58,12 +59,16 @@ class MemoriaLocal():
     # VALUE
     # Funcion auxiliar que retorna el valor de una variable o temporal en la memoria local 
     def getValue(self, dir):
+        dir = int(dir)
         # Variables generales del programa Gauss en la memoria local
         if dir >= self.memoria.varLocalesGauss and dir < self.memoria.varLocalesInt:
             return self.memLocalGauss[dir - self.memoria.varLocalesGauss]
         # Variables locales tipadas de tipo entero
         elif dir >= self.memoria.varLocalesInt and dir < self.memoria.varLocalesFloat:
-            return int(self.varsInt[dir - self.memoria.varLocalesInt])
+            try: int(self.varsInt[dir - self.memoria.varLocalesInt])
+            except: return None
+            else: 
+                return int(self.varsInt[dir - self.memoria.varLocalesInt])
         # Variables locales tipadas de tipo flotante
         elif dir >= self.memoria.varLocalesFloat and dir < self.memoria.varLocalesString:
             return float(self.varsFloat[dir - self.memoria.varLocalesFloat])
@@ -75,7 +80,11 @@ class MemoriaLocal():
             return self.varsBool[dir - self.memoria.varLocalesBool]
         # Temporales locales tipados de tipo entero
         elif dir >= self.memoria.tempsInt and dir < self.memoria.tempsFloat:
-            return int(self.tempsInt[dir - self.memoria.tempsInt])
+            try: int(self.tempsInt[dir - self.memoria.tempsInt])
+            except: 
+                print("help")
+                return None
+            else: return int(self.tempsInt[dir - self.memoria.tempsInt])
         # Temporales locales tipados de tipo flotante
         elif dir >= self.memoria.tempsFloat and dir < self.memoria.tempsString:
             return float(self.tempsFloat[dir - self.memoria.tempsFloat])
@@ -296,3 +305,13 @@ class MapaDeMemoria():
         # Direcciones de variables generales de Gauss gloables
         elif (type == "categorias" or type == "lista"):
             self.varsGauss += R - 1 
+
+    def tempVar(self, dir):
+        if dir >= self.tempsInt and dir < self.tempsFloat:
+            return self.varLocalesInt
+        elif dir >= self.tempsFloat and dir < self.tempsString:
+            return self.varLocalesFloat
+        elif dir >= self.tempsString and dir < self.tempsBool:
+            return self.varLocalesString
+        elif dir >= self.tempsBool and dir < (self.tempsBool + 2000):
+            return self.varLocalesBool 
