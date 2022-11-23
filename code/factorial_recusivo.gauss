@@ -1,0 +1,20 @@
+Gauss prueba_factorial_recursivo
+
+int factorial(int num) {
+    print("⭐️" + num)
+    if ( num == 0 ) {
+        print("hello")
+        return 1
+    }
+    else {
+        return num * factorial(num - 1)
+    }
+}
+
+main() {
+    var int x 
+    // x = factorial(0)
+    print(factorial(0))
+    //factorial(6)
+    //print(factorial(7))
+}

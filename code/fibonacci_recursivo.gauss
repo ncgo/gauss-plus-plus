@@ -1,0 +1,20 @@
+Gauss prueba_fibonacci_recursivo
+
+int fibonacci(int num) {
+    print("⭐️" + num)
+    if ( num == 0 ) {
+        return 0
+    }
+    else {
+        if ( num == 1 ) {
+            return 1
+        }
+    } 
+    return fibonacci(num - 1) + fibonacci(num - 2)
+}
+
+main() {
+    var int x 
+    x = fibonacci(5)
+    print(x)
+}
