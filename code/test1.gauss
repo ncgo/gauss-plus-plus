@@ -37,8 +37,9 @@ int hello(int g) {
 }
 
 void pelos() {
-    int manzana[1]
-    // manzana[1] = 4
+    int manzana[1][2]
+    manzana[1][1] = 4
+    print(manzana[1][1])
 }
 
 int genial() {
@@ -79,5 +80,6 @@ genera(orientacion, categoria, problemas, nombreArchivo) {
 main() {
     hello(4)
     genera("vertical", "categorias[1]", lista2, "principiantes")
+    pelos()
     //read(apellido)
 }

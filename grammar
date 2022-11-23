@@ -149,16 +149,17 @@ modids2: COMA modids1 |
 np_return:
 np_return1:
 
-arrdec: tipo ID LCOR arrsize arrdec1 RCOR arrdecfin arrdec | 
+arrdec: tipo ID LCOR arrsize RCOR arrdec1 arrdecfin arrdec | 
 arrsize: CTEINT
-arrdec1: COMA arrsize arrdec1 | 
+arrdec1: LCOR arrsize RCOR arrdec1 | 
 arr: LCOR varcte arr1 RCOR
 arr1: COMA varcte arr1 | 
 arrdecfin:
 
-arracc: ID LCOR expresion np_arracc RCOR arrac1
-arrac1: LCOR expresion np_arracc RCOR | 
+arracc: ID LCOR expresion np_arracc RCOR arracc1 np_arraccfin
+arracc1: LCOR expresion np_arracc RCOR | 
 np_arracc:
+np_arraccfin:
 
 expresion: exp expresion1 exp np_expresion | exp
 expresion1: MENORQUE | MAYORQUE | MENORIGUALQUE | MAYORIGUALQUE | DIFERENTE | AND | OR | IGUALQUE
