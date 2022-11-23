@@ -70,6 +70,7 @@ class MaquinaVirtual():
     # VALUE
     # Funcion auxiliar que indexa los valores de las variables en la memoria global
     def getValue(self, dir):
+        print(self.ip, dir)
         dir = int(dir)
         # Variables globales generales del programa Gauss 
         if dir >= self.memoria.varsGauss and dir < self.memoria.varGlobalesInt:

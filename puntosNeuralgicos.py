@@ -165,6 +165,8 @@ class PuntosNeuralgicos(Visitor):
             if (retorno_type == funcion_type):
                 quad = directorios.Cuadruplo(self.newQuad(), "RETURN", "", "", retorno)
                 self.cuadruplos.append(quad)
+                quad = directorios.Cuadruplo(self.newQuad(), "ENDFUNC", "", "", self.currProc().nombre)
+                self.cuadruplos.append(quad)
             else:
                 # No corresponde el tipo de retorno con el tipo de funcion
                 errores.errorTypeMismatchReturn(retorno_type, funcion_type, self.currProc().nombre)
@@ -174,7 +176,7 @@ class PuntosNeuralgicos(Visitor):
     def np_endfunc(self, tree):
         proc = self.directorioProcedimientos.searchProc(self.pilaProcedimientos.pop())
         # Se elimina la tabla de Variables
-        del proc.tablaVariables
+        # del proc.tablaVariables
         # Se cambia el contexto actual
         self.procActual = self.pilaProcedimientos[-1]
         # Se genera el cuadruplo para finalizar la funcion
@@ -493,21 +495,55 @@ class PuntosNeuralgicos(Visitor):
             else:
                 errores.errorTypeMismatch(resultado, id, operator)
 
+    def factor(self, tree):
+        try: tree.children[0].value == "("
+        except:
+            next
+        else:
+            if tree.children[0].value == "(":
+                self.pOper.append('[')
+
+    def factor1(self, tree):
+        self.pOper.pop()
+
+    def np_llamcte(self, tree):
+        proc = self.pilaProcedimientos.pop()
+        var = self.currProc().tablaVariables.searchVar(proc)
+        if ( var != 0):
+            quad = directorios.Cuadruplo(self.newQuad(), "IGUAL", proc, "", var.virtualAddress)
+            self.cuadruplos.append(quad)
+            self.pilaO.append(var.virtualAddress)
+            self.pilaTipos.append(var.tipo)
+            if self.pOper[-1] == '[':
+                self.pOper.pop()
+
+
     # FACT1
     # Punto neuralgico que agrega a la pila de operandos un factor
     def fact1(self, tree):
         if (tree.children[0].data == "varcte"):
-            if(tree.children[0].children[0].type == "ID"):
-                id = tree.children[0].children[0].value
-                var = self.searchVar(id)
-                self.pilaO.append(var.virtualAddress)
-                self.pilaTipos.append(var.tipo)
+            try: tree.children[0].children[0].type
+            except:
+                if(tree.children[0].children[0].data == "llamadafunc"):
+                    self.pOper.append('[')
+                    procNombre = tree.children[0].children[0].children[0].value
+                    proc = self.directorioProcedimientos.searchProc(procNombre)
+                    self.pilaProcedimientos.append(procNombre)
+                    var = directorios.Variable(procNombre, proc.tipo)
+                    var.virtualAddress = self.memoria.virtualAddress(proc.tipo)
+                    self.currProc().tablaVariables.addVar(var)
             else:
-                # Se registra la constante en la tabla de constantes
-                cte = directorios.Constante(tree.children[0].children[0].value, self.normalizeType(tree.children[0].children[0].type), self.memoria.addressCte(self.normalizeType(tree.children[0].children[0].type)))
-                self.tablaConstantes.addCte(cte)
-                self.pilaO.append(cte.virtualAddress)
-                self.pilaTipos.append(cte.tipo)
+                if(tree.children[0].children[0].type == "ID"):
+                    id = tree.children[0].children[0].value
+                    var = self.searchVar(id)
+                    self.pilaO.append(var.virtualAddress)
+                    self.pilaTipos.append(var.tipo)
+                else:
+                    # Se registra la constante en la tabla de constantes
+                    cte = directorios.Constante(tree.children[0].children[0].value, self.normalizeType(tree.children[0].children[0].type), self.memoria.addressCte(self.normalizeType(tree.children[0].children[0].type)))
+                    self.tablaConstantes.addCte(cte)
+                    self.pilaO.append(cte.virtualAddress)
+                    self.pilaTipos.append(cte.tipo)
 
     # TER1
     # Agrega * o / a la pila de Operadores

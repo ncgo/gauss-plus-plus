@@ -1,0 +1,18 @@
+Gauss prueba_factorial_recursivo
+
+int factorial(int num) {
+    var int y = 1 * (2 - 3)
+    if ( num == 0 ) {
+        return 1
+    }
+    else {
+        return num * factorial(num - 1)
+    }
+}
+
+main() {
+    factorial(4)
+    factorial(5)
+    factorial(6)
+    print(factorial(7))
+}
