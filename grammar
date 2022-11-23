@@ -139,14 +139,14 @@ footer: FOOTER LPAR varcte RPAR
 main: MAIN LPAR RPAR bloque
 
 estatutos: estatuto estatutos |
-estatuto: return | escritura | asignacion | condicion | ciclo | lectura | llamadafunc np_llamcte
+estatuto: asignacion | condicion | ciclo | escritura | lectura | llamadafunc | return
 
-return: np_return expresion np_return1 | 
+return: np_return RETURN expresion np_return1 | 
 tipomod: INT | FLOAT | STRING | BOOL | VOID
 modids: modids1 | 
 modids1: tipo ID modids2 
 modids2: COMA modids1 | 
-np_return: RETURN
+np_return:
 np_return1:
 
 arrdec: tipo ID LCOR arrsize arrdec1 RCOR arrdecfin arrdec | 
@@ -172,9 +172,8 @@ termino: factor np_termino ter1 | factor np_termino
 ter1: MULT termino | DIV termino 
 np_termino:
 
-factor: LPAR expresion RPAR factor1 | fact1 
+factor: fact1 | LPAR expresion RPAR 
 fact1: varcte 
-factor1: 
 
 tipo: INT | FLOAT | STRING | BOOL
 
@@ -199,15 +198,15 @@ escr2:
 
 lectura: READ LPAR ID RPAR
 
-varcte: llamadafunc np_llamcte | ID | CTEINT | CTEFLOAT | CTESTRING | CTEBOOL | arracc 
+varcte: llamadafunc np_returnllam | ID | CTEINT | CTEFLOAT | CTESTRING | CTEBOOL | arracc
 ctebool: TRUE | FALSE
-np_llamcte:
 
-llamadafunc: ID LPAR llamadaaux llam1 RPAR np_llamsub
-llamadaaux: expresion np_llam | 
+llamadafunc: ID LPAR llamadaaux RPAR np_llamsub
+llamadaaux: expresion np_llam llam1 | 
 llam1: COMA expresion np_llam llam1 | 
 np_llamsub:
 np_llam:
+np_returnllam:
 
 bloque: LCURLY vars estatutos RCURLY
 

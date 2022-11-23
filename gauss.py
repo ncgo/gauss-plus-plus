@@ -19,8 +19,8 @@ def loadCode():
 # Se genera el parser de la gramática
 parser = Lark(open("grammar", 'r').read())
 loadCode()
-#x = input("Escoje el codigo a ejecutar: ")
-x = 'factorial_recusivo'
+# x = input("Escoje el codigo a ejecutar: ")
+x = 'fibonacci_recursivo'
 # Se parsea el código recibido
 try: open("code/" + x + ".gauss",'r')
 except:
