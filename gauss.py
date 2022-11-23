@@ -20,7 +20,7 @@ def loadCode():
 parser = Lark(open("grammar", 'r').read())
 loadCode()
 # x = input("Escoje el codigo a ejecutar: ")
-x = 'fibonacci_recursivo'
+x = 'test1'
 # Se parsea el código recibido
 try: open("code/" + x + ".gauss",'r')
 except:

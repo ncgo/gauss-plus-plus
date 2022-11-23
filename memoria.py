@@ -33,6 +33,7 @@ class MemoriaLocal():
             self.varsInt[dir - self.memoria.varLocalesInt] = result
         # Variables locales tipadas de tipo flotante 
         elif dir >= self.memoria.varLocalesFloat and dir < self.memoria.varLocalesString:
+            
             self.varsFloat[dir - self.memoria.varLocalesFloat] = result
         # Variables locales tipadas de tipo string 
         elif dir >= self.memoria.varLocalesString and dir < self.memoria.varLocalesBool:
@@ -82,7 +83,6 @@ class MemoriaLocal():
         elif dir >= self.memoria.tempsInt and dir < self.memoria.tempsFloat:
             try: int(self.tempsInt[dir - self.memoria.tempsInt])
             except: 
-                print("help")
                 return None
             else: return int(self.tempsInt[dir - self.memoria.tempsInt])
         # Temporales locales tipados de tipo flotante

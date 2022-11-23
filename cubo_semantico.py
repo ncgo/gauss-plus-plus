@@ -87,7 +87,7 @@ cuboSemantico = {
     },
     "/" : {
         "int": {
-            "int" : "int",
+            "int" : "float",
             "float": "float",
             "bool" : "ERROR",
             "string" : "ERROR"
