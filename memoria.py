@@ -296,3 +296,13 @@ class MapaDeMemoria():
         # Direcciones de variables generales de Gauss gloables
         elif (type == "categorias" or type == "lista"):
             self.varsGauss += R - 1 
+
+    def tempVar(self, dir):
+        if dir >= self.tempsInt and dir < self.tempsFloat:
+            return self.varLocalesInt
+        elif dir >= self.tempsFloat and dir < self.tempsString:
+            return self.varLocalesFloat
+        elif dir >= self.tempsString and dir < self.tempsBool:
+            return self.varLocalesString
+        elif dir >= self.tempsBool and dir < (self.tempsBool + 2000):
+            return self.varLocalesBool 

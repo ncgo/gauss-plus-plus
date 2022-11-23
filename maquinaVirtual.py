@@ -121,7 +121,6 @@ class MaquinaVirtual():
         # Se inicia la ejecución en el primer cuádruplo 
         op = self.cuadruplos[0][0]
         while op != "ENDPROG":
-            # print(self.ip, op)
             left_operand = self.cuadruplos[self.ip][1]
             right_operand = self.cuadruplos[self.ip][2]
             result = self.cuadruplos[self.ip][3]
@@ -272,8 +271,6 @@ class MaquinaVirtual():
 
             # OPERACION ENDFUNC
             elif op == "ENDFUNC":
-                instancia = self.instancias.pop()
-                del instancia
                 # Se cambia el IP al cuadruplo en el que nos habiamos quedado y se incrementa en uno para pasar al siguiente 
                 self.ip = (self.pilaProc.pop() + 1)
 
@@ -295,7 +292,6 @@ class MaquinaVirtual():
             # OPERACION ERA
             elif op == "ERA":
                 instancia = memoria.MemoriaLocal()
-                self.instancias.append(instancia)
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
@@ -303,12 +299,20 @@ class MaquinaVirtual():
             elif op == "PARAMETER":
                 param = int(result.strip("param"))
                 if int(left_operand) >= self.memoria.ctesInt:
-                    self.index(self.tipoCte(left_operand) + param - 1, self.getValue(left_operand))
+                    # self.index(self.tipoCte(left_operand) + param - 1, self.getValue(left_operand))
+                    instancia.index(self.tipoCte(left_operand) + param - 1, self.getValue(left_operand))
+                elif int(left_operand) >= self.memoria.varLocalesInt and int(left_operand) < (self.memoria.varLocalesBool + 2000):
+                    # self.index(int(left_operand)+ param - 1, self.getValue(left_operand))
+                    instancia.index(int(left_operand)+ param - 1, self.getValue(left_operand))
+                elif int(left_operand) >= self.memoria.tempsInt and int(left_operand) < (self.memoria.tempsBool + 2000):
+                    # self.index(self.memoria.tempVar(int(left_operand)) + param - 1, self.getValue(left_operand))
+                    instancia.index(self.memoria.tempVar(int(left_operand)) + param - 1, self.getValue(left_operand))
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
             # OPERACION GOSUB
             elif op == "GOSUB":
+                self.instancias.append(instancia)
                 # Se guarda el cuadruplo actual
                 self.pilaProc.append(self.ip)
                 # Se cambia el IP al cuadruplo inicial de la funcion especificada
@@ -326,6 +330,7 @@ class MaquinaVirtual():
 
             # OPERACION IGUAL
             elif op == "IGUAL":
+                self.instancias.pop()
                 self.index(result, self.returns.pop())
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
