@@ -173,14 +173,12 @@ ter1: MULT termino | DIV termino
 np_termino:
 
 factor: LPAR expresion RPAR | fact1 
-fact1: varcte | np_llamfunc1
-np_llamfunc1: llamadafunc np_llamfunc2
-np_llamfunc2:
+fact1: varcte 
 
 tipo: INT | FLOAT | STRING | BOOL
 
 asignacion: ID IGUAL asig2 np_asig | arracc IGUAL asig2 
-asig2: expresion | np_llamfunc1 llamadafunc np_llamfunc2 | arracc
+asig2: expresion | arracc
 np_asig:
 
 condicion: IF LPAR expresion RPAR np_cond bloque else 
@@ -200,11 +198,11 @@ escr2:
 
 lectura: READ LPAR ID RPAR
 
-varcte: ID | CTEINT | CTEFLOAT | CTESTRING | CTEBOOL | arracc
+varcte: ID | CTEINT | CTEFLOAT | CTESTRING | CTEBOOL | arracc | llamadafunc
 ctebool: TRUE | FALSE
 
-llamadafunc: ID LPAR llamadaaux llam1 RPAR np_llamsub
-llamadaaux: expresion np_llam | 
+llamadafunc: ID LPAR llamadaaux RPAR np_llamsub
+llamadaaux: expresion np_llam llam1 | 
 llam1: COMA expresion np_llam llam1 | 
 np_llamsub:
 np_llam:
