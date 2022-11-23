@@ -156,6 +156,7 @@ class PuntosNeuralgicos(Visitor):
     # NP RETURN1
     # Punto neuralgico que genera el cuadruplo de return
     def np_return1(self, tree):
+        self.createObjFile()
         if(self.pOper[-1] == 'return'):
             retorno = self.pilaO.pop()
             retorno_type = self.pilaTipos.pop()
@@ -496,18 +497,31 @@ class PuntosNeuralgicos(Visitor):
     # FACT1
     # Punto neuralgico que agrega a la pila de operandos un factor
     def fact1(self, tree):
-        if (tree.children[0].data == "varcte"):
-            if(tree.children[0].children[0].type == "ID"):
-                id = tree.children[0].children[0].value
-                var = self.searchVar(id)
-                self.pilaO.append(var.virtualAddress)
-                self.pilaTipos.append(var.tipo)
-            else:
-                # Se registra la constante en la tabla de constantes
-                cte = directorios.Constante(tree.children[0].children[0].value, self.normalizeType(tree.children[0].children[0].type), self.memoria.addressCte(self.normalizeType(tree.children[0].children[0].type)))
-                self.tablaConstantes.addCte(cte)
-                self.pilaO.append(cte.virtualAddress)
-                self.pilaTipos.append(cte.tipo)
+        try: tree.children[0].children[0].value
+        except: 
+            if (tree.children[0].children[0].data == "llamadafunc"):
+                procNombre = tree.children[0].children[0].children[0].value
+                proc = self.directorioProcedimientos.searchProc(procNombre)
+                var = directorios.Variable(procNombre, proc.tipo)
+                var.virtualAddress = self.memoria.virtualAddress(proc.tipo)
+                self.pilaO.append(procNombre)
+                self.pilaTipos.append(proc.tipo)
+        else:
+            if (tree.children[0].data == "varcte"):
+                if(tree.children[0].children[0].type == "ID"):
+                    id = tree.children[0].children[0].value
+                    var = self.searchVar(id)
+                    self.pilaO.append(var.virtualAddress)
+                    self.pilaTipos.append(var.tipo)
+                else:
+                    # Se registra la constante en la tabla de constantes
+                    cte = directorios.Constante(tree.children[0].children[0].value, self.normalizeType(tree.children[0].children[0].type), self.memoria.addressCte(self.normalizeType(tree.children[0].children[0].type)))
+                    self.tablaConstantes.addCte(cte)
+                    self.pilaO.append(cte.virtualAddress)
+                    self.pilaTipos.append(cte.tipo)
+
+    def llamadaaux(self, tipo):
+        self.pOper.append('[')
 
     # TER1
     # Agrega * o / a la pila de Operadores
@@ -918,6 +932,16 @@ class PuntosNeuralgicos(Visitor):
         # Se reestablece el numero k para la verificacion de parametros
         self.k = 0
 
+    def np_returnllam(self, tree):
+        self.pOper.append('IGUAL')
+        left_operand = self.pilaO.pop()
+        tipo = self.pilaTipos.pop()
+        right_operand = self.memoria.availNext(tipo)
+        self.pilaO.append(right_operand)
+        self.pilaTipos.append(tipo)
+        quad = directorios.Cuadruplo(self.newQuad(), self.pOper.pop(), left_operand, "", right_operand)
+        self.cuadruplos.append(quad)
+
     # NP LLAM
     # Punto neuralgico que registra los parametros para una funcion
     def np_llam(self, tree):
@@ -953,31 +977,10 @@ class PuntosNeuralgicos(Visitor):
         else:
             # Si no coincide hay error
             errores.errorNumParams(self.k, len(self.procActual.parameterTable), self.procActual.nombre)
+        self.pOper.pop()
         # Se reestablece los valores de k y el procedimiento actual para una siguiente llamada de funcion
         self.k = 0
         self.procActual = None
-
-    # NP LLAMFUNC2
-    # Punto neuralgico que maneja cuando se requiere el valor de una funcion como termino de una expresion
-    def np_llamfunc2(self, tree):
-        if(self.pilaTipos[-1] != "void" ):
-            func = self.pilaO.pop()
-            tipo = self.pilaTipos.pop()
-            temp = self.memoria.availNext(tipo)
-            quad = directorios.Cuadruplo(self.newQuad(), "=", func, "", temp)
-            self.cuadruplos.append(quad)
-            self.pilaO.append(temp)
-            self.pilaTipos.append(tipo)
-        else:
-            # La funcion llamada es de tipo void y no tiene valor de retorno. No puede ser utilizada
-            errores.errorReturnVoid(self.pilaO.pop())
-
-    # NP LLAMFUNC1
-    # Punto neuralgico que agrega los datos de una funcion a sus respectivas pilas cundo son llamadas como terminos de una expresion
-    def np_llamfunc1(self, tree):
-        nombre = tree.children[0].children[0].value
-        self.pilaO.append(nombre)
-        self.pilaTipos.append(self.directorioProcedimientos.searchProc(nombre).tipo)
 
     # ARR DEC
     # Punto neuralgico que maneja la declaracion de un arreglo

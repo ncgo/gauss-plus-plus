@@ -31,6 +31,7 @@ class MaquinaVirtual():
         self.ctesFloat = [None] * 1000              # Arreglo vacio de constantes flotantes para el programa
         self.ctesString = [None] * 1000             # Arreglo vacio de constantes string para el programa
         self.ctesBool = [None] * 1000               # Arreglo vacio de constantes booleanas para el programa
+        self.returns = []
 
     # INDEX
     # Funcion auxiliar que indexa los valores de las variables en la memoria global
@@ -264,6 +265,8 @@ class MaquinaVirtual():
 
             # OPERACION RETURN
             elif op == "RETURN":
+                resultR = self.getValue(result)
+                self.returns.append(resultR)
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
@@ -318,6 +321,12 @@ class MaquinaVirtual():
 
             # OPERACION PRINTP
             elif op == "PRINTP":
+                # Se incrementa el IP en uno para pasar al siguiente cuadruplo
+                self.ip += 1
+
+            # OPERACION IGUAL
+            elif op == "IGUAL":
+                self.index(result, self.returns.pop())
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
             

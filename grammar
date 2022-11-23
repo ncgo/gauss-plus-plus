@@ -198,7 +198,7 @@ escr2:
 
 lectura: READ LPAR ID RPAR
 
-varcte: ID | CTEINT | CTEFLOAT | CTESTRING | CTEBOOL | arracc | llamadafunc
+varcte: llamadafunc np_returnllam | ID | CTEINT | CTEFLOAT | CTESTRING | CTEBOOL | arracc
 ctebool: TRUE | FALSE
 
 llamadafunc: ID LPAR llamadaaux RPAR np_llamsub
@@ -206,6 +206,7 @@ llamadaaux: expresion np_llam llam1 |
 llam1: COMA expresion np_llam llam1 | 
 np_llamsub:
 np_llam:
+np_returnllam:
 
 bloque: LCURLY vars estatutos RCURLY
 

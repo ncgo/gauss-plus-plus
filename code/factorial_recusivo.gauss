@@ -12,9 +12,10 @@ int factorial(int num) {
 }
 
 main() {
-    var int x 
+    var int x, y
     // x = factorial(0)
     print(factorial(0))
-    //factorial(6)
+    y = factorial(6)
+    print(y)
     //print(factorial(7))
 }
