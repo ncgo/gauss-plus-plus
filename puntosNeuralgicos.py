@@ -709,7 +709,7 @@ class PuntosNeuralgicos(Visitor):
                 errores.errorTypeMismatch(imp, "", operator)
 
     # OPCIONES
-    # Punto neuralgico que registra la variable problema
+    # Punto neuralgico que registra la variable opciones
     def opciones(self, tree):
         try:
             tree.children
@@ -902,6 +902,7 @@ class PuntosNeuralgicos(Visitor):
         end = self.pilaSaltos.pop()
         self.fillQuad(end, self.quadCounter)
 
+    # NP COND1
     def np_cond1(self, tree):
         end = self.pilaSaltos.pop()
         self.fillQuad(end, self.quadCounter)
@@ -1139,6 +1140,7 @@ class PuntosNeuralgicos(Visitor):
                 self.pilaO.append(tk)
                 self.cuadruplos.append(quad)
 
+    # ARRACC1
     def arracc1(self, tree):
         try: tree.children[0]
         except: next
@@ -1150,7 +1152,7 @@ class PuntosNeuralgicos(Visitor):
                 var = self.searchVar(id)
                 nodo = var.nodosArreglo[dim - 1]
                 
-                
+    # NP ARRACCFIN
     def np_arraccfin(self, tree):
         aux1 = self.pilaO.pop()
         id = self.pilaDim[0][0]
