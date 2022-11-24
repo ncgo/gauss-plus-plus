@@ -118,7 +118,7 @@ opciones: OPCIONES IGUAL LCOR opcionesdec |
 opcionesdec: varcte opcionesdec1 RCOR np_opcionesdecfin
 opcionesdec1: COMA varcte opcionesdec1 |
 np_opcionesdecfin:
-respuesta: RESPUESTA IGUAL varcte 
+respuesta: RESPUESTA IGUAL varcte | 
 
 listas: lista | 
 lista: ID IGUAL LCOR elista listas

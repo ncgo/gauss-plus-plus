@@ -32,3 +32,5 @@ else:
 puntosNeuralgicos.PuntosNeuralgicos().visit_topdown(tree)
 # El código intermedio es ejecutado por la máquina virtual
 maquinaVirtual.main()
+
+

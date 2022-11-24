@@ -60,7 +60,7 @@ def errorNumParams(numDado, numEsperado, funcion):
 # Aparece cuando una función void tiene un estatuto de retorno.
 # ENTRADAS: funcion -> nombre de la funcion, string
 def errorReturnVoid(funcion):
-    message = "🚨ERROR DE COMPILACIÓN.\n🚨 La funcion " + str(funcion) + " es de tipo void. No puede tener un valor de retorno."
+    message = "🚨 ERROR DE COMPILACIÓN.\n🚨 La funcion " + str(funcion) + " es de tipo void. No puede tener un valor de retorno."
     sys.exit(message)
 
 # ERROR TYPE MISMATCH
@@ -69,36 +69,36 @@ def errorReturnVoid(funcion):
 #           tipoEsperado -> tipo del elemento esperado, string
 #           funcion -> nombre de la funcion, string
 def errorTypeMismatchReturn(tipoDado, tipoEsperado, funcion):
-    message = "🚨ERROR DE COMPILACIÓN.\n🚨Type mismatch. Se esperaba regresar un valor " + str(tipoEsperado) + " y se ha regresado un valor de tipo " + str(tipoDado) + " para la funcion " + str(funcion)
+    message = "🚨 ERROR DE COMPILACIÓN.\n🚨Type mismatch. Se esperaba regresar un valor " + str(tipoEsperado) + " y se ha regresado un valor de tipo " + str(tipoDado) + " para la funcion " + str(funcion)
     sys.exit(message)
 
 # ERROR ID NOT ARRAY
 # Aparece cuando se trata de hacer un acceso de arreglo a una variable que no fue declarada como arreglo
 # ENTRADAS:  id -> nombre de la variable
 def erroIDNotArray(id):
-    message = "🚨ERROR DE COMPILACIÓN.\n🚨 La variable " + str(id) + " no fue declarada como un arreglo."
+    message = "🚨 ERROR DE COMPILACIÓN.\n🚨 La variable " + str(id) + " no fue declarada como un arreglo."
     sys.exit(message)
 
 # ERROR FILE NOT FOUND
 # Aparece cuando se trata de ejecutar el programa sin haber antes llevado a cabo la compilacion
 # ENTRADAS: file -> archivo que no pudo ser abierto
 def errorFileNotFound(file):
-    message = "🚨ERROR DE EJECUCIÓN.\n🚨 File not found. El archivo de la " + file + " no ha sido generado o encontrado."
+    message = "🚨 ERROR DE EJECUCIÓN.\n🚨 File not found. El archivo de la " + file + " no ha sido generado o encontrado."
     sys.exit(message)
 
 # ERROR DIV ZERO
 # Aparece cuando se trata de hcaer una division enre 0
 def errorDivZero():
-    message = "🚨ERROR DE EJECUCIÓN.\n🚨 División entre 0. El denominador de esta división es 0."
+    message = "🚨 ERROR DE EJECUCIÓN.\n🚨 División entre 0. El denominador de esta división es 0."
     sys.exit(message)
 
 # ERROR LIMITS
 # Aparece cuando el indice de un arreglo esta fuera de limites
 # ENTRADAS: id -> indice que se trata de accesar
 def errorLimits(id):
-    message = "🚨ERROR DE EJECUCIÓN.\n🚨 Error de limites. La casilla " + id + " no existe."
+    message = "🚨 ERROR DE EJECUCIÓN.\n🚨 Error de limites. La casilla " + id + " está fuera de limites."
     sys.exit(message)
 
 def errorCodeNotFound(name):
-    message = "🚨ERROR.\n🚨 Archivo no encontrado. El archivo de codigo Gauss " + name + " no existe."
+    message = "🚨 ERROR.\n🚨 Archivo no encontrado. El archivo de codigo Gauss " + name + " no existe."
     sys.exit(message)

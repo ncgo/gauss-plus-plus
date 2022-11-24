@@ -41,12 +41,13 @@ void pelos() {
     var int manzana[1][2]
     print(16)
     y = 5
-    manzana[1][2] = 10
-    print(manzana[1][2])
+    manzana[1][1] = 10
+    print(manzana[1][1])
 }
 
 int genial() {
     apellido = "Gonzalez"
+    print(organizacion)
     return hello(4) 
 }
 
@@ -84,5 +85,6 @@ main() {
     hello(4)
     genera("vertical", "categorias[1]", lista2, "principiantes")
     pelos()
+    genial()
     //read(apellido)
 }

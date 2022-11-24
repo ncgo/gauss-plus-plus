@@ -32,6 +32,8 @@ class MaquinaVirtual():
         self.ctesString = [None] * 1000             # Arreglo vacio de constantes string para el programa
         self.ctesBool = [None] * 1000               # Arreglo vacio de constantes booleanas para el programa
         self.returns = []                           # Arreglo auxiliar para mantener los retornos
+        self.info = []
+        self.archivoInfo = []
 
     # INDEX
     # Funcion auxiliar que indexa los valores de las variables en la memoria global
@@ -157,11 +159,12 @@ class MaquinaVirtual():
             elif op == "INFO":
                 # Indexa las variables de tipo arreglo en la memoria global
                 if right_operand != "":
-                    self.index(int(result) + int(right_operand), left_operand)
-                    # self.memGlobalGauss[int(result) - 5000 + int(right_operand)] = left_operand
+                    self.index(int(result) + int(right_operand), self.getValue(left_operand))
+                    self.info.append(self.getValue(int(result) + int(right_operand)))
                 # Indexa el resto de las variables en la memoria global
                 else:
-                    self.index(result, left_operand)
+                    self.index(result, self.getValue(left_operand))
+                    self.info.append(self.getValue(result))
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
@@ -318,16 +321,19 @@ class MaquinaVirtual():
             # Se cambia el IP al cuadruplo en el que nos habiamos quedado
             elif op == "ENDFUNC":
                 self.ip = (self.pilaProc.pop())
+                if result == "genera":
+                    print("GENERATE IT")
 
             # OPERACION VERIFY
             # Se verifica el indice de un arreglo con los limites declarados
             elif op == "VERIFY":
-                if int(left_operand) >= 0 and int(right_operand) <= int(result):
+                indice = self.getValue(result)
+                if indice >= int(left_operand) and indice <= int(right_operand):
                     # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                     self.ip += 1
                 # El indice no está dentro de los limites
                 else:
-                    errores.errorLimits(str(result))
+                    errores.errorLimits(str(indice))
             
             # OPERACION MAIN
             # Se genera la memoria local para la duncion main
@@ -420,6 +426,17 @@ class MaquinaVirtual():
             # OPERACION GENERA
             # Se generan las acciones para generar el archivo deseado
             elif op == "GENERA":
+                if left_operand == "HEADER":
+                    # self.archivoInfo.headerDatos.append(self.getValue(left_operand))
+                    print("header")
+                elif left_operand == "TITULO":
+                    print("titulo")
+                elif left_operand == "INSTRUCCIONES":
+                    print("instrucciones")
+                elif left_operand == "PROBLEMASINCLUIDOS":
+                    print("problemasincluidos")
+                elif left_operand == "FOOTER":
+                    print("footer")
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
