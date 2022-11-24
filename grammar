@@ -94,14 +94,14 @@ catdec1: COMA CTESTRING catdec1 |
 np_catdecfin: 
 
 vars: VAR np_vars | 
+np_vars: tipo ID vars1 vars np_fin_vars | arrdec
 vars1: vars2 | IGUAL expresion np_asig_vars vars2
-vars2: COMA ID vars1 | np_fin_vars
-np_vars: tipo ID vars1 vars
+vars2: COMA ID vars1 |  
 np_fin_vars:
 np_asig_vars:
 
 modulos: modulo | 
-modulo: tipomod ID LPAR modids RPAR LCURLY np_mod vars arrdec np_vars_mod estatutos RCURLY np_endfunc modulos
+modulo: tipomod ID LPAR modids RPAR LCURLY np_mod vars np_vars_mod estatutos RCURLY np_endfunc modulos
 np_vars_mod: 
 np_mod:
 
@@ -178,8 +178,8 @@ fact1: varcte
 
 tipo: INT | FLOAT | STRING | BOOL
 
-asignacion: ID IGUAL asig2 np_asig | arracc IGUAL asig2 
-asig2: expresion | arracc
+asignacion: ID IGUAL asig2 np_asig | arracc IGUAL asig2 np_asig
+asig2: expresion 
 np_asig:
 
 condicion: IF LPAR expresion RPAR np_cond bloque else 
@@ -199,7 +199,7 @@ escr2:
 
 lectura: READ LPAR ID RPAR
 
-varcte: llamadafunc np_returnllam | ID | CTEINT | CTEFLOAT | CTESTRING | CTEBOOL | arracc
+varcte: ID | llamadafunc np_returnllam | CTEINT | CTEFLOAT | CTESTRING | CTEBOOL | arracc
 ctebool: TRUE | FALSE
 
 llamadafunc: ID LPAR llamadaaux RPAR np_llamsub
