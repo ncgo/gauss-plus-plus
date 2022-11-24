@@ -38,7 +38,7 @@ class MaquinaVirtual():
     # ENTRADAS: dir -> direccion virtual de la variable
     #           result -> valor de la variable
     def index(self, dir, result):
-        dir = int(dir)
+        dir = self.pointer(dir)
         # Variables globales generales del programa Gauss 
         if dir >= self.memoria.varsGauss and dir < self.memoria.varGlobalesInt:
             self.memGlobalGauss[dir] = result
@@ -74,7 +74,7 @@ class MaquinaVirtual():
     # Funcion auxiliar que indexa los valores de las variables en la memoria global
     # ENTRADAS: dir -> direccion virtual de la variable
     def getValue(self, dir):
-        dir = int(dir)
+        dir = self.pointer(dir)
         # Variables globales generales del programa Gauss 
         if dir >= self.memoria.varsGauss and dir < self.memoria.varGlobalesInt:
             return self.memGlobalGauss[dir] 
@@ -100,8 +100,12 @@ class MaquinaVirtual():
         elif dir >= self.memoria.tempsGlobalesString and dir < self.memoria.tempsGlobalesBool:
             return self.tempsGlobalesString[dir - self.memoria.tempsGlobalesString]
         # Temporales globales tipados de tipo bool
-        elif dir >= self.memoria.tempsGlobalesBool and dir < self.memoria.varLocalesInt:
+        elif dir >= self.memoria.tempsGlobalesBool and dir < self.memoria.tempsGlobalesPointers:
             return self.tempsGlobalesBool[dir - self.memoria.tempsGlobalesBool]
+        # Temporales globales de tipo pointer
+        elif dir >= self.memoria.tempsGlobalesPointers and dir < self.memoria.varLocalesInt:
+            print(self.tempsGlobalesPointers[dir - self.memoria.tempsGlobalesPointers])
+            return self.getValue(self.tempsGlobalesPointers[dir - self.memoria.tempsGlobalesPointers])
         # Constantes de tipo entero
         elif dir >= self.memoria.ctesInt and dir < self.memoria.ctesFloat:
             return int(self.ctesInt[dir - self.memoria.ctesInt])
@@ -118,6 +122,15 @@ class MaquinaVirtual():
         else:
             return self.instancias[-1].getValue(dir)
     
+    def pointer(self, dir):
+        try: dir[0] == '('
+        except: return int(dir)
+        else:
+            if dir[0] == '(':
+                dir = int(dir.strip('(').strip(')'))
+                print(dir)
+            return int(dir)
+
     # EJECUTAR
     # Funcion que maneja la ejecucion
     def ejecutar(self):

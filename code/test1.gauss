@@ -37,8 +37,11 @@ int hello(int g) {
 }
 
 void pelos() {
-    int manzana[1][2]
+    var int y, x = 4
+    var int manzana[1][2]
+    print(4)
     manzana[1][1] = 4
+    y = 6
     print(manzana[1][1])
 }
 
