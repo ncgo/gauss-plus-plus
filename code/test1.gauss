@@ -39,10 +39,10 @@ int hello(int g) {
 void pelos() {
     var int y, x = 4
     var int manzana[1][2]
-    print(4)
-    manzana[1][1] = 4
+    print(16)
     y = 6
-    print(manzana[1][1])
+    manzana[1][2] = 10
+    print(manzana[1][2])
 }
 
 int genial() {

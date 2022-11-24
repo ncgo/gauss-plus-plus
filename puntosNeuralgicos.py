@@ -1155,7 +1155,9 @@ class PuntosNeuralgicos(Visitor):
         id = self.pilaDim[0][0]
         var = self.searchVar(id)
         tn = self.memoria.availNext("pointer")
-        quad = directorios.Cuadruplo(self.newQuad(), "+", aux1, var.virtualAddress, tn)
+        cte = directorios.Constante(var.virtualAddress, "int", self.memoria.addressCte("int"))
+        self.tablaConstantes.addCte(cte)
+        quad = directorios.Cuadruplo(self.newQuad(), "+", aux1, cte.virtualAddress, tn)
         self.pilaO.append(('(' + str(tn) + ')'))
         self.cuadruplos.append(quad)
         self.pOper.pop()

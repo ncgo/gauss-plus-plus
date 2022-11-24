@@ -104,7 +104,6 @@ class MaquinaVirtual():
             return self.tempsGlobalesBool[dir - self.memoria.tempsGlobalesBool]
         # Temporales globales de tipo pointer
         elif dir >= self.memoria.tempsGlobalesPointers and dir < self.memoria.varLocalesInt:
-            print(self.tempsGlobalesPointers[dir - self.memoria.tempsGlobalesPointers])
             return self.getValue(self.tempsGlobalesPointers[dir - self.memoria.tempsGlobalesPointers])
         # Constantes de tipo entero
         elif dir >= self.memoria.ctesInt and dir < self.memoria.ctesFloat:
@@ -128,7 +127,6 @@ class MaquinaVirtual():
         else:
             if dir[0] == '(':
                 dir = int(dir.strip('(').strip(')'))
-                print(dir)
             return int(dir)
 
     # EJECUTAR
@@ -160,16 +158,16 @@ class MaquinaVirtual():
                 if right_operand != "":
                     self.index(int(result) + int(right_operand), left_operand)
                     # self.memGlobalGauss[int(result) - 5000 + int(right_operand)] = left_operand
-                # Indexa el resto de las variables en la memoria gloabl
+                # Indexa el resto de las variables en la memoria global
                 else:
-                    self.index(int(result), left_operand)
+                    self.index(result, left_operand)
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
             # OPERACION = 
             # Genera la asignacion correspondiente
             elif op == "=":
-                self.index(int(result), self.getValue(left_operand))
+                self.index(result, self.getValue(left_operand))
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
