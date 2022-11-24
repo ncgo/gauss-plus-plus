@@ -38,7 +38,12 @@ class MaquinaVirtual():
     # ENTRADAS: dir -> direccion virtual de la variable
     #           result -> valor de la variable
     def index(self, dir, result):
-        dir = int(dir)
+        try: dir = int(dir)
+        except ValueError:
+            if dir[0] == '(':
+                dir = int(dir.strip('(').strip(')'))
+                dir = int(self.getValue(dir))
+
         # Variables globales generales del programa Gauss 
         if dir >= self.memoria.varsGauss and dir < self.memoria.varGlobalesInt:
             self.memGlobalGauss[dir] = result
@@ -74,7 +79,11 @@ class MaquinaVirtual():
     # Funcion auxiliar que indexa los valores de las variables en la memoria global
     # ENTRADAS: dir -> direccion virtual de la variable
     def getValue(self, dir):
-        dir = int(dir)
+        try: dir = int(dir)
+        except ValueError:
+            if dir[0] == '(':
+                dir = int(dir.strip('(').strip(')'))
+                dir = int(self.getValue(dir))
         # Variables globales generales del programa Gauss 
         if dir >= self.memoria.varsGauss and dir < self.memoria.varGlobalesInt:
             return self.memGlobalGauss[dir] 
@@ -104,7 +113,7 @@ class MaquinaVirtual():
             return self.tempsGlobalesBool[dir - self.memoria.tempsGlobalesBool]
         # Temporales globales de tipo pointer
         elif dir >= self.memoria.tempsGlobalesPointers and dir < self.memoria.varLocalesInt:
-            return self.getValue(self.tempsGlobalesPointers[dir - self.memoria.tempsGlobalesPointers])
+            return self.tempsGlobalesPointers[dir - self.memoria.tempsGlobalesPointers]
         # Constantes de tipo entero
         elif dir >= self.memoria.ctesInt and dir < self.memoria.ctesFloat:
             return int(self.ctesInt[dir - self.memoria.ctesInt])
@@ -119,9 +128,8 @@ class MaquinaVirtual():
             return self.ctesBool[dir - self.memoria.ctesBool]
         # Si el valor es mayor, es una variable local y hay que indexar en su determinada instancia
         else:
-            return self.instancias[-1].getValue(dir)
+            return self.instancias[-1].getValue(dir)    
 
-    
     # EJECUTAR
     # Funcion que maneja la ejecucion
     def ejecutar(self):
@@ -132,7 +140,6 @@ class MaquinaVirtual():
             right_operand = self.cuadruplos[self.ip][2]
             result = self.cuadruplos[self.ip][3]
 
-            print(self.ip)
             # OPERACION PROGRAM
             # Indica que se ha iniciado la ejecucion del programa
             if op == "PROGRAM":
@@ -310,7 +317,6 @@ class MaquinaVirtual():
             # OPERACION ENDFUNC
             # Se cambia el IP al cuadruplo en el que nos habiamos quedado
             elif op == "ENDFUNC":
-                self.instancias[-1].printMem()
                 self.ip = (self.pilaProc.pop())
 
             # OPERACION VERIFY

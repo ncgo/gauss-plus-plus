@@ -40,7 +40,7 @@ void pelos() {
     var int y, x = 4
     var int manzana[1][2]
     print(16)
-    y = 6
+    y = 5
     manzana[1][2] = 10
     print(manzana[1][2])
 }
