@@ -449,19 +449,22 @@ class PuntosNeuralgicos(Visitor):
     # NP VARS
     # Punto neuralgico de adicion de variables
     def np_vars(self, tree):
-        # Cada que se crea un proceso, se crea su taba de variables
-        tipoVar = tree.children[0].children[0].value
-        nombreVar = tree.children[1].value
-        # Se agrega el tipo de la variable a la pila de variables
-        self.pilaTipos.append(tipoVar)
-        var = directorios.Variable(nombreVar, tipoVar)
-        if (len(self.pilaProcedimientos) == 1):
-            var.virtualAddress = self.memoria.virtualAddress(tipoVar, True)
+        try: tree.children[0].children[0].value
+        except: next
         else:
-            var.virtualAddress = self.memoria.virtualAddress(tipoVar)
-        # Se registra la variable en la Tabla de Variables
-        self.currProc().tablaVariables.addVar(var)
-        self.pilaO.append(var.virtualAddress)
+            # Cada que se crea un proceso, se crea su taba de variables
+            tipoVar = tree.children[0].children[0].value
+            nombreVar = tree.children[1].value
+            # Se agrega el tipo de la variable a la pila de variables
+            self.pilaTipos.append(tipoVar)
+            var = directorios.Variable(nombreVar, tipoVar)
+            if (len(self.pilaProcedimientos) == 1):
+                var.virtualAddress = self.memoria.virtualAddress(tipoVar, True)
+            else:
+                var.virtualAddress = self.memoria.virtualAddress(tipoVar)
+            # Se registra la variable en la Tabla de Variables
+            self.currProc().tablaVariables.addVar(var)
+            self.pilaO.append(var.virtualAddress)
 
     # VARS 1
     # Punto neuralgico que prepara la asignacion de valores a una variable
@@ -476,17 +479,20 @@ class PuntosNeuralgicos(Visitor):
     # VARS 2
     # Punto neuralgico que registra las demas variables declaradas en la misma linea
     def vars2(self, tree): 
-        if(tree.children[0] == ','):
-            tipoVar = self.pilaTipos[-1]
-            nombreVar = tree.children[1].value
-            var = directorios.Variable(nombreVar, tipoVar)
-            if (len(self.pilaProcedimientos) == 1):
-                var.virtualAddress = self.memoria.virtualAddress(tipoVar, True)
-            else:
-                var.virtualAddress = self.memoria.virtualAddress(tipoVar)
-            # Se registra la variable en la Tabla de Variables
-            self.currProc().tablaVariables.addVar(var)
-            self.pilaO.append(var.virtualAddress)
+        try: tree.children[0]
+        except: next
+        else:
+            if(tree.children[0] == ','):
+                tipoVar = self.pilaTipos[-1]
+                nombreVar = tree.children[1].value
+                var = directorios.Variable(nombreVar, tipoVar)
+                if (len(self.pilaProcedimientos) == 1):
+                    var.virtualAddress = self.memoria.virtualAddress(tipoVar, True)
+                else:
+                    var.virtualAddress = self.memoria.virtualAddress(tipoVar)
+                # Se registra la variable en la Tabla de Variables
+                self.currProc().tablaVariables.addVar(var)
+                self.pilaO.append(var.virtualAddress)
     
     # NP FIN VARS
     # Punto neuralgico que elimina el tipo guardado de la declaracion al terminarse esta y proseguir a la siguiente
@@ -1105,6 +1111,10 @@ class PuntosNeuralgicos(Visitor):
 
         # NP 3
         # Se rea el cuadruplo para verificar limites
+        cteli = directorios.Constante(nodo.li, "int", self.memoria.addressCte("int"))
+        ctels = directorios.Constante(nodo.ls, "int", self.memoria.addressCte("int"))
+        self.tablaConstantes.addCte(cteli)
+        self.tablaConstantes.addCte(ctels)
         quad = directorios.Cuadruplo(self.newQuad(), "VERIFY", nodo.li, nodo.ls, self.pilaO[-1] )
         self.cuadruplos.append(quad)
         try:
@@ -1115,7 +1125,9 @@ class PuntosNeuralgicos(Visitor):
             if nodo.dim < len(var.nodosArreglo):
                 aux = self.pilaO.pop()
                 tn = self.memoria.availNext("int")
-                quad = directorios.Cuadruplo(self.newQuad(), "*", aux, nodo.m, tn)
+                ctem = directorios.Constante(nodo.m, "int", self.memoria.addressCte("int"))
+                self.tablaConstantes.addCte(ctem)
+                quad = directorios.Cuadruplo(self.newQuad(), "*", aux, ctem.virtualAddress, tn)
                 self.pilaO.append(tn)
                 self.cuadruplos.append(quad)
             if dim > 1:
