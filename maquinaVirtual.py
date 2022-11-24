@@ -32,13 +32,20 @@ class MaquinaVirtual():
         self.ctesString = [None] * 1000             # Arreglo vacio de constantes string para el programa
         self.ctesBool = [None] * 1000               # Arreglo vacio de constantes booleanas para el programa
         self.returns = []                           # Arreglo auxiliar para mantener los retornos
+        self.info = []
+        self.archivoInfo = []
 
     # INDEX
     # Funcion auxiliar que indexa los valores de las variables en la memoria global
     # ENTRADAS: dir -> direccion virtual de la variable
     #           result -> valor de la variable
     def index(self, dir, result):
-        dir = int(dir)
+        try: dir = int(dir)
+        except ValueError:
+            if dir[0] == '(':
+                dir = int(dir.strip('(').strip(')'))
+                dir = int(self.getValue(dir))
+
         # Variables globales generales del programa Gauss 
         if dir >= self.memoria.varsGauss and dir < self.memoria.varGlobalesInt:
             self.memGlobalGauss[dir] = result
@@ -74,7 +81,11 @@ class MaquinaVirtual():
     # Funcion auxiliar que indexa los valores de las variables en la memoria global
     # ENTRADAS: dir -> direccion virtual de la variable
     def getValue(self, dir):
-        dir = int(dir)
+        try: dir = int(dir)
+        except ValueError:
+            if dir[0] == '(':
+                dir = int(dir.strip('(').strip(')'))
+                dir = int(self.getValue(dir))
         # Variables globales generales del programa Gauss 
         if dir >= self.memoria.varsGauss and dir < self.memoria.varGlobalesInt:
             return self.memGlobalGauss[dir] 
@@ -100,8 +111,11 @@ class MaquinaVirtual():
         elif dir >= self.memoria.tempsGlobalesString and dir < self.memoria.tempsGlobalesBool:
             return self.tempsGlobalesString[dir - self.memoria.tempsGlobalesString]
         # Temporales globales tipados de tipo bool
-        elif dir >= self.memoria.tempsGlobalesBool and dir < self.memoria.varLocalesInt:
+        elif dir >= self.memoria.tempsGlobalesBool and dir < self.memoria.tempsGlobalesPointers:
             return self.tempsGlobalesBool[dir - self.memoria.tempsGlobalesBool]
+        # Temporales globales de tipo pointer
+        elif dir >= self.memoria.tempsGlobalesPointers and dir < self.memoria.varLocalesInt:
+            return self.tempsGlobalesPointers[dir - self.memoria.tempsGlobalesPointers]
         # Constantes de tipo entero
         elif dir >= self.memoria.ctesInt and dir < self.memoria.ctesFloat:
             return int(self.ctesInt[dir - self.memoria.ctesInt])
@@ -116,8 +130,8 @@ class MaquinaVirtual():
             return self.ctesBool[dir - self.memoria.ctesBool]
         # Si el valor es mayor, es una variable local y hay que indexar en su determinada instancia
         else:
-            return self.instancias[-1].getValue(dir)
-    
+            return self.instancias[-1].getValue(dir)    
+
     # EJECUTAR
     # Funcion que maneja la ejecucion
     def ejecutar(self):
@@ -145,18 +159,19 @@ class MaquinaVirtual():
             elif op == "INFO":
                 # Indexa las variables de tipo arreglo en la memoria global
                 if right_operand != "":
-                    self.index(int(result) + int(right_operand), left_operand)
-                    # self.memGlobalGauss[int(result) - 5000 + int(right_operand)] = left_operand
-                # Indexa el resto de las variables en la memoria gloabl
+                    self.index(int(result) + int(right_operand), self.getValue(left_operand))
+                    self.info.append(self.getValue(int(result) + int(right_operand)))
+                # Indexa el resto de las variables en la memoria global
                 else:
-                    self.index(int(result), left_operand)
+                    self.index(result, self.getValue(left_operand))
+                    self.info.append(self.getValue(result))
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
             # OPERACION = 
             # Genera la asignacion correspondiente
             elif op == "=":
-                self.index(int(result), self.getValue(left_operand))
+                self.index(result, self.getValue(left_operand))
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 
@@ -306,16 +321,19 @@ class MaquinaVirtual():
             # Se cambia el IP al cuadruplo en el que nos habiamos quedado
             elif op == "ENDFUNC":
                 self.ip = (self.pilaProc.pop())
+                if result == "genera":
+                    print("GENERATE IT")
 
             # OPERACION VERIFY
             # Se verifica el indice de un arreglo con los limites declarados
             elif op == "VERIFY":
-                if int(left_operand) >= 0 and int(right_operand) <= int(result):
+                indice = self.getValue(result)
+                if indice >= int(left_operand) and indice <= int(right_operand):
                     # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                     self.ip += 1
                 # El indice no está dentro de los limites
                 else:
-                    errores.errorLimits(str(result))
+                    errores.errorLimits(str(indice))
             
             # OPERACION MAIN
             # Se genera la memoria local para la duncion main
@@ -408,6 +426,17 @@ class MaquinaVirtual():
             # OPERACION GENERA
             # Se generan las acciones para generar el archivo deseado
             elif op == "GENERA":
+                if left_operand == "HEADER":
+                    # self.archivoInfo.headerDatos.append(self.getValue(left_operand))
+                    print("header")
+                elif left_operand == "TITULO":
+                    print("titulo")
+                elif left_operand == "INSTRUCCIONES":
+                    print("instrucciones")
+                elif left_operand == "PROBLEMASINCLUIDOS":
+                    print("problemasincluidos")
+                elif left_operand == "FOOTER":
+                    print("footer")
                 # Se incrementa el IP en uno para pasar al siguiente cuadruplo
                 self.ip += 1
 

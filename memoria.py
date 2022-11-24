@@ -33,6 +33,7 @@ class MemoriaLocal():
             self.varsInt[dir - self.memoria.varLocalesInt] = result
         # Variables locales tipadas de tipo flotante 
         elif dir >= self.memoria.varLocalesFloat and dir < self.memoria.varLocalesString:
+            
             self.varsFloat[dir - self.memoria.varLocalesFloat] = result
         # Variables locales tipadas de tipo string 
         elif dir >= self.memoria.varLocalesString and dir < self.memoria.varLocalesBool:
@@ -82,7 +83,6 @@ class MemoriaLocal():
         elif dir >= self.memoria.tempsInt and dir < self.memoria.tempsFloat:
             try: int(self.tempsInt[dir - self.memoria.tempsInt])
             except: 
-                print("help")
                 return None
             else: return int(self.tempsInt[dir - self.memoria.tempsInt])
         # Temporales locales tipados de tipo flotante
@@ -306,6 +306,8 @@ class MapaDeMemoria():
         elif (type == "categorias" or type == "lista"):
             self.varsGauss += R - 1 
 
+    # TEMP VAR
+    # Funcion auxiliar que traduce temporales a variables locales
     def tempVar(self, dir):
         if dir >= self.tempsInt and dir < self.tempsFloat:
             return self.varLocalesInt
@@ -315,3 +317,18 @@ class MapaDeMemoria():
             return self.varLocalesString
         elif dir >= self.tempsBool and dir < (self.tempsBool + 2000):
             return self.varLocalesBool 
+
+    # RESTART 
+    # Funcion auxiliar que reinicia los valores de las variables locales cada que se trabaja una nueva funcion
+    def restart(self):
+        self.varLocalesGauss = 20000
+        self.varLocalesInt = 21000
+        self.varLocalesFloat = 23000
+        self.varLocalesString = 25000
+        self.varLocalesBool = 27000
+        # TEMPORALES LOCALES
+        self.tempsInt = 30000
+        self.tempsFloat = 32000
+        self.tempsString = 34000
+        self.tempsBool = 36000
+        self.tempsPointers = 38000

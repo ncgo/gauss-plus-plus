@@ -4,13 +4,14 @@ etapa = "Examen Estatal"
 categorias = ["Nivel A", "Nivel B", "Nivel C", "Nivel D"]
 
 var int puntaje, year
-var float pesos = 30.0
+var float pesos = 60.0
 var string apellido
 
 int hello(int g) {
-    var int provisional
+    var float provisional
     var int i = 0
     provisional = 5 * 6 / pesos
+    print(provisional)
     year = 2020 + 2 + provisional
     puntaje = year
     if (5 < 4) {
@@ -36,12 +37,17 @@ int hello(int g) {
 }
 
 void pelos() {
-    int manzana[1]
-    // manzana[1] = 4
+    var int y, x = 4
+    var int manzana[1][2]
+    print(16)
+    y = 5
+    manzana[1][1] = 10
+    print(manzana[1][1])
 }
 
 int genial() {
     apellido = "Gonzalez"
+    print(organizacion)
     return hello(4) 
 }
 
@@ -78,5 +84,7 @@ genera(orientacion, categoria, problemas, nombreArchivo) {
 main() {
     hello(4)
     genera("vertical", "categorias[1]", lista2, "principiantes")
-    read(apellido)
+    pelos()
+    genial()
+    //read(apellido)
 }

@@ -94,14 +94,14 @@ catdec1: COMA CTESTRING catdec1 |
 np_catdecfin: 
 
 vars: VAR np_vars | 
+np_vars: tipo ID vars1 vars np_fin_vars | arrdec
 vars1: vars2 | IGUAL expresion np_asig_vars vars2
-vars2: COMA ID vars1 | np_fin_vars
-np_vars: tipo ID vars1 vars
+vars2: COMA ID vars1 |  
 np_fin_vars:
 np_asig_vars:
 
 modulos: modulo | 
-modulo: tipomod ID LPAR modids RPAR LCURLY np_mod vars arrdec np_vars_mod estatutos RCURLY np_endfunc modulos
+modulo: tipomod ID LPAR modids RPAR LCURLY np_mod vars np_vars_mod estatutos RCURLY np_endfunc modulos
 np_vars_mod: 
 np_mod:
 
@@ -118,7 +118,7 @@ opciones: OPCIONES IGUAL LCOR opcionesdec |
 opcionesdec: varcte opcionesdec1 RCOR np_opcionesdecfin
 opcionesdec1: COMA varcte opcionesdec1 |
 np_opcionesdecfin:
-respuesta: RESPUESTA IGUAL varcte 
+respuesta: RESPUESTA IGUAL varcte | 
 
 listas: lista | 
 lista: ID IGUAL LCOR elista listas
@@ -149,16 +149,17 @@ modids2: COMA modids1 |
 np_return:
 np_return1:
 
-arrdec: tipo ID LCOR arrsize arrdec1 RCOR arrdecfin arrdec | 
+arrdec: tipo ID LCOR arrsize RCOR arrdec1 arrdecfin arrdec | 
 arrsize: CTEINT
-arrdec1: COMA arrsize arrdec1 | 
+arrdec1: LCOR arrsize RCOR arrdec1 | 
 arr: LCOR varcte arr1 RCOR
 arr1: COMA varcte arr1 | 
 arrdecfin:
 
-arracc: ID LCOR expresion np_arracc RCOR arrac1
-arrac1: LCOR expresion np_arracc RCOR | 
+arracc: ID LCOR expresion np_arracc RCOR arracc1 np_arraccfin
+arracc1: LCOR expresion np_arracc RCOR | 
 np_arracc:
+np_arraccfin:
 
 expresion: exp expresion1 exp np_expresion | exp
 expresion1: MENORQUE | MAYORQUE | MENORIGUALQUE | MAYORIGUALQUE | DIFERENTE | AND | OR | IGUALQUE
@@ -177,8 +178,8 @@ fact1: varcte
 
 tipo: INT | FLOAT | STRING | BOOL
 
-asignacion: ID IGUAL asig2 np_asig | arracc IGUAL asig2 
-asig2: expresion | arracc
+asignacion: ID IGUAL asig2 np_asig | arracc IGUAL asig2 np_asig
+asig2: expresion 
 np_asig:
 
 condicion: IF LPAR expresion RPAR np_cond bloque else 
@@ -198,7 +199,7 @@ escr2:
 
 lectura: READ LPAR ID RPAR
 
-varcte: llamadafunc np_returnllam | ID | CTEINT | CTEFLOAT | CTESTRING | CTEBOOL | arracc
+varcte: ID | llamadafunc np_returnllam | CTEINT | CTEFLOAT | CTESTRING | CTEBOOL | arracc
 ctebool: TRUE | FALSE
 
 llamadafunc: ID LPAR llamadaaux RPAR np_llamsub

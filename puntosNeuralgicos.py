@@ -31,6 +31,7 @@ class PuntosNeuralgicos(Visitor):
         self.tablaConstantes = None
         self.returns = 0
         self.pReturns = []
+        self.r = 1
     # CREATE OBJ FILE
     # Funcion auxiliar que genera el archivo de codigo objeto con lso cuadruplso generados por el programa a ser ejecutado por la maquina virtual
     def createObjFile(self):
@@ -113,6 +114,7 @@ class PuntosNeuralgicos(Visitor):
     # MODULO
     # Punto neuralgico de registro de proceso modulo en Directorio de Procedimientos
     def modulo(self, tree):
+        self.memoria.restart()
         tipoMod = tree.children[0].children[0].value
         nombreMod = tree.children[1].value
         modProc = directorios.Procedimiento(nombreMod, tipoMod)
@@ -448,19 +450,22 @@ class PuntosNeuralgicos(Visitor):
     # NP VARS
     # Punto neuralgico de adicion de variables
     def np_vars(self, tree):
-        # Cada que se crea un proceso, se crea su taba de variables
-        tipoVar = tree.children[0].children[0].value
-        nombreVar = tree.children[1].value
-        # Se agrega el tipo de la variable a la pila de variables
-        self.pilaTipos.append(tipoVar)
-        var = directorios.Variable(nombreVar, tipoVar)
-        if (len(self.pilaProcedimientos) == 1):
-            var.virtualAddress = self.memoria.virtualAddress(tipoVar, True)
+        try: tree.children[0].children[0].value
+        except: next
         else:
-            var.virtualAddress = self.memoria.virtualAddress(tipoVar)
-        # Se registra la variable en la Tabla de Variables
-        self.currProc().tablaVariables.addVar(var)
-        self.pilaO.append(var.virtualAddress)
+            # Cada que se crea un proceso, se crea su taba de variables
+            tipoVar = tree.children[0].children[0].value
+            nombreVar = tree.children[1].value
+            # Se agrega el tipo de la variable a la pila de variables
+            self.pilaTipos.append(tipoVar)
+            var = directorios.Variable(nombreVar, tipoVar)
+            if (len(self.pilaProcedimientos) == 1):
+                var.virtualAddress = self.memoria.virtualAddress(tipoVar, True)
+            else:
+                var.virtualAddress = self.memoria.virtualAddress(tipoVar)
+            # Se registra la variable en la Tabla de Variables
+            self.currProc().tablaVariables.addVar(var)
+            self.pilaO.append(var.virtualAddress)
 
     # VARS 1
     # Punto neuralgico que prepara la asignacion de valores a una variable
@@ -475,17 +480,20 @@ class PuntosNeuralgicos(Visitor):
     # VARS 2
     # Punto neuralgico que registra las demas variables declaradas en la misma linea
     def vars2(self, tree): 
-        if(tree.children[0] == ','):
-            tipoVar = self.pilaTipos[-1]
-            nombreVar = tree.children[1].value
-            var = directorios.Variable(nombreVar, tipoVar)
-            if (len(self.pilaProcedimientos) == 1):
-                var.virtualAddress = self.memoria.virtualAddress(tipoVar, True)
-            else:
-                var.virtualAddress = self.memoria.virtualAddress(tipoVar)
-            # Se registra la variable en la Tabla de Variables
-            self.currProc().tablaVariables.addVar(var)
-            self.pilaO.append(var.virtualAddress)
+        try: tree.children[0]
+        except: next
+        else:
+            if(tree.children[0] == ','):
+                tipoVar = self.pilaTipos[-1]
+                nombreVar = tree.children[1].value
+                var = directorios.Variable(nombreVar, tipoVar)
+                if (len(self.pilaProcedimientos) == 1):
+                    var.virtualAddress = self.memoria.virtualAddress(tipoVar, True)
+                else:
+                    var.virtualAddress = self.memoria.virtualAddress(tipoVar)
+                # Se registra la variable en la Tabla de Variables
+                self.currProc().tablaVariables.addVar(var)
+                self.pilaO.append(var.virtualAddress)
     
     # NP FIN VARS
     # Punto neuralgico que elimina el tipo guardado de la declaracion al terminarse esta y proseguir a la siguiente
@@ -701,7 +709,7 @@ class PuntosNeuralgicos(Visitor):
                 errores.errorTypeMismatch(imp, "", operator)
 
     # OPCIONES
-    # Punto neuralgico que registra la variable problema
+    # Punto neuralgico que registra la variable opciones
     def opciones(self, tree):
         try:
             tree.children
@@ -894,6 +902,7 @@ class PuntosNeuralgicos(Visitor):
         end = self.pilaSaltos.pop()
         self.fillQuad(end, self.quadCounter)
 
+    # NP COND1
     def np_cond1(self, tree):
         end = self.pilaSaltos.pop()
         self.fillQuad(end, self.quadCounter)
@@ -1029,6 +1038,7 @@ class PuntosNeuralgicos(Visitor):
             # NP 3
             # Se agrega un nuevo nodo para guardar información de las dimensiones
             node = directorios.NodoArreglo(1, 1)
+            self.r = 1
             var = self.currProc().tablaVariables.searchVar(self.pilaO[-1])
             var.nodosArreglo.append(node)
 
@@ -1040,30 +1050,35 @@ class PuntosNeuralgicos(Visitor):
         # Se guarda el limite superior
         var.nodosArreglo[-1].ls = tree.children[0].value
         # Se calcula R
-        var.nodosArreglo[-1].r = (int(var.nodosArreglo[-1].ls) + 1) * var.nodosArreglo[-1].r
-    
+        self.r = (int(var.nodosArreglo[-1].ls) + 1) * self.r
+        var.nodosArreglo[-1].r = self.r
+
     # ARR DEC 1
     # Punto neuralgico que cambia de dimension y crea un nuevo nodo
     def arrdec1(self, tree):
-        var = self.currProc().tablaVariables.searchVar(self.pilaO[-1])
-        # NP 6
-        dim = var.nodosArreglo[-1].dim + 1
-        node = directorios.NodoArreglo(dim)
-        # Se liga el nodo a la variable
-        var.nodosArreglo.append(node)
+        try: tree.children[0]
+        except: next
+        else:
+            if(tree.children[0].value == '['):
+                var = self.currProc().tablaVariables.searchVar(self.pilaO[-1])
+                # NP 6
+                dim = var.nodosArreglo[-1].dim + 1
+                node = directorios.NodoArreglo(dim)
+                # Se liga el nodo a la variable
+                var.nodosArreglo.append(node)
 
     # ARR DEC FIN
     # Punto neuralgico que hace los calculos de las dimensiones al terminar la declaracion del arreglo
     def arrdecfin(self, tree):
         var = self.currProc().tablaVariables.searchVar(self.pilaO[-1])
         # NP 7
-        aux = r = var.nodosArreglo[-1].r
+        aux = self.r
         # Empezando en 0 empezamos en el primer nodo de la lista
         for dim in range(len(var.nodosArreglo)):
             # Se repite para todos los nodos
             # Se guarda m en el nodo actual
-            var.nodosArreglo[dim].m = r / (int(var.nodosArreglo[dim].ls) + 1)
-            r = var.nodosArreglo[dim].m
+            var.nodosArreglo[dim].m = int(self.r / (int(var.nodosArreglo[dim].ls) + 1))
+            self.r = var.nodosArreglo[dim].m
             # no hay offset porque el limite inferior siempre sera 0
         # NP 8
         # Guarda la direccion virtual del id actual en la Tabla de Variables
@@ -1095,18 +1110,62 @@ class PuntosNeuralgicos(Visitor):
         var = self.searchVar(id)
         dim = self.pilaDim[0][1]
         nodo = var.nodosArreglo[dim - 1]
+
         # NP 3
         # Se rea el cuadruplo para verificar limites
+        cteli = directorios.Constante(nodo.li, "int", self.memoria.addressCte("int"))
+        ctels = directorios.Constante(nodo.ls, "int", self.memoria.addressCte("int"))
+        self.tablaConstantes.addCte(cteli)
+        self.tablaConstantes.addCte(ctels)
         quad = directorios.Cuadruplo(self.newQuad(), "VERIFY", nodo.li, nodo.ls, self.pilaO[-1] )
         self.cuadruplos.append(quad)
         try:
-            var.nodosArreglo[dim]
+            var.nodosArreglo[dim - 1]
         except:
             next
         else:
-            aux = self.pilaO.pop()
-            quad = directorios.Cuadruplo(self.newQuad(), "*", aux, nodo.m, self.memoria.availNext("int"))
-            self.cuadruplos.append(quad)
+            if nodo.dim < len(var.nodosArreglo):
+                aux = self.pilaO.pop()
+                tn = self.memoria.availNext("int")
+                ctem = directorios.Constante(nodo.m, "int", self.memoria.addressCte("int"))
+                self.tablaConstantes.addCte(ctem)
+                quad = directorios.Cuadruplo(self.newQuad(), "*", aux, ctem.virtualAddress, tn)
+                self.pilaO.append(tn)
+                self.cuadruplos.append(quad)
+            if dim > 1:
+                aux2 = self.pilaO.pop()
+                aux1 = self.pilaO.pop()
+                tk = self.memoria.availNext("int")
+                quad = directorios.Cuadruplo(self.newQuad(), "+", aux1, aux2, tk)
+                self.pilaO.append(tk)
+                self.cuadruplos.append(quad)
+
+    # ARRACC1
+    def arracc1(self, tree):
+        try: tree.children[0]
+        except: next
+        else:
+            if tree.children[0].value == '[':
+                self.pilaDim[0][1] += 1
+                dim = self.pilaDim[0][1]
+                id = self.pilaDim[0][0]
+                var = self.searchVar(id)
+                nodo = var.nodosArreglo[dim - 1]
+                
+    # NP ARRACCFIN
+    def np_arraccfin(self, tree):
+        aux1 = self.pilaO.pop()
+        id = self.pilaDim[0][0]
+        var = self.searchVar(id)
+        tn = self.memoria.availNext("pointer")
+        cte = directorios.Constante(var.virtualAddress, "int", self.memoria.addressCte("int"))
+        self.tablaConstantes.addCte(cte)
+        quad = directorios.Cuadruplo(self.newQuad(), "+", aux1, cte.virtualAddress, tn)
+        self.pilaO.append(('(' + str(tn) + ')'))
+        self.cuadruplos.append(quad)
+        self.pOper.pop()
+        self.pilaDim.pop()
+        
 
     # NP END
     # Punto neuralgico que marca el fin del programa
