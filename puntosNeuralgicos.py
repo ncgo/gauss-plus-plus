@@ -114,6 +114,7 @@ class PuntosNeuralgicos(Visitor):
     # MODULO
     # Punto neuralgico de registro de proceso modulo en Directorio de Procedimientos
     def modulo(self, tree):
+        self.memoria.restart()
         tipoMod = tree.children[0].children[0].value
         nombreMod = tree.children[1].value
         modProc = directorios.Procedimiento(nombreMod, tipoMod)

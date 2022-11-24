@@ -1,79 +1,11 @@
-44000@"OMMCH"
-44001@"Examen Estatal"
-44002@"Nivel A"
-44003@"Nivel B"
-44004@"Nivel C"
-44005@"Nivel D"
-42000@60.0
 40000@0
-40001@5
-40002@6
-40003@2020
-40004@2
-40005@5
-40006@4
-46000@True
-46001@False
-44006@"hello"
-40007@5
-40008@4
-40009@5
-44007@"Else"
-46002@True
-46003@False
-44008@"If simple"
-40010@3
-40011@5
-42001@9.0
-40012@1
-44009@"hi"
-40013@4
-40014@7
-40015@4
-40016@16
-40017@6
-40018@1
-40019@0
-40020@1
-40021@3
-40022@2
-40023@0
-40024@2
-40025@21005
-40026@10
-40027@1
-40028@0
-40029@1
-40030@3
-40031@2
-40032@0
-40033@2
-40034@21005
-44010@"Gonzalez"
-40035@4
-44011@"Teoria de Números"
-44012@"Considera cinco números de menor a mayor"
-44013@$
-44014@". Después de que se calculan las 10 sumas de cada pareja de números se sabe que las tres sumas más pequeñas son 32, 36 y 37, mientras que las sumas más grandes son 48 y 51. ¿Cuánto vale e?"
-40036@16
-40037@17
-40038@18
-40039@19
-44015@"No se puede saber"
-40040@19
-44016@"Teoria de Números"
-44017@"Considera cinco números de menor a mayor"
-44018@$
-44019@". Después de que se calculan las 10 sumas de cada pareja de números se sabe que las tres sumas más pequeñas son 32, 36 y 37, mientras que las sumas más grandes son 48 y 51. ¿Cuánto vale e?"
-40041@16
-40042@17
-40043@18
-40044@19
-44020@"No se puede saber"
-40045@19
-44021@"Examen Estatal"
-44022@"Contesta los siguientes problemas y entrega tu respuesta en una hoja separada. Tienes 50 minutos"
-40046@4
-44023@"vertical"
-44024@"categorias[1]"
-44025@"principiantes"
+40001@1
+40002@1
+40003@0
+40004@1
+40005@2
+40006@3
+40007@4
+40008@5
+40009@6
+40010@7
