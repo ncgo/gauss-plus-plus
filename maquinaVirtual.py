@@ -38,7 +38,7 @@ class MaquinaVirtual():
     # ENTRADAS: dir -> direccion virtual de la variable
     #           result -> valor de la variable
     def index(self, dir, result):
-        dir = self.pointer(dir)
+        dir = int(dir)
         # Variables globales generales del programa Gauss 
         if dir >= self.memoria.varsGauss and dir < self.memoria.varGlobalesInt:
             self.memGlobalGauss[dir] = result
@@ -74,7 +74,7 @@ class MaquinaVirtual():
     # Funcion auxiliar que indexa los valores de las variables en la memoria global
     # ENTRADAS: dir -> direccion virtual de la variable
     def getValue(self, dir):
-        dir = self.pointer(dir)
+        dir = int(dir)
         # Variables globales generales del programa Gauss 
         if dir >= self.memoria.varsGauss and dir < self.memoria.varGlobalesInt:
             return self.memGlobalGauss[dir] 
@@ -120,15 +120,8 @@ class MaquinaVirtual():
         # Si el valor es mayor, es una variable local y hay que indexar en su determinada instancia
         else:
             return self.instancias[-1].getValue(dir)
-    
-    def pointer(self, dir):
-        try: dir[0] == '('
-        except: return int(dir)
-        else:
-            if dir[0] == '(':
-                dir = int(dir.strip('(').strip(')'))
-            return int(dir)
 
+    
     # EJECUTAR
     # Funcion que maneja la ejecucion
     def ejecutar(self):
@@ -139,6 +132,7 @@ class MaquinaVirtual():
             right_operand = self.cuadruplos[self.ip][2]
             result = self.cuadruplos[self.ip][3]
 
+            print(self.ip)
             # OPERACION PROGRAM
             # Indica que se ha iniciado la ejecucion del programa
             if op == "PROGRAM":
@@ -316,6 +310,7 @@ class MaquinaVirtual():
             # OPERACION ENDFUNC
             # Se cambia el IP al cuadruplo en el que nos habiamos quedado
             elif op == "ENDFUNC":
+                self.instancias[-1].printMem()
                 self.ip = (self.pilaProc.pop())
 
             # OPERACION VERIFY

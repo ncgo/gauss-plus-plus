@@ -96,7 +96,10 @@ class MemoriaLocal():
             return self.tempsBool[dir - self.memoria.tempsBool]
         # Temporales locales tipados de tipo pointer
         elif dir >= self.memoria.tempsPointers and dir < (self.memoria.tempsPointers + 2000):
-            return self.tempsPointer[dir - self.memoria.tempsPointers]
+            return self.getValue(self.tempsPointer[dir - self.memoria.tempsPointers])
+
+    def printMem(self):
+        print(self.varsInt[:20])
 
 # MAPA DE MEMORIA
 # Manejo de direcciones virtuales para el proceso de compilacion 
