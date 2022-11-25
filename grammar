@@ -152,8 +152,6 @@ np_return1:
 arrdec: tipo ID LCOR arrsize RCOR arrdec1 arrdecfin arrdec | 
 arrsize: CTEINT
 arrdec1: LCOR arrsize RCOR arrdec1 | 
-arr: LCOR varcte arr1 RCOR
-arr1: COMA varcte arr1 | 
 arrdecfin:
 
 arracc: ID LCOR expresion np_arracc RCOR arracc1 np_arraccfin
