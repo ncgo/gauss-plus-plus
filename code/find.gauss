@@ -6,18 +6,19 @@ int find(int num) {
     arreglo[0] = 1
     arreglo[1] = 2
     arreglo[2] = 3
-    arreglo[3] = 4
+    arreglo[3] = 4 * (5 - 7)
     arreglo[4] = 5
 
     while (i < 5) {
+        print(arreglo[i])
         if (arreglo[i] == num) {
             return i
         }
         i = i + 1
     }
-    return 0 - 1
+    return -1
 }
 
 main() {
-    print(find(3))
+    print(find(10))
 }
