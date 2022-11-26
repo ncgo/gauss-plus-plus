@@ -12,8 +12,8 @@ COMMENT: "//" /(.)+/ NEWLINE
 %ignore COMMENT 
 
 ID: /[_]?[a-z]+[a-zA-Z0-9_]*/
-CTEINT: /[0-9]+/
-CTEFLOAT: /[0-9]+[\.][0-9]+/
+CTEINT: /[-]?[0-9]+/
+CTEFLOAT: /[-]?[0-9]+[\.][0-9]+/
 CTEBOOL: "True" | "False"
 PATH: /[^\\s]+(.*?)\\.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/
 NEWLINE: /\n/
@@ -171,8 +171,9 @@ termino: factor np_termino ter1 | factor np_termino
 ter1: MULT termino | DIV termino 
 np_termino:
 
-factor: fact1 | LPAR expresion RPAR 
+factor: fact1 | LPAR expresion RPAR np_factor
 fact1: varcte 
+np_factor:
 
 tipo: INT | FLOAT | STRING | BOOL
 

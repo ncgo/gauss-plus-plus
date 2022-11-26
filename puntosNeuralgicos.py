@@ -517,6 +517,21 @@ class PuntosNeuralgicos(Visitor):
             else:
                 errores.errorTypeMismatch(resultado, id, operator)
 
+    # FACTOR
+    # Punto neuralgico que agrega un fondo falso a la pila de operadores cuando se presenta un paréntesis en una expresión
+    def factor(self, tree):
+        try: tree.children[0].value
+        except: next
+        else: 
+            if (tree.children[0].value == '('):
+                self.pOper.append('[')
+
+    # NP FACTOR
+    # Punto neuralgico que elimina el fondo falso cuando se cierra un paréntesis en una expresión
+    def np_factor(self, tree):
+        if (self.pOper[-1] == '['):
+            self.pOper.pop()
+
     # FACT1
     # Punto neuralgico que agrega a la pila de operandos un factor
     def fact1(self, tree):
