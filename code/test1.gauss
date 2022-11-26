@@ -84,7 +84,7 @@ genera(orientacion, categoria, problemas, nombreArchivo) {
 
 main() {
     hello(4)
-    genera("vertical", "categorias[1]", lista2, "principiantes")
+    genera("vertical", categorias[1], lista2, "principiantes")
     pelos()
     genial()
     //read(apellido)
