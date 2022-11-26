@@ -1,0 +1,24 @@
+Gauss find_vector
+
+int find(int num) {
+    var int i = 0
+    var int arreglo[5]
+    arreglo[0] = 1
+    arreglo[1] = 2
+    arreglo[2] = 3
+    arreglo[3] = 4 * (5 - 7)
+    arreglo[4] = 5
+
+    while (i < 5) {
+        print(arreglo[i])
+        if (arreglo[i] == num) {
+            return i
+        }
+        i = i + 1
+    }
+    return -1
+}
+
+main() {
+    print(find(10))
+}

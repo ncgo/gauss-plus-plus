@@ -1,0 +1,4 @@
+Gauss _examen
+main(){
+    print("Hello World!")
+}

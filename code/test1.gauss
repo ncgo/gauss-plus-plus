@@ -37,11 +37,12 @@ int hello(int g) {
 }
 
 void pelos() {
-    var int y, x = 4
+    var int y, x = 1
     var int manzana[1][2]
     print(16)
     y = 5
-    manzana[1][1] = 10
+    manzana[x][x] = 10
+    print("manzana")
     print(manzana[1][1])
 }
 
