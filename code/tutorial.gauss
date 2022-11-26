@@ -1,0 +1,17 @@
+Gauss _tutorial
+
+// VARIABLES Gauss
+
+// VARIABLES GLOBALES
+var int year = 2022
+var string nombre = "Nadia"
+
+int edad(int yearBorn) {
+    var int edad
+    edad = 2022 - yearBorn
+    return edad
+}
+
+main() {
+    print(edad(2000))
+}

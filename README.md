@@ -315,7 +315,7 @@ python3 gauss.py
 Teclee el nombre de tu archivo sin el gauss, y estará ejecutando su programa gauss++. En caso de tener errores, estos aparecerán en la consola.
 
 ## Video tutorial
-
+[Link](https://drive.google.com/file/d/11wBwxA6cnz6FIAFcPUKgP8kHdbv2heMX/view?usp=share_link) al video tutorial
 
 ## Documentación
 Para conocer más, revise la documentación en el [siguiente link](https://1drv.ms/w/s!Ag7C-YtrePDRibEW6X8zUYnWT31bYw)
